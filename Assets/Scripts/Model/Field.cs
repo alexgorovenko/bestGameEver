@@ -1,18 +1,23 @@
-﻿public class Field
+﻿using System.Collections.Generic;
+
+public class Field
 {
     public uint headquartesStrength { get; }
-    private CommandorCard commandorLeft { get; set; }
-    private CommandorCard commandorRight { get; set; }
+    private CommandorCard commandorLeft;
+    private CommandorCard commandorRight;
     private HashSet<AbstractCard> onHand { get; }
-    private HashSet<AbstractCard> reserve { get; }
     private HashSet<AbstractCard> drop { get; }
 
     public Field()
     {
         this.headquartesStrength = 30;
-        this.onHand = new HashSet<>();
-        this.reserve = new HashSet<>();
-        this.drop = new HashSet<>();
+        this.onHand = new HashSet<AbstractCard>();
+        this.drop = new HashSet<AbstractCard>();
+    }
+
+    public void AddToHand(List<AbstractCard> cards)
+    {
+        onHand.UnionWith(cards);
     }
 
     public void AddToHand(AbstractCard card)
@@ -20,19 +25,11 @@
         onHand.Add(card);
     }
 
-    public void MoveToReserve(AbstractCard card)
-    {
-        if (!onHand.Contains(card)) throw new Exception("No such card on hand");
-        if (reserve.Count > 8) throw new Excepetion("No more place on reserve");
-        onHand.Remove(card);
-        reserve.Add(card);
-    }
-
     public void Drop()
     {
         foreach (AbstractCard card in onHand)
         {
-            if (typeof(card) == SquadCard && card.stamina <= 0)
+            if (card.GetType() == typeof(SquadCard) && ((SquadCard)card).stamina <= 0)
             {
                 DropCard(card);
             } 
@@ -44,5 +41,17 @@
     {
         onHand.Remove(card);
         drop.Add(card);
+    }
+
+    public void AddCommandor(CommandorCard commandor)
+    {
+        if (commandorLeft == null)
+        {
+            commandorLeft = commandor;
+        }
+        else if (commandorRight == null)
+        {
+            commandorRight = commandor;
+        }
     }
 }

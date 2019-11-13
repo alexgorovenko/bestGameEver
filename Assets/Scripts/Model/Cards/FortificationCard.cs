@@ -2,7 +2,7 @@
 {
     public Callback skill { get; set; }
 
-    public FortificationCard(Rarity rarity, string name, Callback skill) : base(rarity, name)
+    public FortificationCard(Rarity rarity, string name, string tag, Callback skill) : base(rarity, name, tag)
     {
         this.skill = skill;
     }
