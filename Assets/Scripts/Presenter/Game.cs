@@ -13,14 +13,89 @@ public class GameController
 
     public GameController(AbstractController player1, AbstractController player2)
     {
+        Skills skills;
         players[CurrentPlayer.FIRST] = player1;
         players[CurrentPlayer.SECOND] = player2;
         foreach (CurrentPlayer player in Enum.GetValues(typeof(CurrentPlayer)))
         {
             attacks[player] = new Attack();
             fields[player] = new Field();
+            cards[player] = new List<AbstractCard>(40);
+            for (int i = 0; i < 3; i++)
+            {
+                skills = new Skills();
+                cards[player].Add(new SquadCard(Rarity.General, "Линейная пехота", "", 2, 2, 2, skills));
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                skills = new Skills();
+                skills.agility = true;
+                cards[player].Add(new SquadCard(Rarity.General, "Штрафники", "", 3, 1, 2, skills));
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                skills = new Skills();
+                cards[player].Add(new SquadCard(Rarity.General, "Окопники", "", 1, 2, 3, skills));
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                skills = new Skills();
+                skills.armor = 1;
+                cards[player].Add(new SquadCard(Rarity.Rare, "Штурмовики", "", 3, 2, 1, skills));
+            }
+            for (int i = 0; i < 2; i++)
+            {
+                skills = new Skills();
+                skills.agility = true;
+                cards[player].Add(new SquadCard(Rarity.Rare, "Драгуны", "", 3, 2, 2, skills));
+            }
+            for (int i = 0; i < 2; i++)
+            {
+                skills = new Skills();
+                skills.inspiration = 1;
+                cards[player].Add(new SquadCard(Rarity.Rare, "Офицер", "", 2, 2, 2, skills));
+            }
+            skills = new Skills();
+            skills.armorPiercing = true;
+            skills.armor = 1;
+            skills.massDamage = 1;
+            cards[player].Add(new SquadCard(Rarity.Epic, "Огнеметчики", "", 2, 2, 1, skills));
+            skills = new Skills();
+            skills.sapper = 2;
+            skills.armorPiercing = true;
+            cards[player].Add(new SquadCard(Rarity.Epic, "Полевые инженеры", "", 2, 3, 2, skills));
+            skills = new Skills();
+            skills.intelligenceService = 2;
+            cards[player].Add(new SquadCard(Rarity.Epic, "Скауты", "", 2, 3, 2, skills));
+            skills = new Skills();
+            skills.armor = 1;
+            skills.breakthrough = true;
+            cards[player].Add(new SquadCard(Rarity.Epic, "Уланы", "", 4, 2, 1, skills));
+            skills = new Skills();
+            skills.support = 1;
+            skills.suppression = 2;
+            cards[player].Add(new SquadCard(Rarity.Epic, "Пулеметчики", "", 0, 3, 2, skills));
+            skills = new Skills();
+            skills.medic = 2;
+            cards[player].Add(new SquadCard(Rarity.Epic, "Полевой медик", "", 2, 3, 2, skills));
+            skills = new Skills();
+            skills.armor = 1;
+            skills.breakthrough = true;
+            skills.agility = true;
+            cards[player].Add(new SquadCard(Rarity.Legendary, "Прыгуны", "", 4, 2, 2, skills));
+            skills = new Skills();
+            skills.shelling = 4;
+            skills.support = 2;
+            cards[player].Add(new SquadCard(Rarity.Legendary, "Техномаг", "", 2, 3, 2, skills));
+            skills = new Skills();
+            skills.block = 1;
+            skills.suppression = 1;
+            cards[player].Add(new SquadCard(Rarity.Legendary, "Дворфы защитники", "", 2, 4, 2, skills));
+            skills = new Skills();
+            skills.armor = 2;
+            cards[player].Add(new SquadCard(Rarity.Legendary, "Танк", "", 2, 5, 0, skills));
         }
-        Skills skills = new Skills();
+        skills = new Skills();
         skills.suppression = 1;
         freeCommandors.Add(new CommandorCard(Rarity.Rare, "Мастер защиты", "", skills, 1));
         skills = new Skills();
