@@ -118,6 +118,20 @@ public class GameController
             {
                 cards[player].Add(new FortificationCard(Rarity.Rare, "Укрепленная траншея", "", this.FortifiedTrenchCallback));
             }
+            for (int i = 0; i < 3; i++)
+            {
+                cards[player].Add(new SupportCard(Rarity.General, "Мобилизация", "", ViewAction.MOBILIZAZATION));
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                cards[player].Add(new SupportCard(Rarity.General, "Тактический ход", "", ViewAction.TACTICAL_MOVE));
+            }
+            for (int i = 0; i < 2; i++)
+            {
+                cards[player].Add(new SupportCard(Rarity.Rare, "Снайпер", "", ViewAction.SNIPER));
+            }
+            cards[player].Add(new SupportCard(Rarity.Epic, "Рейд по тылам", "", ViewAction.REAR_RAID));
+            cards[player].Add(new SupportCard(Rarity.Legendary, "Газы", "", ViewAction.GASES));
         }
         skills = new Skills();
         skills.suppression = 1;
@@ -156,11 +170,6 @@ public class GameController
         fields[player].AddToHand(cards);
     }
 
-    public void ApplySupportCard(CurrentPlayer player, SupportCard card)
-    {
-        
-    }
-
     public void ApplyFortificationCard(CurrentPlayer player, FortificationCard card, Flang flang)
     {
         attacks[player == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST].SetFortificationCard(card, flang);
@@ -169,6 +178,77 @@ public class GameController
     public void NextStep()
     {
         currentStep = (currentStep == CurrentPlayer.FIRST) ? CurrentPlayer.SECOND : CurrentPlayer.FIRST;
+    }
+
+    public HashSet<AbstractCard> GetCardsOnHand(CurrentPlayer player)
+    {
+        return this.fields[player].onHand;
+    }
+
+    public HashSet<AbstractCard> GetCardsFromDrop(CurrentPlayer player)
+    {
+        return this.fields[player].drop;
+    }
+
+    public void HitSquad(SquadCard card, Skills skills)
+    {
+        card.stamina -= (int)skills.shelling;
+    }
+
+    public void DropFortification(CurrentPlayer player, Flang flang)
+    {
+        fields[player].DropCard(attacks[player].GetFortificationCard(flang));
+        attacks[player].SetFortificationCard(null, flang);
+    }
+
+    public void DropCardFromHand(CurrentPlayer player, AbstractCard card)
+    {
+        fields[player].DropCard(card);
+    }
+
+    public void AddCardsToFlang(CurrentPlayer player, HashSet<SquadCard> cards, Flang flang)
+    {
+        fields[player].flangs[flang].UnionWith(cards);
+    }
+
+    public HashSet<AbstractCard> GetActiveCardsFromFlang(CurrentPlayer player, Flang flang)
+    {
+        HashSet<AbstractCard> cards = new HashSet<AbstractCard>();
+        foreach(AbstractCard card in fields[player].flangs[flang])
+        {
+            if (card.active)
+            {
+                cards.Add(card);
+            }
+        }
+        return cards;
+    }
+
+    public void RefreshSquads()
+    {
+        foreach (CurrentPlayer player in Enum.GetValues(typeof(CurrentPlayer))) {
+            foreach (Flang flang in Enum.GetValues(typeof(Flang))) {
+                foreach (AbstractCard card in fields[player].flangs[flang])
+                {
+                    card.active = true;
+                }
+            }
+        }
+    }
+
+    public void SetAttackers(CurrentPlayer player, List<SquadCard> cards, Flang flang)
+    {
+        attacks[player].AddAttackers(cards, flang);
+    }
+
+    public void SetDeffenders(CurrentPlayer player, List<SquadCard> cards, Flang flang)
+    {
+        attacks[player == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST].AddDeffenders(cards, flang);
+    }
+
+    public void Attack(CurrentPlayer player)
+    {
+        fields[player].Attack(attacks[player].getHeadquartesHurt());
     }
     
 }

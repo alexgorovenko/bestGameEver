@@ -26,14 +26,19 @@ public class Attack
         deffenderFortification[flang] = card;
     }
 
-    public void AddAttacker(SquadCard squad, Flang flang)
+    public FortificationCard GetFortificationCard(Flang flang)
     {
-        attacker[flang].Add(squad);
+        return deffenderFortification[flang];
     }
 
-    public void AddDeffender(SquadCard squad, Flang flang)
+    public void AddAttackers(List<SquadCard> squad, Flang flang)
     {
-        deffender[flang].Add(squad);
+        attacker[flang] = squad;
+    }
+
+    public void AddDeffenders(List<SquadCard> squad, Flang flang)
+    {
+        deffender[flang] = squad;
     }
 
     public void ApplySkillsAttacker(Skills skills)
@@ -123,7 +128,7 @@ public class Attack
             applySkills(this.deffenderSkills, false, false, flang);
             if (this.deffenderFortification.ContainsKey(flang))
             {
-                this.deffenderFortification[flang].skill(this.attackerSkills, this.deffenderSkills, this.attacker[flang], this.deffender[flang]);
+                this.deffenderFortification[flang].skill(this.attacker[flang], this.deffender[flang]);
             }
 
             uint remainInspiration = 1;
@@ -186,6 +191,17 @@ public class Attack
                 else
                 {
                     totalHurt += attacker[flang][i].attack;
+                }
+            }
+            foreach (SquadCard card in this.attacker[flang])
+            {
+                card.active = false;
+            }
+            foreach (SquadCard card in this.deffender[flang])
+            {
+                if (card != null)
+                {
+                    card.active = false;
                 }
             }
         }

@@ -2,11 +2,13 @@
 
 public class Field
 {
-    public uint headquartesStrength { get; }
+    public uint headquartesStrength { get; set; }
     private CommandorCard commandorLeft;
     private CommandorCard commandorRight;
-    private HashSet<AbstractCard> onHand { get; }
-    private HashSet<AbstractCard> drop { get; }
+    public Dictionary<Flang, HashSet<SquadCard>> flangs { get; }
+    public HashSet<AbstractCard> onHand { get; }
+    public HashSet<AbstractCard> drop { get; }
+
 
     public Field()
     {
@@ -53,5 +55,10 @@ public class Field
         {
             commandorRight = commandor;
         }
+    }
+
+    public void Attack(uint points)
+    {
+        this.headquartesStrength -= points;
     }
 }
