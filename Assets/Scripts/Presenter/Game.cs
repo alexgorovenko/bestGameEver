@@ -9,7 +9,23 @@ public class GameController
     private Dictionary<CurrentPlayer, List<AbstractCard>> cards;
     private Dictionary<CurrentPlayer, Attack> attacks;
     private Dictionary<CurrentPlayer, Field> fields;
+    private CurrentPlayer currentStep;
     public HashSet<CommandorCard> freeCommandors { get; }
+
+    private void BarbWireCallback(List<SquadCard> attacker, List<SquadCard> deffender)
+    {
+        int count = attacker.Count;
+        attacker[(int)Math.Round(UnityEngine.Random.value * count)].protection--;
+        attacker[(int)Math.Round(UnityEngine.Random.value * count)].protection--;
+    }
+
+    private void FortifiedTrenchCallback(List<SquadCard> attacker, List<SquadCard> deffender)
+    {
+        foreach(SquadCard deff in deffender)
+        {
+            deff.skills.armor++;
+        }
+    }
 
     public GameController(AbstractController player1, AbstractController player2)
     {
@@ -94,6 +110,14 @@ public class GameController
             skills = new Skills();
             skills.armor = 2;
             cards[player].Add(new SquadCard(Rarity.Legendary, "Танк", "", 2, 5, 0, skills));
+            for (int i = 0; i < 2; i++)
+            {
+                cards[player].Add(new FortificationCard(Rarity.General, "Колючая проволока", "", this.BarbWireCallback));
+            }
+            for (int i = 0; i < 2; i++)
+            {
+                cards[player].Add(new FortificationCard(Rarity.Rare, "Укрепленная траншея", "", this.FortifiedTrenchCallback));
+            }
         }
         skills = new Skills();
         skills.suppression = 1;
@@ -107,6 +131,7 @@ public class GameController
         skills = new Skills();
         skills.inspiration = 1;
         freeCommandors.Add(new CommandorCard(Rarity.Legendary, "Ветеран", "", skills, 1));
+        currentStep = UnityEngine.Random.value > 0.5f ? CurrentPlayer.FIRST : CurrentPlayer.SECOND;
     }
 
     public void SetCommandor(CurrentPlayer player, CommandorCard commandor)
@@ -121,9 +146,29 @@ public class GameController
         return cards;
     }
 
+    public CurrentPlayer GetCurrentStep()
+    {
+        return currentStep;
+    }
+
     public void AddCardsToHand(CurrentPlayer player, List<AbstractCard> cards)
     {
         fields[player].AddToHand(cards);
+    }
+
+    public void ApplySupportCard(CurrentPlayer player, SupportCard card)
+    {
+        
+    }
+
+    public void ApplyFortificationCard(CurrentPlayer player, FortificationCard card, Flang flang)
+    {
+        attacks[player == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST].SetFortificationCard(card, flang);
+    }
+
+    public void NextStep()
+    {
+        currentStep = (currentStep == CurrentPlayer.FIRST) ? CurrentPlayer.SECOND : CurrentPlayer.FIRST;
     }
     
 }

@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Model\Attack.cs" />
     <Compile Include="Assets\Scripts\Model\Callback.cs" />
+    <Compile Include="Assets\Scripts\Model\CallbackFortification.cs" />
     <Compile Include="Assets\Scripts\Model\Cards\AbstractCard.cs" />
     <Compile Include="Assets\Scripts\Model\Cards\CommandorCard.cs" />
     <Compile Include="Assets\Scripts\Model\Cards\FortificationCard.cs" />

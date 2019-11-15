@@ -5,6 +5,7 @@ public class Attack
 {
     private Dictionary<Flang, List<SquadCard>> attacker;
     private Dictionary<Flang, List<SquadCard>> deffender;
+    private Dictionary<Flang, FortificationCard> deffenderFortification;
     private Skills attackerSkills;
     private Skills deffenderSkills;
     private uint[] attack;
@@ -18,6 +19,11 @@ public class Attack
             attacker[flang] = new List<SquadCard>();
             deffender[flang] = new List<SquadCard>();
         }
+    }
+
+    public void SetFortificationCard(FortificationCard card, Flang flang)
+    {
+        deffenderFortification[flang] = card;
     }
 
     public void AddAttacker(SquadCard squad, Flang flang)
@@ -115,6 +121,10 @@ public class Attack
         {
             applySkills(this.attackerSkills, true, false, flang);
             applySkills(this.deffenderSkills, false, false, flang);
+            if (this.deffenderFortification.ContainsKey(flang))
+            {
+                this.deffenderFortification[flang].skill(this.attackerSkills, this.deffenderSkills, this.attacker[flang], this.deffender[flang]);
+            }
 
             uint remainInspiration = 1;
             uint massDamageAttacker = 0;
