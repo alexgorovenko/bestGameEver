@@ -3,9 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameController
+public class Game
 {
-    private Dictionary<CurrentPlayer, AbstractController> players;
     private Dictionary<CurrentPlayer, List<AbstractCard>> cards;
     private Dictionary<CurrentPlayer, Attack> attacks;
     private Dictionary<CurrentPlayer, Field> fields;
@@ -27,11 +26,9 @@ public class GameController
         }
     }
 
-    public GameController(AbstractController player1, AbstractController player2)
+    public Game()
     {
         Skills skills;
-        players[CurrentPlayer.FIRST] = player1;
-        players[CurrentPlayer.SECOND] = player2;
         foreach (CurrentPlayer player in Enum.GetValues(typeof(CurrentPlayer)))
         {
             attacks[player] = new Attack();
