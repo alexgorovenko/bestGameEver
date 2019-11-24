@@ -10,11 +10,8 @@ public class FlangView : MonoBehaviour
 
   void Start()
   {
-    // player1 = GameObject.Find("player1").GetComponent<AbstractController>();
-    // player2 = GameObject.Find("player2").GetComponent<AbstractController>();
-    // GameController gameController = new GameController(player1, player2);
-    // FlangView fv = new FlangView();
-    // Debug.Log(fv.gameController.freeCommandors);
+    Game game = new Game();
+    Debug.Log(game.freeCommandors);
   }
 
   void Update()
