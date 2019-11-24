@@ -13,6 +13,7 @@ public class Field
     public Field()
     {
         this.headquartesStrength = 30;
+        this.flangs = new Dictionary<Flang, HashSet<SquadCard>>();
         this.onHand = new HashSet<AbstractCard>();
         this.drop = new HashSet<AbstractCard>();
     }

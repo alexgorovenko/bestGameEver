@@ -8,12 +8,12 @@ public class Attack
     private Dictionary<Flang, FortificationCard> deffenderFortification;
     private Skills attackerSkills;
     private Skills deffenderSkills;
-    private uint[] attack;
-    private uint[] protection;
-    private uint[] stamina;
 
     public Attack()
     {
+        this.attacker = new Dictionary<Flang, List<SquadCard>>();
+        this.deffender = new Dictionary<Flang, List<SquadCard>>();
+        this.deffenderFortification = new Dictionary<Flang, FortificationCard>();
         foreach (Flang flang in Enum.GetValues(typeof(Flang)))
         {
             attacker[flang] = new List<SquadCard>();
