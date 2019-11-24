@@ -58,7 +58,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Model\Attack.cs" />
-    <Compile Include="Assets\Scripts\Model\Callback.cs" />
     <Compile Include="Assets\Scripts\Model\CallbackFortification.cs" />
     <Compile Include="Assets\Scripts\Model\Cards\AbstractCard.cs" />
     <Compile Include="Assets\Scripts\Model\Cards\CommandorCard.cs" />
@@ -74,6 +73,7 @@
     <Compile Include="Assets\Scripts\Presenter\Controllers\PlayerController.cs" />
     <Compile Include="Assets\Scripts\Presenter\CurrentPlayer.cs" />
     <Compile Include="Assets\Scripts\Presenter\Game.cs" />
+    <Compile Include="Assets\Scripts\Presenter\ViewAction.cs" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>C:/Users/Gyt/Best Game Ever/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>
