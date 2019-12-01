@@ -171,9 +171,9 @@ public class Game
         fields[player].AddToHand(cards);
     }
 
-    public void ApplyFortificationCard(CurrentPlayer player, FortificationCard card, Flang flang)
+    public void ApplyFortificationCard(CurrentPlayer player, FortificationCard card, Flang flank)
     {
-        attacks[player == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST].SetFortificationCard(card, flang);
+        attacks[player == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST].SetFortificationCard(card, flank);
     }
 
     public void NextStep()
@@ -251,5 +251,5 @@ public class Game
     {
         fields[player].Attack(attacks[player].getHeadquartesHurt());
     }
-    
+
 }
