@@ -156,8 +156,13 @@ public class Game
 
     public List<AbstractCard> GetSeveralCards(CurrentPlayer player, int numberOfCards)
     {
-        List<AbstractCard> cards = this.cards[player].GetRange(0, numberOfCards);
-        this.cards[player].RemoveRange(0, numberOfCards);
+        List<AbstractCard> cards = new List<AbstractCard>(numberOfCards);
+        for (uint i = 0; i < numberOfCards; i++)
+        {
+            int index = UnityEngine.Random.Range(0, this.cards[player].Count);
+            cards.Add(this.cards[player][index]);
+            this.cards[player].RemoveAt(index);
+        }
         return cards;
     }
 
@@ -171,9 +176,9 @@ public class Game
         fields[player].AddToHand(cards);
     }
 
-    public void ApplyFortificationCard(CurrentPlayer player, FortificationCard card, Flang flank)
+    public void ApplyFortificationCard(CurrentPlayer player, FortificationCard card, Flang flang)
     {
-        attacks[player == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST].SetFortificationCard(card, flank);
+        attacks[player == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST].SetFortificationCard(card, flang);
     }
 
     public void NextStep()
@@ -251,5 +256,5 @@ public class Game
     {
         fields[player].Attack(attacks[player].getHeadquartesHurt());
     }
-
+    
 }
