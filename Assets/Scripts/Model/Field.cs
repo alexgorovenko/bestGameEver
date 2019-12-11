@@ -67,8 +67,4 @@ public class Field
     this.headquartesStrength -= points;
   }
 
-  public uint GetCardsCount(Flank flank)
-  {
-    return this.flanks[flank].Count;
-  }
 }
