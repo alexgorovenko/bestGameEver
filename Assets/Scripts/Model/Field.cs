@@ -5,7 +5,7 @@ public class Field
     public uint headquartesStrength { get; set; }
     private CommandorCard commandorLeft;
     private CommandorCard commandorRight;
-    public Dictionary<Flang, HashSet<SquadCard>> flangs { get; }
+    public Dictionary<Flank, HashSet<SquadCard>> flanks { get; }
     public HashSet<AbstractCard> onHand { get; }
     public HashSet<AbstractCard> drop { get; }
 
@@ -13,7 +13,7 @@ public class Field
     public Field()
     {
         this.headquartesStrength = 30;
-        this.flangs = new Dictionary<Flang, HashSet<SquadCard>>();
+        this.flanks = new Dictionary<Flank, HashSet<SquadCard>>();
         this.onHand = new HashSet<AbstractCard>();
         this.drop = new HashSet<AbstractCard>();
     }

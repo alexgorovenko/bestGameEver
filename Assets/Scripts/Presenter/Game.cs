@@ -176,9 +176,9 @@ public class Game
         fields[player].AddToHand(cards);
     }
 
-    public void ApplyFortificationCard(CurrentPlayer player, FortificationCard card, Flang flang)
+    public void ApplyFortificationCard(CurrentPlayer player, FortificationCard card, Flank flank)
     {
-        attacks[player == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST].SetFortificationCard(card, flang);
+        attacks[player == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST].SetFortificationCard(card, flank);
     }
 
     public void NextStep()
@@ -201,10 +201,10 @@ public class Game
         card.stamina -= (int)skills.shelling;
     }
 
-    public void DropFortification(CurrentPlayer player, Flang flang)
+    public void DropFortification(CurrentPlayer player, Flank flank)
     {
-        fields[player].DropCard(attacks[player].GetFortificationCard(flang));
-        attacks[player].SetFortificationCard(null, flang);
+        fields[player].DropCard(attacks[player].GetFortificationCard(flank));
+        attacks[player].SetFortificationCard(null, flank);
     }
 
     public void DropCardFromHand(CurrentPlayer player, AbstractCard card)
@@ -212,15 +212,15 @@ public class Game
         fields[player].DropCard(card);
     }
 
-    public void AddCardsToFlang(CurrentPlayer player, HashSet<SquadCard> cards, Flang flang)
+    public void AddCardsToFlank(CurrentPlayer player, HashSet<SquadCard> cards, Flank flank)
     {
-        fields[player].flangs[flang].UnionWith(cards);
+        fields[player].flanks[flank].UnionWith(cards);
     }
 
-    public HashSet<AbstractCard> GetActiveCardsFromFlang(CurrentPlayer player, Flang flang)
+    public HashSet<AbstractCard> GetActiveCardsFromFlank(CurrentPlayer player, Flank flank)
     {
         HashSet<AbstractCard> cards = new HashSet<AbstractCard>();
-        foreach(AbstractCard card in fields[player].flangs[flang])
+        foreach(AbstractCard card in fields[player].flanks[flank])
         {
             if (card.active)
             {
@@ -233,8 +233,8 @@ public class Game
     public void RefreshSquads()
     {
         foreach (CurrentPlayer player in Enum.GetValues(typeof(CurrentPlayer))) {
-            foreach (Flang flang in Enum.GetValues(typeof(Flang))) {
-                foreach (AbstractCard card in fields[player].flangs[flang])
+            foreach (Flank flank in Enum.GetValues(typeof(Flank))) {
+                foreach (AbstractCard card in fields[player].flanks[flank])
                 {
                     card.active = true;
                 }
@@ -242,14 +242,14 @@ public class Game
         }
     }
 
-    public void SetAttackers(CurrentPlayer player, List<SquadCard> cards, Flang flang)
+    public void SetAttackers(CurrentPlayer player, List<SquadCard> cards, Flank flank)
     {
-        attacks[player].AddAttackers(cards, flang);
+        attacks[player].AddAttackers(cards, flank);
     }
 
-    public void SetDeffenders(CurrentPlayer player, List<SquadCard> cards, Flang flang)
+    public void SetDeffenders(CurrentPlayer player, List<SquadCard> cards, Flank flank)
     {
-        attacks[player == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST].AddDeffenders(cards, flang);
+        attacks[player == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST].AddDeffenders(cards, flank);
     }
 
     public void Attack(CurrentPlayer player)

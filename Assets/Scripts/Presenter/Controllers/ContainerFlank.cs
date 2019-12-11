@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class ContainerFlank : AbstractContainer
 {
-  public Flang flank;
+  public Flank flank;
   private List<ICardContainerItem> mCards = new List<ICardContainerItem>();
   public event EventHandler<CardContainerEventArgs> CardAdded;
   public override void addCard(ICardContainerItem item)
