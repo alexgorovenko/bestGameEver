@@ -1,8 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 using TMPro;
-public class CardView : MonoBehaviour, IPointerClickHandler
+public class CardView : MonoBehaviour
 {
   [SerializeField] protected GameObject player;
   protected TextMeshProUGUI _fieldName;
@@ -16,12 +15,11 @@ public class CardView : MonoBehaviour, IPointerClickHandler
     _fieldName.SetText(card.name);
   }
 
-
-  public void OnPointerClick(PointerEventData eventData)
+  public void OnPointerClick()
   {
     // Debug.Log(card.GetType());
     PlayerController script = player.GetComponent<PlayerController>();
-    if (eventData.clickCount == 2)
+    if (2 == 2)
     {
       switch (card)
       {
