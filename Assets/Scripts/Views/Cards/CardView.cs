@@ -21,15 +21,17 @@ public class CardView : MonoBehaviour
       case SquadCard s:
         // play squad card to flank
         // script.PlaySquad(s);
+        Debug.Log("Played SquadCard");
         break;
       case FortificationCard f:
-        // play squad card to flank
+        // script.ApplyFortificationCard(f);
         break;
       case SupportCard s:
         // play support card
         break;
       case CommandorCard c:
         // if commandor has skill play it
+        Debug.Log("Played CommandorCard");
         break;
       default:
         break;

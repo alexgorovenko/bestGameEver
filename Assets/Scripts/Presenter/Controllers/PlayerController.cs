@@ -5,15 +5,25 @@ using UnityEngine.UI;
 
 public class PlayerController : AbstractController
 {
-  [SerializeField] GameObject cardContainer;
   [SerializeField] GameObject cardCommandor;
   [SerializeField] GameObject cardUniversal;
+  [SerializeField] GameObject commandorsOV;
   [SerializeField] GameObject chooseCommandors;
   [SerializeField] List<GameObject> commandorFields;
+  [SerializeField] GameObject flanks;
   [SerializeField] GameObject hand1;
   [SerializeField] GameObject hand2;
   Dictionary<CurrentPlayer, GameObject> hands;
   private uint commandorsChosen = 0;
+  private int selectedSquad = -1;
+  private uint playedSquadCards = 0;
+  private uint playedSupportCards = 0;
+  private uint playedFortificationCards = 0;
+  public GameObject currentDraggableCard;
+  public Hand hand;
+
+  public Flank leftFlank;
+  public Flank rightFlank;
 
   // Start is called before the first frame update
   void Start()
@@ -27,28 +37,26 @@ public class PlayerController : AbstractController
 
   public void StartGame()
   {
+    // add 4 cards to player 1
     game.AddCardsToHand(game.GetCurrentStep(), game.GetSeveralCards(game.GetCurrentStep(), 4));
 
     // render cards
     foreach (AbstractCard card in game.GetCardsOnHand(game.GetCurrentStep()))
     {
-      GameObject _cardContainer = Instantiate(cardContainer);
       GameObject _card = Instantiate(cardUniversal);
-      _cardContainer.transform.SetParent(hands[game.GetCurrentStep()].transform);
-      _card.transform.SetParent(_cardContainer.transform);
+      _card.transform.SetParent(hands[game.GetCurrentStep()].transform);
       _card.GetComponent<CardView>().SetCard(card);
     }
     // muligan?
-    game.NextStep();
+    Next();
+    // add 6 cards to player 2
     game.AddCardsToHand(game.GetCurrentStep(), game.GetSeveralCards(game.GetCurrentStep(), 6));
     // muligan?
     // render cards
     foreach (AbstractCard card in game.GetCardsOnHand(game.GetCurrentStep()))
     {
-      GameObject _cardContainer = Instantiate(cardContainer);
       GameObject _card = Instantiate(cardUniversal);
-      _cardContainer.transform.SetParent(hands[game.GetCurrentStep()].transform);
-      _card.transform.SetParent(_cardContainer.transform);
+      _card.transform.SetParent(hands[game.GetCurrentStep()].transform);
       _card.GetComponent<CardView>().SetCard(card);
     }
     // play cards
@@ -58,6 +66,14 @@ public class PlayerController : AbstractController
     // defend
     // refresh
     // next step
+  }
+
+  public void Next()
+  {
+    playedSquadCards = 0;
+    playedSupportCards = 0;
+    playedFortificationCards = 0;
+    game.NextStep();
   }
 
   public void PlaySquadCard(SquadCard squad)
@@ -77,19 +93,15 @@ public class PlayerController : AbstractController
     // render commandors
     foreach (CommandorCard commandor in game.freeCommandors)
     {
-      GameObject _cardContainer = Instantiate(cardContainer);
       GameObject _cardCommandor = Instantiate(cardCommandor);
-      _cardContainer.transform.SetParent(chooseCommandors.transform);
-      _cardCommandor.transform.SetParent(_cardContainer.transform);
+      _cardCommandor.transform.SetParent(chooseCommandors.transform);
       _cardCommandor.GetComponent<CardCommandorView>().SetCard(commandor);
     }
   }
-
   public void HideCommandorsChooseMenu()
   {
-    Destroy(chooseCommandors);
+    Destroy(commandorsOV);
   }
-
   public void SetCommandor(Transform transform, CommandorCard commandor)
   {
     Debug.Log($"{commandor.name} is set");
@@ -98,12 +110,27 @@ public class PlayerController : AbstractController
     commandorsChosen++;
     if (commandorsChosen != 2)
     {
-      game.NextStep();
+      Next();
     }
     if (commandorsChosen == 4)
     {
       StartGame();
       HideCommandorsChooseMenu();
     }
+  }
+
+  public void PlaceCardToFlank(GameObject card, GameObject flank)
+  {
+    if (playedSquadCards < 2)
+    {
+      card.transform.SetParent(flank.transform);
+      playedSquadCards++;
+    }
+  }
+
+  public void SelectSquad()
+  {
+    Debug.Log("Select squad rendered");
+    flanks.GetComponent<Image>().enabled = true;
   }
 }

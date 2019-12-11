@@ -55,6 +55,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\CardDragHandler.cs" />
+     <Compile Include="Assets\Scripts\CardDropHandler.cs" />
      <Compile Include="Assets\Scripts\Model\Attack.cs" />
      <Compile Include="Assets\Scripts\Model\Callback.cs" />
      <Compile Include="Assets\Scripts\Model\CallbackFortification.cs" />
@@ -69,10 +71,13 @@
      <Compile Include="Assets\Scripts\Model\Skills.cs" />
      <Compile Include="Assets\Scripts\Presenter\Controllers\AbstractController.cs" />
      <Compile Include="Assets\Scripts\Presenter\Controllers\ComputerController.cs" />
+     <Compile Include="Assets\Scripts\Presenter\Controllers\Flank.cs" />
+     <Compile Include="Assets\Scripts\Presenter\Controllers\Hand.cs" />
      <Compile Include="Assets\Scripts\Presenter\Controllers\PlayerController.cs" />
      <Compile Include="Assets\Scripts\Presenter\Controllers\TestController.cs" />
      <Compile Include="Assets\Scripts\Presenter\CurrentPlayer.cs" />
      <Compile Include="Assets\Scripts\Presenter\Game.cs" />
+     <Compile Include="Assets\Scripts\Presenter\Interfaces\CardContainerItem.cs" />
      <Compile Include="Assets\Scripts\Presenter\ViewAction.cs" />
      <Compile Include="Assets\Scripts\SettingsMenu.cs" />
      <Compile Include="Assets\Scripts\Views\Cards\CardCommandorView.cs" />
@@ -158,6 +163,9 @@
  </Reference>
  <Reference Include="UnityEditor.UI">
  <HintPath>C:/Users/inkshir/Develop/game/BGE/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
+ </Reference>
+ <Reference Include="Unity.2D.Sprite.Editor">
+ <HintPath>C:/Users/inkshir/Develop/game/BGE/Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.AIModule">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.0f1/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
