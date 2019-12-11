@@ -165,4 +165,15 @@ public class PlayerController : AbstractController
     }
     // => drag one => two to drop
   }
+<<<<<<< HEAD
+=======
+  
+  public void SupportSniper()
+  {
+    SquadCard card = null; //TODO get card
+    Skills skills = new Skills();
+    skills.shelling = 3;
+    game.HitSquad(card, skills);
+  }
+>>>>>>> 2301fd0f57b24214e836632cd34db2da93768d95
 }
