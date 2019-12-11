@@ -66,4 +66,5 @@ public class Field
   {
     this.headquartesStrength -= points;
   }
+
 }

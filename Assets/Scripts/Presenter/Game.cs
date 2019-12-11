@@ -263,4 +263,9 @@ public class Game
     fields[player].Attack(attacks[player].getHeadquartesHurt());
   }
 
+  public int GetCardsCount(CurrentPlayer player, Flank flank)
+  {
+    return fields[player].flanks[flank].Count;
+  }
+
 }
