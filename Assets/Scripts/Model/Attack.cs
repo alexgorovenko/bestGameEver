@@ -3,42 +3,42 @@ using System.Collections.Generic;
 
 public class Attack
 {
-    private Dictionary<Flang, List<SquadCard>> attacker;
-    private Dictionary<Flang, List<SquadCard>> deffender;
-    private Dictionary<Flang, FortificationCard> deffenderFortification;
+    private Dictionary<Flank, List<SquadCard>> attacker;
+    private Dictionary<Flank, List<SquadCard>> deffender;
+    private Dictionary<Flank, FortificationCard> deffenderFortification;
     private Skills attackerSkills;
     private Skills deffenderSkills;
 
     public Attack()
     {
-        this.attacker = new Dictionary<Flang, List<SquadCard>>();
-        this.deffender = new Dictionary<Flang, List<SquadCard>>();
-        this.deffenderFortification = new Dictionary<Flang, FortificationCard>();
-        foreach (Flang flang in Enum.GetValues(typeof(Flang)))
+        this.attacker = new Dictionary<Flank, List<SquadCard>>();
+        this.deffender = new Dictionary<Flank, List<SquadCard>>();
+        this.deffenderFortification = new Dictionary<Flank, FortificationCard>();
+        foreach (Flank flank in Enum.GetValues(typeof(Flank)))
         {
-            attacker[flang] = new List<SquadCard>();
-            deffender[flang] = new List<SquadCard>();
+            attacker[flank] = new List<SquadCard>();
+            deffender[flank] = new List<SquadCard>();
         }
     }
 
-    public void SetFortificationCard(FortificationCard card, Flang flang)
+    public void SetFortificationCard(FortificationCard card, Flank flank)
     {
-        deffenderFortification[flang] = card;
+        deffenderFortification[flank] = card;
     }
 
-    public FortificationCard GetFortificationCard(Flang flang)
+    public FortificationCard GetFortificationCard(Flank flank)
     {
-        return deffenderFortification[flang];
+        return deffenderFortification[flank];
     }
 
-    public void AddAttackers(List<SquadCard> squad, Flang flang)
+    public void AddAttackers(List<SquadCard> squad, Flank flank)
     {
-        attacker[flang] = squad;
+        attacker[flank] = squad;
     }
 
-    public void AddDeffenders(List<SquadCard> squad, Flang flang)
+    public void AddDeffenders(List<SquadCard> squad, Flank flank)
     {
-        deffender[flang] = squad;
+        deffender[flank] = squad;
     }
 
     public void ApplySkillsAttacker(Skills skills)
@@ -51,9 +51,9 @@ public class Attack
         this.deffenderSkills = skills;
     }
 
-    public void hitToAttacker(uint hp, Flang flang, SquadCard card)
+    public void hitToAttacker(uint hp, Flank flank, SquadCard card)
     {
-        foreach (SquadCard _card in attacker[flang])
+        foreach (SquadCard _card in attacker[flank])
         {
             if (card == _card)
             {
@@ -62,9 +62,9 @@ public class Attack
         }
     }
 
-    public void hitToDeffender(uint hp, Flang flang, SquadCard card)
+    public void hitToDeffender(uint hp, Flank flank, SquadCard card)
     {
-        foreach (SquadCard _card in deffender[flang])
+        foreach (SquadCard _card in deffender[flank])
         {
             if (card == _card)
             {
@@ -73,16 +73,16 @@ public class Attack
         }
     }
 
-    private void applySkills(Skills skills, bool isAttacker, bool inspirated, Flang flang)
+    private void applySkills(Skills skills, bool isAttacker, bool inspirated, Flank flank)
     {
         if (isAttacker)
         {
-            foreach (SquadCard card in deffender[flang])
+            foreach (SquadCard card in deffender[flank])
             {
                 if (card != null) card.protection = Math.Min(1, card.protection - attackerSkills.support);
             }
             
-            foreach (SquadCard card in attacker[flang])
+            foreach (SquadCard card in attacker[flank])
             {
                 if (inspirated && card.skills != skills)
                 {
@@ -98,12 +98,12 @@ public class Attack
         }
         else
         {
-            foreach (SquadCard card in attacker[flang])
+            foreach (SquadCard card in attacker[flank])
             {
                 if (card != null) card.attack = Math.Min(1, card.attack - deffenderSkills.suppression);
             }
             
-            foreach (SquadCard card in attacker[flang])
+            foreach (SquadCard card in attacker[flank])
             {
                 if (inspirated && card.skills != skills)
                 {
@@ -122,18 +122,18 @@ public class Attack
     public uint getHeadquartesHurt()
     {
         uint totalHurt = 0;
-        foreach (Flang flang in Enum.GetValues(typeof(Flang)))
+        foreach (Flank flank in Enum.GetValues(typeof(Flank)))
         {
-            applySkills(this.attackerSkills, true, false, flang);
-            applySkills(this.deffenderSkills, false, false, flang);
-            if (this.deffenderFortification.ContainsKey(flang))
+            applySkills(this.attackerSkills, true, false, flank);
+            applySkills(this.deffenderSkills, false, false, flank);
+            if (this.deffenderFortification.ContainsKey(flank))
             {
-                this.deffenderFortification[flang].skill(this.attacker[flang], this.deffender[flang]);
+                this.deffenderFortification[flank].skill(this.attacker[flank], this.deffender[flank]);
             }
 
             uint remainInspiration = 1;
             uint massDamageAttacker = 0;
-            foreach (SquadCard card in attacker[flang])
+            foreach (SquadCard card in attacker[flank])
             {
                 if (card.skills.inspiration > 0)
                 {
@@ -143,14 +143,14 @@ public class Attack
                 massDamageAttacker += card.skills.massDamage;
             }
 
-            foreach (SquadCard card in attacker[flang])
+            foreach (SquadCard card in attacker[flank])
             {
-                applySkills(card.skills, true, remainInspiration < 0, flang);
+                applySkills(card.skills, true, remainInspiration < 0, flank);
             }
 
             remainInspiration = 1;
             uint massDamageDefender = 0;
-            foreach (SquadCard card in deffender[flang])
+            foreach (SquadCard card in deffender[flank])
             {
                 if (card.skills.inspiration > 0)
                 {
@@ -160,44 +160,44 @@ public class Attack
                 massDamageDefender += card.skills.massDamage;
             }
 
-            foreach (SquadCard card in deffender[flang])
+            foreach (SquadCard card in deffender[flank])
             {
-                applySkills(card.skills, false, remainInspiration < 0, flang);
+                applySkills(card.skills, false, remainInspiration < 0, flank);
             }
 
-            for (int i = 0; i < attacker[flang].Count; i++)
+            for (int i = 0; i < attacker[flank].Count; i++)
             {
-                if (deffender[flang][i] != null)
+                if (deffender[flank][i] != null)
                 {
-                    attacker[flang][i].stamina -= (int)deffender[flang][i].protection;
-                    if (!deffender[flang][i].skills.armorPiercing)
+                    attacker[flank][i].stamina -= (int)deffender[flank][i].protection;
+                    if (!deffender[flank][i].skills.armorPiercing)
                     {
-                        attacker[flang][i].stamina += (int)Math.Min(attacker[flang][i].skills.armor, deffender[flang][i].protection - 1);
+                        attacker[flank][i].stamina += (int)Math.Min(attacker[flank][i].skills.armor, deffender[flank][i].protection - 1);
                     }
 
-                    attacker[flang][i].stamina -= (int)massDamageDefender;
-                    deffender[flang][i].stamina -= (int)attacker[flang][i].attack;
-                    if (!attacker[flang][i].skills.armorPiercing)
+                    attacker[flank][i].stamina -= (int)massDamageDefender;
+                    deffender[flank][i].stamina -= (int)attacker[flank][i].attack;
+                    if (!attacker[flank][i].skills.armorPiercing)
                     {
-                        deffender[flang][i].stamina += (int)Math.Min(deffender[flang][i].skills.armor, attacker[flang][i].protection - 1);
+                        deffender[flank][i].stamina += (int)Math.Min(deffender[flank][i].skills.armor, attacker[flank][i].protection - 1);
                     }
 
-                    deffender[flang][i].stamina -= (int)massDamageAttacker;
-                    if (deffender[flang][i].stamina < 0 && attacker[flang][i].skills.breakthrough)
+                    deffender[flank][i].stamina -= (int)massDamageAttacker;
+                    if (deffender[flank][i].stamina < 0 && attacker[flank][i].skills.breakthrough)
                     {
-                        totalHurt += (uint)-deffender[flang][i].stamina;
+                        totalHurt += (uint)-deffender[flank][i].stamina;
                     }
                 }
                 else
                 {
-                    totalHurt += attacker[flang][i].attack;
+                    totalHurt += attacker[flank][i].attack;
                 }
             }
-            foreach (SquadCard card in this.attacker[flang])
+            foreach (SquadCard card in this.attacker[flank])
             {
                 card.active = false;
             }
-            foreach (SquadCard card in this.deffender[flang])
+            foreach (SquadCard card in this.deffender[flank])
             {
                 if (card != null)
                 {

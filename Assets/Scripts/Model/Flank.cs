@@ -1,4 +1,4 @@
-﻿public enum Flang
+﻿public enum Flank
 {
     Left,
     Right
