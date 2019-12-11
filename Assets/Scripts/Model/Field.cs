@@ -16,6 +16,10 @@ public class Field
         this.flanks = new Dictionary<Flank, HashSet<SquadCard>>();
         this.onHand = new HashSet<AbstractCard>();
         this.drop = new HashSet<AbstractCard>();
+        foreach (Flank flank in Enum.GetValues(typeof(Flank)))
+        {
+            flanks[flank] = new HashSet<SquadCard>();
+        }
     }
 
     public void AddToHand(List<AbstractCard> cards)
