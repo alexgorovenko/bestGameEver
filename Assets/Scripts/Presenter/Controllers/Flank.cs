@@ -4,8 +4,9 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
-public class Flank : MonoBehaviour
+public class Flank : AbstractContainer
 {
+  public Flang flank;
   private List<ICardContainerItem> mCards = new List<ICardContainerItem>();
   public event EventHandler<CardContainerEventArgs> CardAdded;
   public void addCard(ICardContainerItem item)

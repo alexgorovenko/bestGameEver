@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 
 using UnityEngine;
 
-public class Hand : AbstractContainer
+public class Drop : AbstractContainer
 {
   private List<ICardContainerItem> mCards = new List<ICardContainerItem>();
   public event EventHandler<CardContainerEventArgs> CardAdded;
