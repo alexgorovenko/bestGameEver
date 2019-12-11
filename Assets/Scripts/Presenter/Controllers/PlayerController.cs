@@ -160,7 +160,7 @@ public class PlayerController : AbstractController
     foreach (AbstractCard card in temporaryCards)
     {
       GameObject _card = Instantiate(cardUniversal);
-      _card.transform.SetParent(temporary.transform);
+      _card.transform.SetParent(temporary.transform.Find("CardsContainer").transform);
       _card.GetComponent<CardView>().SetCard(card);
     }
     // => drag one => two to drop
