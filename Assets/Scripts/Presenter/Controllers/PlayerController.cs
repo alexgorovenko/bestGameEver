@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class PlayerController : AbstractController
 {
+  [SerializeField] GameObject temporary;
   [SerializeField] GameObject cardCommandor;
   [SerializeField] GameObject cardUniversal;
   [SerializeField] GameObject commandorsOV;
@@ -142,8 +143,7 @@ public class PlayerController : AbstractController
         break;
     }
   }
-
-  private void SupportMobilization()
+  public void SupportMobilization()
   {
     HashSet<SquadCard> noobsLeft = new HashSet<SquadCard>();
     HashSet<SquadCard> noobsRight = new HashSet<SquadCard>();
@@ -152,5 +152,17 @@ public class PlayerController : AbstractController
 
     game.AddCardsToFlank(game.GetCurrentStep(), noobsLeft, Flank.Left);
     game.AddCardsToFlank(game.GetCurrentStep(), noobsRight, Flank.Right);
+  }
+  public void SupportTactical()
+  {
+    temporary.gameObject.SetActive(true);
+    List<AbstractCard> temporaryCards = game.GetSeveralCards(game.GetCurrentStep(), 3);
+    foreach (AbstractCard card in temporaryCards)
+    {
+      GameObject _card = Instantiate(cardUniversal);
+      _card.transform.SetParent(temporary.transform);
+      _card.GetComponent<CardView>().SetCard(card);
+    }
+    // => drag one => two to drop
   }
 }

@@ -20,7 +20,7 @@ public class CardView : MonoBehaviour, IPointerClickHandler
   public void OnPointerClick(PointerEventData eventData)
   {
     // Debug.Log(card.GetType());
-    Game game = player.GetComponent<PlayerController>().game;
+    PlayerController script = player.GetComponent<PlayerController>();
     if (eventData.clickCount == 2)
     {
       switch (card)
@@ -30,7 +30,12 @@ public class CardView : MonoBehaviour, IPointerClickHandler
         case FortificationCard f:
           break;
         case SupportCard s:
-          game.
+          switch (s.action)
+          {
+            case ViewAction.TACTICAL_MOVE:
+              script.SupportTactical();
+              break;
+          }
           break;
         case CommandorCard c:
           break;
