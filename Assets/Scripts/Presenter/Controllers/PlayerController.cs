@@ -21,8 +21,6 @@ public class PlayerController : AbstractController
   private uint playedFortificationCards = 0;
   public GameObject currentDraggableCard;
   public ContainerHand hand;
-  public ContainerFlank leftFlank;
-  public ContainerFlank rightFlank;
 
   // Start is called before the first frame update
   void Start()
@@ -118,14 +116,24 @@ public class PlayerController : AbstractController
     }
   }
 
-  public void PlaceCardToFlank(GameObject card, GameObject flank)
+  public void DropCardToFlank(GameObject card, GameObject flank)
   {
+    AbstractCard cardModel = card.GetComponent<CardView>().card;
+    Flank flankModel = flank.GetComponent<ContainerFlank>().flank;
     if (playedSquadCards < 2)
     {
-      HashSet<SquadCard> placedCards = new HashSet<SquadCard>();
-      placedCards.Add((SquadCard)card.GetComponent<CardView>().card);
-      game.AddCardsToFlank(game.GetCurrentStep(), placedCards, flank.GetComponent<ContainerFlank>().flank);
-      card.transform.SetParent(flank.transform);
+      switch (cardModel)
+      {
+        case SquadCard s:
+          HashSet<SquadCard> placedCards = new HashSet<SquadCard>();
+          placedCards.Add((SquadCard)cardModel);
+          game.AddCardsToFlank(game.GetCurrentStep(), placedCards, flankModel);
+          card.transform.SetParent(flank.transform.Find("CardsContainer").transform);
+          break;
+        case FortificationCard f:
+          game.ApplyFortificationCard(game.GetCurrentStep(), f, flankModel);
+          break;
+      }
       playedSquadCards++;
     }
   }

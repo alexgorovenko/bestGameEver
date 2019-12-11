@@ -6,8 +6,10 @@ public class CardView : MonoBehaviour
   [SerializeField] protected GameObject player;
   protected TextMeshProUGUI _fieldName;
   public AbstractCard card;
+  public bool isDraggable = true;
   public void SetCard(AbstractCard card)
   {
+    if (card.GetType() == typeof(SupportCard)) isDraggable = false;
     this.card = card;
     _fieldName = GetComponentInChildren<TextMeshProUGUI>();
     _fieldName.SetText(card.name);

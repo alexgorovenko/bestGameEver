@@ -35,9 +35,9 @@ public class Field
             if (card.GetType() == typeof(SquadCard) && ((SquadCard)card).stamina <= 0)
             {
                 DropCard(card);
-            } 
+            }
         }
-            
+
     }
 
     public void DropCard(AbstractCard card)
