@@ -20,10 +20,9 @@ public class PlayerController : AbstractController
   private uint playedSupportCards = 0;
   private uint playedFortificationCards = 0;
   public GameObject currentDraggableCard;
-  public Hand hand;
-
-  public Flank leftFlank;
-  public Flank rightFlank;
+  public ContainerHand hand;
+  public ContainerFlank leftFlank;
+  public ContainerFlank rightFlank;
 
   // Start is called before the first frame update
   void Start()
@@ -123,6 +122,9 @@ public class PlayerController : AbstractController
   {
     if (playedSquadCards < 2)
     {
+      HashSet<SquadCard> placedCards = new HashSet<SquadCard>();
+      placedCards.Add((SquadCard)card.GetComponent<CardView>().card);
+      game.AddCardsToFlank(game.GetCurrentStep(), placedCards, flank.GetComponent<ContainerFlank>().flank);
       card.transform.SetParent(flank.transform);
       playedSquadCards++;
     }

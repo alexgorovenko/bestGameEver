@@ -10,5 +10,6 @@ public class CardDropHandler : MonoBehaviour, IDropHandler
   {
     PlayerController script = player.GetComponent<PlayerController>();
     script.PlaceCardToFlank(script.currentDraggableCard, gameObject);
+    player.GetComponent<PlayerController>().currentDraggableCard = null;
   }
 }

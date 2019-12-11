@@ -3,10 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class CardDragHandler : MonoBehaviour, IDragHandler, IEndDragHandler
+public class CardDragHandler : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
   [SerializeField] GameObject player;
   public Vector3 delta;
+  private Vector3 initialPosition;
+  public void OnBeginDrag(PointerEventData eventData)
+  {
+    initialPosition = transform.position;
+  }
   public void OnDrag(PointerEventData eventData)
   {
     player.GetComponent<PlayerController>().currentDraggableCard = gameObject;
@@ -19,6 +24,6 @@ public class CardDragHandler : MonoBehaviour, IDragHandler, IEndDragHandler
   }
   public void OnEndDrag(PointerEventData eventData)
   {
-    transform.localPosition = Vector3.zero;
+    transform.position = initialPosition;
   }
 }

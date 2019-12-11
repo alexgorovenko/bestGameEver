@@ -5,7 +5,7 @@ public class CardView : MonoBehaviour
 {
   [SerializeField] protected GameObject player;
   protected TextMeshProUGUI _fieldName;
-  protected AbstractCard card;
+  public AbstractCard card;
   public void SetCard(AbstractCard card)
   {
     this.card = card;

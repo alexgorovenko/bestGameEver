@@ -4,12 +4,11 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
-public class Flank : AbstractContainer
+public class ContainerHand : AbstractContainer
 {
-  public Flang flank;
   private List<ICardContainerItem> mCards = new List<ICardContainerItem>();
   public event EventHandler<CardContainerEventArgs> CardAdded;
-  public void addCard(ICardContainerItem item)
+  public override void addCard(ICardContainerItem item)
   {
     mCards.Add(item);
     item.onAdd();
@@ -19,7 +18,7 @@ public class Flank : AbstractContainer
       CardAdded(this, new CardContainerEventArgs(item));
     }
   }
-  public void removeCard(ICardContainerItem item)
+  public override void removeCard(ICardContainerItem item)
   {
     mCards.Remove(item);
     item.onRemove();
