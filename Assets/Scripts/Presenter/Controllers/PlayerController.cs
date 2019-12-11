@@ -16,9 +16,9 @@ public class PlayerController : AbstractController
   Dictionary<CurrentPlayer, GameObject> hands;
   private uint commandorsChosen = 0;
   private int selectedSquad = -1;
-  private uint playedSquadCards = 0;
-  private uint playedSupportCards = 0;
-  private uint playedFortificationCards = 0;
+  private int playedSquadCards = 0;
+  private int playedSupportCards = 0;
+  private int playedFortificationCards = 0;
   public GameObject currentDraggableCard;
   public ContainerHand hand;
 
@@ -120,27 +120,37 @@ public class PlayerController : AbstractController
   {
     AbstractCard cardModel = card.GetComponent<CardView>().card;
     Flank flankModel = flank.GetComponent<ContainerFlank>().flank;
-    if (playedSquadCards < 2)
+    switch (cardModel)
     {
-      switch (cardModel)
-      {
-        case SquadCard s:
+      case SquadCard s:
+        if (playedSquadCards < 2)
+        {
           HashSet<SquadCard> placedCards = new HashSet<SquadCard>();
           placedCards.Add((SquadCard)cardModel);
           game.AddCardsToFlank(game.GetCurrentStep(), placedCards, flankModel);
           card.transform.SetParent(flank.transform.Find("CardsContainer").transform);
-          break;
-        case FortificationCard f:
+          playedSquadCards++;
+        }
+        break;
+      case FortificationCard f:
+        if (playedFortificationCards < 1)
+        {
           game.ApplyFortificationCard(game.GetCurrentStep(), f, flankModel);
-          break;
-      }
-      playedSquadCards++;
+          card.transform.SetParent(flank.transform.Find("FortificationContainer").transform);
+          playedFortificationCards++;
+        }
+        break;
     }
   }
 
-  public void SelectSquad()
+  private void SupportMobilization()
   {
-    Debug.Log("Select squad rendered");
-    flanks.GetComponent<Image>().enabled = true;
+    HashSet<SquadCard> noobsLeft = new HashSet<SquadCard>();
+    HashSet<SquadCard> noobsRight = new HashSet<SquadCard>();
+    noobsLeft.Add(new SquadCard(Rarity.General, "Новобанец", "", 1, 2, 1, new Skills()));
+    noobsRight.Add(new SquadCard(Rarity.General, "Новобанец", "", 1, 2, 1, new Skills()));
+
+    game.AddCardsToFlank(game.GetCurrentStep(), noobsLeft, Flank.Left);
+    game.AddCardsToFlank(game.GetCurrentStep(), noobsRight, Flank.Right);
   }
 }

@@ -1,69 +1,69 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 public class Field
 {
-    public uint headquartesStrength { get; set; }
-    private CommandorCard commandorLeft;
-    private CommandorCard commandorRight;
-    public Dictionary<Flank, HashSet<SquadCard>> flanks { get; }
-    public HashSet<AbstractCard> onHand { get; }
-    public HashSet<AbstractCard> drop { get; }
+  public uint headquartesStrength { get; set; }
+  private CommandorCard commandorLeft;
+  private CommandorCard commandorRight;
+  public Dictionary<Flank, HashSet<SquadCard>> flanks { get; }
+  public HashSet<AbstractCard> onHand { get; }
+  public HashSet<AbstractCard> drop { get; }
 
-
-    public Field()
+  public Field()
+  {
+    this.headquartesStrength = 30;
+    this.flanks = new Dictionary<Flank, HashSet<SquadCard>>();
+    this.onHand = new HashSet<AbstractCard>();
+    this.drop = new HashSet<AbstractCard>();
+    foreach (Flank flank in Enum.GetValues(typeof(Flank)))
     {
-        this.headquartesStrength = 30;
-        this.flanks = new Dictionary<Flank, HashSet<SquadCard>>();
-        this.onHand = new HashSet<AbstractCard>();
-        this.drop = new HashSet<AbstractCard>();
-        foreach (Flank flank in Enum.GetValues(typeof(Flank)))
-        {
-            flanks[flank] = new HashSet<SquadCard>();
-        }
+      flanks[flank] = new HashSet<SquadCard>();
+    }
+  }
+
+  public void AddToHand(List<AbstractCard> cards)
+  {
+    onHand.UnionWith(cards);
+  }
+
+  public void AddToHand(AbstractCard card)
+  {
+    onHand.Add(card);
+  }
+
+  public void Drop()
+  {
+    foreach (AbstractCard card in onHand)
+    {
+      if (card.GetType() == typeof(SquadCard) && ((SquadCard)card).stamina <= 0)
+      {
+        DropCard(card);
+      }
     }
 
-    public void AddToHand(List<AbstractCard> cards)
-    {
-        onHand.UnionWith(cards);
-    }
+  }
 
-    public void AddToHand(AbstractCard card)
-    {
-        onHand.Add(card);
-    }
+  public void DropCard(AbstractCard card)
+  {
+    onHand.Remove(card);
+    drop.Add(card);
+  }
 
-    public void Drop()
+  public void AddCommandor(CommandorCard commandor)
+  {
+    if (commandorLeft == null)
     {
-        foreach (AbstractCard card in onHand)
-        {
-            if (card.GetType() == typeof(SquadCard) && ((SquadCard)card).stamina <= 0)
-            {
-                DropCard(card);
-            }
-        }
-
+      commandorLeft = commandor;
     }
-
-    public void DropCard(AbstractCard card)
+    else if (commandorRight == null)
     {
-        onHand.Remove(card);
-        drop.Add(card);
+      commandorRight = commandor;
     }
+  }
 
-    public void AddCommandor(CommandorCard commandor)
-    {
-        if (commandorLeft == null)
-        {
-            commandorLeft = commandor;
-        }
-        else if (commandorRight == null)
-        {
-            commandorRight = commandor;
-        }
-    }
-
-    public void Attack(uint points)
-    {
-        this.headquartesStrength -= points;
-    }
+  public void Attack(uint points)
+  {
+    this.headquartesStrength -= points;
+  }
 }
