@@ -25,6 +25,7 @@ public class PlayerController : AbstractController
   Dictionary<CurrentPlayer, ContainerHand> hands;
   public ContainerHand hand1;
   public ContainerHand hand2;
+  private int rearRaidCounter;
 
   private delegate void Callback(AbstractCard card);
   private Callback callback;
@@ -242,6 +243,7 @@ public class PlayerController : AbstractController
 
   public void RearRaid_Start()
   {
+    this.rearRaidCounter = 2;
     CurrentPlayer currentPlayer = game.GetCurrentStep();
     hands[currentPlayer].GetComponent<ContainerHand>().SetCardHandler(true);
 
@@ -256,10 +258,26 @@ public class PlayerController : AbstractController
   }
   public void RearRaid_End(AbstractCard card)
   {
+    this.game.DropCardFromHand(game.GetCurrentStep() == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST, card);
+    this.rearRaidCounter--;
+    if (this.rearRaidCounter == 0) {
+      hands[game.GetCurrentStep()].GetComponent<ContainerHand>().SetCardHandler(false);
+      int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2
+      Show("Commandors");
+      Show("Flanks");
+      Show("HQ1");
+      Show("HQ2");
+      Show($"Hand{step}");
+      this.callback = null;
+    }
   }
   public void SelectCard(GameObject card)
   {
     selectedCards.Add(card);
+    if (this.callback != null)
+    {
+      this.callback(card.GetComponent<Card>().card);
+    }
   }
   public List<GameObject> GetSelectedCards()
   {
