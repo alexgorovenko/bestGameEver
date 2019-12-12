@@ -44,57 +44,35 @@ public class PlayerController : AbstractController
 
     ShowCommandorsChooseMenu();
     List<AbstractCard> _cards1 = game.GetSeveralCards(CurrentPlayer.FIRST, game.GetRemainedCards(CurrentPlayer.FIRST));
-    foreach (AbstractCard card in _cards1)
+    foreach (AbstractCard aCard in _cards1)
     {
       GameObject _card = Instantiate(cardUniversal);
       _card.transform.SetParent(deck1.transform.Find("CardsContainer").transform);
-      ICardContainerItem cardContainerItem = _card.GetComponent<Card>();
-      cardContainerItem.SetCard(card);
-      deck1.AddCard(cardContainerItem);
+      Card card = _card.GetComponent<Card>();
+      card.SetCard(aCard);
+      deck1.AddCard(card);
     }
     List<AbstractCard> _cards2 = game.GetSeveralCards(CurrentPlayer.SECOND, game.GetRemainedCards(CurrentPlayer.SECOND));
-    foreach (AbstractCard card in _cards2)
+    foreach (AbstractCard aCard in _cards2)
     {
       GameObject _card = Instantiate(cardUniversal);
       _card.transform.SetParent(deck2.transform.Find("CardsContainer").transform);
-      ICardContainerItem cardContainerItem = _card.GetComponent<Card>();
-      cardContainerItem.SetCard(card);
-      deck1.AddCard(cardContainerItem);
+      Card card = _card.GetComponent<Card>();
+      card.SetCard(aCard);
+      deck1.AddCard(card);
     }
     // deck.AddCard();
   }
 
   public void StartGame()
   {
-    // add 4 cards to player 1
     CurrentPlayer currentPlayer = game.GetCurrentStep();
-    // game.AddCardsToHand(currentPlayer, game.GetSeveralCards(currentPlayer, 4));
-
-    game.AddCardsToHand(currentPlayer, decks[currentPlayer].GetCards(4).Map(x =>
-    {
-      x.card;
-      x.transform.SetParent(hands[currentPlayer].transform);
-    }));
-
-    // render cards
-    foreach (AbstractCard card in game.GetCardsOnHand(currentPlayer))
-    {
-      GameObject _card = Instantiate(cardUniversal);
-      _card.transform.SetParent(hands[currentPlayer].transform);
-      _card.GetComponent<Card>().SetCard(card);
-    }
+    GetCardsFromDeck(currentPlayer, 4);
     // muligan?
     Next();
-    // add 6 cards to player 2
-    game.AddCardsToHand(game.GetCurrentStep(), game.GetSeveralCards(game.GetCurrentStep(), 6));
-    // muligan?
-    // render cards
-    foreach (AbstractCard card in game.GetCardsOnHand(game.GetCurrentStep()))
-    {
-      GameObject _card = Instantiate(cardUniversal);
-      _card.transform.SetParent(hands[game.GetCurrentStep()].transform);
-      _card.GetComponent<Card>().SetCard(card);
-    }
+    currentPlayer = game.GetCurrentStep();
+    GetCardsFromDeck(currentPlayer, 6);
+
     // play cards
     // select cards (TODO: drag n drop)
     // place cards
@@ -150,7 +128,20 @@ public class PlayerController : AbstractController
   }
   public void GetCardFromDeck(CurrentPlayer currentPlayer)
   {
-
+    List<AbstractCard> _cards = new List<AbstractCard>();
+    decks[currentPlayer].GetCards(4).ForEach(x =>
+    {
+      _cards.Add(x.card);
+      x.transform.SetParent(hands[currentPlayer].transform);
+    });
+    game.AddCardsToHand(currentPlayer, _cards);
+  }
+  public void GetCardsFromDeck(CurrentPlayer currentPlayer, int amount)
+  {
+    for (int i = 0; i < amount; i++)
+    {
+      GetCardFromDeck(currentPlayer);
+    }
   }
   public void AddCardToHand(GameObject card)
   {

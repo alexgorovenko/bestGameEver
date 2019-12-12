@@ -6,17 +6,18 @@ using UnityEngine;
 
 public class ContainerDeck : AbstractContainer
 {
-  public ICardContainerItem GetCard()
+  public Card GetCard()
   {
-    ICardContainerItem card = this.mCards[0];
+    Card card = this.mCards[0];
     this.mCards.RemoveAt(0);
     return card;
   }
 
-  public List<ICardContainerItem GetCards(int number)
+  public List<Card> GetCards(int number)
   {
-    List<ICardContainerItem> cards = new List<ICardContainerItem>(number);
-    for (var i = 0; i < number; i++) {
+    List<Card> cards = new List<Card>(number);
+    for (var i = 0; i < number; i++)
+    {
       cards.Add(this.GetCard());
     }
     return cards;

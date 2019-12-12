@@ -12,7 +12,6 @@ public interface ICardContainerItem
   void SetActiveSelectHandler(bool state);
   void SetCard(AbstractCard card);
 }
-
 public class CardContainerEventArgs : EventArgs
 {
   public ICardContainerItem Item;

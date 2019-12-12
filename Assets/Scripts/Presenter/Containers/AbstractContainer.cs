@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class AbstractContainer : MonoBehaviour
 {
-  private List<ICardContainerItem> mCards = new List<ICardContainerItem>();
+  protected List<Card> mCards = new List<Card>();
   public event EventHandler<CardContainerEventArgs> CardAdded;
-  public void AddCard(ICardContainerItem item)
+  public void AddCard(Card item)
   {
     mCards.Add(item);
     item.OnAdd();
@@ -17,22 +17,24 @@ public class AbstractContainer : MonoBehaviour
       CardAdded(this, new CardContainerEventArgs(item));
     }
   }
-  public void AddCards(List<ICardContainerItem> items)
+  public void AddCards(List<Card> items)
   {
-      foreach (var item in items) {
-          AddCard(item);
-      }
+    foreach (var item in items)
+    {
+      AddCard(item);
+    }
   }
-  public void RemoveCard(ICardContainerItem item)
+  public void RemoveCard(Card item)
   {
     mCards.Remove(item);
     item.OnRemove();
   }
-  public void RemoveCards(List<ICardContainerItem> items)
+  public void RemoveCards(List<Card> items)
   {
-      foreach (var item in items) {
-          RemoveCard(item);
-      }
+    foreach (var item in items)
+    {
+      RemoveCard(item);
+    }
   }
   public void SetCardHandler(bool isActive)
   {
