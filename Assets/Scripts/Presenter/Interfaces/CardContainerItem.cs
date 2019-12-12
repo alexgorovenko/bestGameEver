@@ -5,7 +5,6 @@ using UnityEngine;
 
 public interface ICardContainerItem
 {
-  string Name { get; }
   [SerializeField] Sprite Image { get; }
   void OnAdd();
   void OnPlay();
