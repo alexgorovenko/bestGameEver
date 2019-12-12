@@ -19,6 +19,7 @@ public class PlayerController : AbstractController
   private int playedFortificationCards = 0;
   public GameObject currentDraggableCard;
   private List<GameObject> selectedCards;
+  Dictionary<CurrentPlayer, ContainerDeck> decks;
   public ContainerDeck deck1;
   public ContainerDeck deck2;
   Dictionary<CurrentPlayer, ContainerHand> hands;
@@ -32,9 +33,15 @@ public class PlayerController : AbstractController
   void Start()
   {
     game = new Game();
+
     hands = new Dictionary<CurrentPlayer, ContainerHand>();
     hands.Add(CurrentPlayer.FIRST, hand1);
     hands.Add(CurrentPlayer.SECOND, hand2);
+
+    decks = new Dictionary<CurrentPlayer, ContainerDeck>();
+    decks.Add(CurrentPlayer.FIRST, deck1);
+    decks.Add(CurrentPlayer.SECOND, deck2);
+
     ShowCommandorsChooseMenu();
     List<AbstractCard> _cards1 = game.GetSeveralCards(CurrentPlayer.FIRST, game.GetRemainedCards(CurrentPlayer.FIRST));
     foreach (AbstractCard card in _cards1)
@@ -61,8 +68,13 @@ public class PlayerController : AbstractController
   {
     // add 4 cards to player 1
     CurrentPlayer currentPlayer = game.GetCurrentStep();
-    game.AddCardsToHand(currentPlayer, game.GetSeveralCards(currentPlayer, 4));
+    // game.AddCardsToHand(currentPlayer, game.GetSeveralCards(currentPlayer, 4));
 
+    game.AddCardsToHand(currentPlayer, decks[currentPlayer].GetCards(4).Map(x =>
+    {
+      x.card;
+      x.transform.SetParent(hands[currentPlayer].transform);
+    }));
 
     // render cards
     foreach (AbstractCard card in game.GetCardsOnHand(currentPlayer))
@@ -135,6 +147,10 @@ public class PlayerController : AbstractController
       StartGame();
       HideCommandorsChooseMenu();
     }
+  }
+  public void GetCardFromDeck()
+  {
+
   }
   public void AddCardToHand(GameObject card)
   {
