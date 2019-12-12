@@ -36,22 +36,20 @@ public class PlayerController : AbstractController
     hands.Add(CurrentPlayer.FIRST, hand1);
     hands.Add(CurrentPlayer.SECOND, hand2);
     ShowCommandorsChooseMenu();
-
-    deck1 = new ContainerDeck();
     List<AbstractCard> _cards1 = game.GetSeveralCards(CurrentPlayer.FIRST, game.GetRemainedCards(CurrentPlayer.FIRST));
     foreach (AbstractCard card in _cards1)
     {
       GameObject _card = Instantiate(cardUniversal);
+      _card.transform.SetParent(deck1.transform.Find("CardsContainer").transform);
       ICardContainerItem cardContainerItem = _card.GetComponent<Card>();
       cardContainerItem.SetCard(card);
       deck1.AddCard(cardContainerItem);
     }
-
-    deck2 = new ContainerDeck();
     List<AbstractCard> _cards2 = game.GetSeveralCards(CurrentPlayer.SECOND, game.GetRemainedCards(CurrentPlayer.SECOND));
     foreach (AbstractCard card in _cards2)
     {
       GameObject _card = Instantiate(cardUniversal);
+      _card.transform.SetParent(deck2.transform.Find("CardsContainer").transform);
       ICardContainerItem cardContainerItem = _card.GetComponent<Card>();
       cardContainerItem.SetCard(card);
       deck1.AddCard(cardContainerItem);
@@ -64,6 +62,7 @@ public class PlayerController : AbstractController
     // add 4 cards to player 1
     CurrentPlayer currentPlayer = game.GetCurrentStep();
     game.AddCardsToHand(currentPlayer, game.GetSeveralCards(currentPlayer, 4));
+
 
     // render cards
     foreach (AbstractCard card in game.GetCardsOnHand(currentPlayer))
