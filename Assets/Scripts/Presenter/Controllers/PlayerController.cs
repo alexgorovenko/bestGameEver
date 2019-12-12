@@ -235,8 +235,8 @@ public class PlayerController : AbstractController
 
   public void SupportSniper()
   {
-    CurrentPlayer currentPlayer = game.GetCurrentStep();
-    hands[currentPlayer].GetComponent<ContainerHand>().SetCardHandler(true);
+    CurrentPlayer currentEnemy = game.GetCurrentStep() == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST;
+    flanks[currentEnemy].GetComponent<FlankHand>().SetCardHandler(true);
 
     int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
     Hide("Commandors");
@@ -252,7 +252,7 @@ public class PlayerController : AbstractController
     Skills skills = new Skills();
     skills.shelling = 3;
     game.HitSquad(card, skills);
-    hands[game.GetCurrentStep()].GetComponent<ContainerHand>().SetCardHandler(false);
+    flanks[game.GetCurrentStep() == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST].GetComponent<FlankHand>().SetCardHandler(false);
     int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2
     Show("Commandors");
     Show("Flanks");
@@ -265,8 +265,8 @@ public class PlayerController : AbstractController
   public void RearRaid_Start()
   {
     this.rearRaidCounter = 2;
-    CurrentPlayer currentPlayer = game.GetCurrentStep();
-    hands[currentPlayer].GetComponent<ContainerHand>().SetCardHandler(true);
+    CurrentPlayer currentEnemy = game.GetCurrentStep() == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST;
+    hands[currentEnemy].GetComponent<ContainerHand>().SetCardHandler(true);
 
     int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
     Hide("Commandors");
@@ -282,7 +282,8 @@ public class PlayerController : AbstractController
     this.game.DropCardFromHand(game.GetCurrentStep() == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST, card);
     this.rearRaidCounter--;
     if (this.rearRaidCounter == 0) {
-      hands[game.GetCurrentStep()].GetComponent<ContainerHand>().SetCardHandler(false);
+      CurrentPlayer currentEnemy = game.GetCurrentStep() == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST;
+      hands[currentEnemy].GetComponent<ContainerHand>().SetCardHandler(false);
       int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2
       Show("Commandors");
       Show("Flanks");
