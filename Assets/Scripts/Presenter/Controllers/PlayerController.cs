@@ -148,7 +148,7 @@ public class PlayerController : AbstractController
       HideCommandorsChooseMenu();
     }
   }
-  public void GetCardFromDeck()
+  public void GetCardFromDeck(CurrentPlayer currentPlayer)
   {
 
   }
