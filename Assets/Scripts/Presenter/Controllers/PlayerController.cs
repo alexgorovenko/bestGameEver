@@ -13,22 +13,21 @@ public class PlayerController : AbstractController
   [SerializeField] GameObject chooseCommandors;
   [SerializeField] List<GameObject> commandorFields;
   [SerializeField] GameObject flanks;
-  [SerializeField] GameObject hand1;
-  [SerializeField] GameObject hand2;
-  Dictionary<CurrentPlayer, GameObject> hands;
   private uint commandorsChosen = 0;
   private int selectedSquad = -1;
   private int playedSquadCards = 0;
   private int playedSupportCards = 0;
   private int playedFortificationCards = 0;
   public GameObject currentDraggableCard;
-  public ContainerHand hand;
+  Dictionary<CurrentPlayer, ContainerHand> hands;
+  public ContainerHand hand1;
+  public ContainerHand hand2;
 
   // Start is called before the first frame update
   void Start()
   {
     game = new Game();
-    hands = new Dictionary<CurrentPlayer, GameObject>();
+    hands = new Dictionary<CurrentPlayer, ContainerHand>();
     hands.Add(CurrentPlayer.FIRST, hand1);
     hands.Add(CurrentPlayer.SECOND, hand2);
     ShowCommandorsChooseMenu();
@@ -120,7 +119,14 @@ public class PlayerController : AbstractController
       HideCommandorsChooseMenu();
     }
   }
-
+  public void AddCardToHand(GameObject card)
+  {
+    AbstractCard cardModel = card.GetComponent<CardView>().card;
+    List<AbstractCard> addedCards = new List<AbstractCard>();
+    addedCards.Add(cardModel);
+    game.AddCardsToHand(game.GetCurrentStep(), addedCards);
+    card.transform.SetParent(hands[game.GetCurrentStep()].transform);
+  }
   public void DropCardToFlank(GameObject card, GameObject flank)
   {
     AbstractCard cardModel = card.GetComponent<CardView>().card;
