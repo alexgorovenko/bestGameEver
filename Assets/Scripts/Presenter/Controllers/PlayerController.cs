@@ -189,14 +189,18 @@ public class PlayerController : AbstractController
     {
       game.AddCardsToFlank(game.GetCurrentStep(), noobsLeft, Flank.Left);
       GameObject _card = Instantiate(cardUniversal);
-      _card.transform.SetParent(GameObject.Find($"FlankLeft{step}").transform);
+      _card.transform.SetParent(GameObject.Find($"FlankLeft{step}").transform.Find("CardsContainer").transform);
+      Card card = _card.GetComponent<Card>();
+      card.SetCard(noobLeft);
     }
 
     if (game.GetCardsCount(game.GetCurrentStep(), Flank.Right) != 4)
     {
       game.AddCardsToFlank(game.GetCurrentStep(), noobsRight, Flank.Right);
       GameObject _card = Instantiate(cardUniversal);
-      _card.transform.SetParent(GameObject.Find($"FlankRight{step}").transform);
+      _card.transform.SetParent(GameObject.Find($"FlankRight{step}").transform.Find("CardsContainer").transform);
+      Card card = _card.GetComponent<Card>();
+      card.SetCard(noobRight);
     }
   }
   public void SupportTactical()
@@ -237,9 +241,9 @@ public class PlayerController : AbstractController
   {
     Skills skills = new Skills();
     skills.shelling = 3;
-    game.HitSquad(card, skills);
+    // game.HitSquad(card, skills);
     hands[game.GetCurrentStep()].GetComponent<ContainerHand>().SetCardHandler(false);
-    int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2
+    int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
     Show("Commandors");
     Show("Flanks");
     Show("HQ1");
