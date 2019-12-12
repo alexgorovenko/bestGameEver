@@ -7,7 +7,7 @@ public class CardSelectHandler : MonoBehaviour, ISelectHandler
 {
   public void OnSelect(BaseEventData eventData)
   {
-    PlayerController player = gameObject.GetComponent<CardView>().player.GetComponent<PlayerController>();
+    PlayerController player = gameObject.GetComponent<Card>().player.GetComponent<PlayerController>();
     player.SelectCard(gameObject);
   }
 }
