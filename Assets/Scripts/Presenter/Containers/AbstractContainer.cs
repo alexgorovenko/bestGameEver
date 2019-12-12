@@ -7,7 +7,7 @@ public class AbstractContainer : MonoBehaviour
 {
   private List<ICardContainerItem> mCards = new List<ICardContainerItem>();
   public event EventHandler<CardContainerEventArgs> CardAdded;
-  public void addCard(ICardContainerItem item)
+  public void AddCard(ICardContainerItem item)
   {
     mCards.Add(item);
     item.OnAdd();
@@ -17,7 +17,7 @@ public class AbstractContainer : MonoBehaviour
       CardAdded(this, new CardContainerEventArgs(item));
     }
   }
-  public void removeCard(ICardContainerItem item)
+  public void RemoveCard(ICardContainerItem item)
   {
     mCards.Remove(item);
     item.OnRemove();

@@ -19,6 +19,8 @@ public class PlayerController : AbstractController
   private int playedFortificationCards = 0;
   public GameObject currentDraggableCard;
   private List<GameObject> selectedCards;
+  public ContainerDeck deck1;
+  public ContainerDeck deck2;
   Dictionary<CurrentPlayer, ContainerHand> hands;
   public ContainerHand hand1;
   public ContainerHand hand2;
@@ -36,6 +38,8 @@ public class PlayerController : AbstractController
     ShowCommandorsChooseMenu();
 
     ContainerDeck deck = new ContainerDeck();
+    deck.AddCards(game.GetSeveralCards(CurrentPlayer.FIRST, game.GetRemainedCards(CurrentPlayer.FIRST)));
+
     // deck.AddCard();
   }
 
