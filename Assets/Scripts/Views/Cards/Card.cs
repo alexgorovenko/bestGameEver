@@ -16,7 +16,7 @@ public class Card : MonoBehaviour, ICardContainerItem
   public void OnAdd() { }
   public void OnPlay() { }
   public void OnRemove() { }
-  public Card(AbstractCard card)
+  public void SetCard(AbstractCard card)
   {
     if (card.GetType() == typeof(SupportCard)) isDraggable = false;
     this.card = card;

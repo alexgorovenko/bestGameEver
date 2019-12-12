@@ -10,6 +10,7 @@ public interface ICardContainerItem
   void OnPlay();
   void OnRemove();
   void SetActiveSelectHandler(bool state);
+  void SetCard(AbstractCard card);
 }
 
 public class CardContainerEventArgs : EventArgs

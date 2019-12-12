@@ -37,9 +37,25 @@ public class PlayerController : AbstractController
     hands.Add(CurrentPlayer.SECOND, hand2);
     ShowCommandorsChooseMenu();
 
-    ContainerDeck deck = new ContainerDeck();
-    deck.AddCards(game.GetSeveralCards(CurrentPlayer.FIRST, game.GetRemainedCards(CurrentPlayer.FIRST)));
+    deck1 = new ContainerDeck();
+    List<AbstractCard> _cards1 = game.GetSeveralCards(CurrentPlayer.FIRST, game.GetRemainedCards(CurrentPlayer.FIRST));
+    foreach (AbstractCard card in _cards1)
+    {
+      GameObject _card = Instantiate(cardUniversal);
+      ICardContainerItem cardContainerItem = _card.GetComponent<Card>();
+      cardContainerItem.SetCard(card);
+      deck1.AddCard(cardContainerItem);
+    }
 
+    deck2 = new ContainerDeck();
+    List<AbstractCard> _cards2 = game.GetSeveralCards(CurrentPlayer.SECOND, game.GetRemainedCards(CurrentPlayer.SECOND));
+    foreach (AbstractCard card in _cards2)
+    {
+      GameObject _card = Instantiate(cardUniversal);
+      ICardContainerItem cardContainerItem = _card.GetComponent<Card>();
+      cardContainerItem.SetCard(card);
+      deck1.AddCard(cardContainerItem);
+    }
     // deck.AddCard();
   }
 
@@ -54,7 +70,7 @@ public class PlayerController : AbstractController
     {
       GameObject _card = Instantiate(cardUniversal);
       _card.transform.SetParent(hands[currentPlayer].transform);
-      _card.GetComponent<CardView>().SetCard(card);
+      _card.GetComponent<Card>().SetCard(card);
     }
     // muligan?
     Next();
@@ -66,7 +82,7 @@ public class PlayerController : AbstractController
     {
       GameObject _card = Instantiate(cardUniversal);
       _card.transform.SetParent(hands[game.GetCurrentStep()].transform);
-      _card.GetComponent<CardView>().SetCard(card);
+      _card.GetComponent<Card>().SetCard(card);
     }
     // play cards
     // select cards (TODO: drag n drop)
@@ -125,14 +141,14 @@ public class PlayerController : AbstractController
   {
     CurrentPlayer currentPlayer = game.GetCurrentStep();
     List<AbstractCard> addedCards = new List<AbstractCard>();
-    AbstractCard cardModel = card.GetComponent<CardView>().card;
+    AbstractCard cardModel = card.GetComponent<Card>().card;
     addedCards.Add(cardModel);
     game.AddCardsToHand(currentPlayer, addedCards);
     card.transform.SetParent(hands[currentPlayer].transform);
   }
   public void DropCardToFlank(GameObject card, GameObject flank)
   {
-    AbstractCard cardModel = card.GetComponent<CardView>().card;
+    AbstractCard cardModel = card.GetComponent<Card>().card;
     Flank flankModel = flank.GetComponent<ContainerFlank>().flank;
     switch (cardModel)
     {
@@ -196,7 +212,7 @@ public class PlayerController : AbstractController
     {
       GameObject _card = Instantiate(cardUniversal);
       _card.transform.SetParent(temporary.transform.Find("CardsContainer").transform);
-      _card.GetComponent<CardView>().SetCard(card);
+      _card.GetComponent<Card>().SetCard(card);
     }
     // => drag one => two to drop
   }

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-public class CardCommandorView : CardView
+public class CardCommandorView : Card
 {
   public void Click()
   {

@@ -8,7 +8,7 @@ public class FlankDropHandler : MonoBehaviour, IDropHandler
   [SerializeField] GameObject player;
   public void OnDrop(PointerEventData eventData)
   {
-    switch (player.GetComponent<PlayerController>().currentDraggableCard.GetComponent<CardView>().card)
+    switch (player.GetComponent<PlayerController>().currentDraggableCard.GetComponent<Card>().card)
     {
       case SupportCard s:
         return;
