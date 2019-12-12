@@ -78,6 +78,7 @@
      <Compile Include="Assets\Scripts\Presenter\Controllers\PlayerController.cs" />
      <Compile Include="Assets\Scripts\Presenter\CurrentPlayer.cs" />
      <Compile Include="Assets\Scripts\Presenter\Game.cs" />
+     <Compile Include="Assets\Scripts\Presenter\Handlers\CardSelectHandler.cs" />
      <Compile Include="Assets\Scripts\Presenter\Handlers\FlankDropHandler.cs" />
      <Compile Include="Assets\Scripts\Presenter\Handlers\HandDropHandler.cs" />
      <Compile Include="Assets\Scripts\Presenter\Interfaces\CardContainerItem.cs" />

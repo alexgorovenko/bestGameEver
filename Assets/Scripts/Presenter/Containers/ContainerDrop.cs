@@ -8,7 +8,7 @@ public class ContainerDrop : AbstractContainer
 {
   private List<ICardContainerItem> mCards = new List<ICardContainerItem>();
   public event EventHandler<CardContainerEventArgs> CardAdded;
-  public override void addCard(ICardContainerItem item)
+  public override void AddCard(ICardContainerItem item)
   {
     mCards.Add(item);
     item.onAdd();
@@ -18,7 +18,7 @@ public class ContainerDrop : AbstractContainer
       CardAdded(this, new CardContainerEventArgs(item));
     }
   }
-  public override void removeCard(ICardContainerItem item)
+  public override void RemoveCard(ICardContainerItem item)
   {
     mCards.Remove(item);
     item.onRemove();

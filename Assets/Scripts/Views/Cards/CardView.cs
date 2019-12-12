@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 public class CardView : MonoBehaviour
 {
-  [SerializeField] protected GameObject player;
+  [SerializeField] public GameObject player;
   protected TextMeshProUGUI _fieldName;
   public AbstractCard card;
   public bool isDraggable = true;

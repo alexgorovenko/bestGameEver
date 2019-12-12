@@ -18,7 +18,7 @@ public class PlayerController : AbstractController
   private int playedSupportCards = 0;
   private int playedFortificationCards = 0;
   public GameObject currentDraggableCard;
-  public List<GameObject> selectedCards;
+  private List<GameObject> selectedCards;
   Dictionary<CurrentPlayer, ContainerHand> hands;
   public ContainerHand hand1;
   public ContainerHand hand2;
@@ -34,6 +34,9 @@ public class PlayerController : AbstractController
     hands.Add(CurrentPlayer.FIRST, hand1);
     hands.Add(CurrentPlayer.SECOND, hand2);
     ShowCommandorsChooseMenu();
+
+    ContainerDeck deck = new ContainerDeck();
+    // deck.AddCard();
   }
 
   public void StartGame()
@@ -203,21 +206,32 @@ public class PlayerController : AbstractController
   }
 
   public void RearRaid_Start()
-  {
+  // {
     CurrentPlayer currentPlayer = game.GetCurrentStep();
-    hands[currentPlayer].GetComponent<ContainerHand>().SetCardHandler(true);
+  hands[currentPlayer].GetComponent<ContainerHand>().SetCardHandler(true);
 
-    int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
-    Hide("Commandors");
-    Hide("Flanks");
-    Hide("HQ1");
-    Hide("HQ2");
-    Hide($"Hand{step}");
+  int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
+  Hide("Commandors");
+  Hide("Flanks");
+  Hide("HQ1");
+  Hide("HQ2");
+  Hide($"Hand{step}");
 
-    callback = RearRaid_End;
+  callback = RearRaid_End;
   }
-  public void RearRaid_End(AbstractCard card)
-  {
-    
-  }
+public void RearRaid_End(AbstractCard card)
+{
+}
+public void SelectCard(GameObject card)
+{
+  selectedCards.Add(card);
+}
+public List<GameObject> GetSelectedCards()
+{
+  return selectedCards;
+}
+public void ResetSelectionCards()
+{
+  selectedCards.Clear();
+}
 }

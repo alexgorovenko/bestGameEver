@@ -6,10 +6,11 @@ using UnityEngine;
 public interface ICardContainerItem
 {
   string Name { get; }
-  Sprite Image { get; }
+  [SerializeField] Sprite Image { get; }
   void onAdd();
   void onPlay();
   void onRemove();
+  void SetActiveSelectHandler(bool state);
 }
 
 public class CardContainerEventArgs : EventArgs
