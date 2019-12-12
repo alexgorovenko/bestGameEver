@@ -5,9 +5,9 @@ using UnityEngine.EventSystems;
 
 public class CardSelectHandler : MonoBehaviour, ISelectHandler
 {
-  [SerializeField] GameObject card;
+  CardView card;
   public void OnSelect(PointerEventData eventData)
   {
-    card.player.GetComponent<PlayerController>().SelectCard(card.card)
+    card.player.GetComponent<PlayerController>().SelectCard(card.card);
   }
 }
