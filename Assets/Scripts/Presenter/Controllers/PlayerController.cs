@@ -18,7 +18,7 @@ public class PlayerController : AbstractController
   private int playedSupportCards = 0;
   private int playedFortificationCards = 0;
   public GameObject currentDraggableCard;
-  private List<GameObject> selectedCards;
+  private List<GameObject> selectedCards = new List<GameObject>();
   Dictionary<CurrentPlayer, ContainerDeck> decks;
   public ContainerDeck deck1;
   public ContainerDeck deck2;
@@ -221,10 +221,31 @@ public class PlayerController : AbstractController
 
   public void SupportSniper()
   {
-    SquadCard card = null; //TODO get card
+    CurrentPlayer currentPlayer = game.GetCurrentStep();
+    hands[currentPlayer].GetComponent<ContainerHand>().SetCardHandler(true);
+
+    int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
+    Hide("Commandors");
+    Hide("Flanks");
+    Hide("HQ1");
+    Hide("HQ2");
+    Hide($"Hand{step}");
+    callback = SupportSniperCallback;
+  }
+
+  private void SupportSniperCallback(AbstractCard card)
+  {
     Skills skills = new Skills();
     skills.shelling = 3;
     game.HitSquad(card, skills);
+    hands[game.GetCurrentStep()].GetComponent<ContainerHand>().SetCardHandler(false);
+    int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2
+    Show("Commandors");
+    Show("Flanks");
+    Show("HQ1");
+    Show("HQ2");
+    Show($"Hand{step}");
+    callback = null;
   }
 
   public void RearRaid_Start()
