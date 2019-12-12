@@ -14,11 +14,11 @@ public class PlayerController : AbstractController
   [SerializeField] List<GameObject> commandorFields;
   [SerializeField] GameObject flanks;
   private uint commandorsChosen = 0;
-  private int selectedSquad = -1;
   private int playedSquadCards = 0;
   private int playedSupportCards = 0;
   private int playedFortificationCards = 0;
   public GameObject currentDraggableCard;
+  public List<GameObject> selectedCards;
   Dictionary<CurrentPlayer, ContainerHand> hands;
   public ContainerHand hand1;
   public ContainerHand hand2;
@@ -36,13 +36,14 @@ public class PlayerController : AbstractController
   public void StartGame()
   {
     // add 4 cards to player 1
-    game.AddCardsToHand(game.GetCurrentStep(), game.GetSeveralCards(game.GetCurrentStep(), 4));
+    CurrentPlayer currentPlayer = game.GetCurrentStep();
+    game.AddCardsToHand(currentPlayer, game.GetSeveralCards(currentPlayer, 4));
 
     // render cards
-    foreach (AbstractCard card in game.GetCardsOnHand(game.GetCurrentStep()))
+    foreach (AbstractCard card in game.GetCardsOnHand(currentPlayer))
     {
       GameObject _card = Instantiate(cardUniversal);
-      _card.transform.SetParent(hands[game.GetCurrentStep()].transform);
+      _card.transform.SetParent(hands[currentPlayer].transform);
       _card.GetComponent<CardView>().SetCard(card);
     }
     // muligan?
@@ -65,7 +66,6 @@ public class PlayerController : AbstractController
     // refresh
     // next step
   }
-
   public void Next()
   {
     playedSquadCards = 0;
@@ -73,7 +73,6 @@ public class PlayerController : AbstractController
     playedFortificationCards = 0;
     game.NextStep();
   }
-
   public void Hide(string s)
   {
     GameObject.Find(s).SetActive(false);
@@ -81,13 +80,6 @@ public class PlayerController : AbstractController
   public void Show(string s)
   {
     GameObject.Find(s).SetActive(true);
-  }
-  public void ApplyFortificationCard()
-  {
-    // get card
-    // select flank
-    // apply card
-    // game.ApplyFortificationCard(game.GetCurrentStep(), card, flank);
   }
   public void ShowCommandorsChooseMenu()
   {
@@ -121,11 +113,12 @@ public class PlayerController : AbstractController
   }
   public void AddCardToHand(GameObject card)
   {
-    AbstractCard cardModel = card.GetComponent<CardView>().card;
+    CurrentPlayer currentPlayer = game.GetCurrentStep();
     List<AbstractCard> addedCards = new List<AbstractCard>();
+    AbstractCard cardModel = card.GetComponent<CardView>().card;
     addedCards.Add(cardModel);
-    game.AddCardsToHand(game.GetCurrentStep(), addedCards);
-    card.transform.SetParent(hands[game.GetCurrentStep()].transform);
+    game.AddCardsToHand(currentPlayer, addedCards);
+    card.transform.SetParent(hands[currentPlayer].transform);
   }
   public void DropCardToFlank(GameObject card, GameObject flank)
   {
@@ -160,8 +153,19 @@ public class PlayerController : AbstractController
     noobsLeft.Add(new SquadCard(Rarity.General, "Новобанец", "", 1, 2, 1, new Skills()));
     noobsRight.Add(new SquadCard(Rarity.General, "Новобанец", "", 1, 2, 1, new Skills()));
 
-    game.AddCardsToFlank(game.GetCurrentStep(), noobsLeft, Flank.Left);
-    game.AddCardsToFlank(game.GetCurrentStep(), noobsRight, Flank.Right);
+    if (game.GetCardsCount(game.GetCurrentStep(), Flank.Left) == 4)
+    {
+      return;
+    } else {
+      game.AddCardsToFlank(game.GetCurrentStep(), noobsLeft, Flank.Left);
+    }
+
+    if (game.GetCardsCount(game.GetCurrentStep(), Flank.Right) == 4)
+    {
+      return;
+    } else {
+      game.AddCardsToFlank(game.GetCurrentStep(), noobsRight, Flank.Right);
+    }
   }
   public void SupportTactical()
   {

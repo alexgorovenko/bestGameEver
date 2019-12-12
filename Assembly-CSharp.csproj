@@ -56,7 +56,6 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\CardDragHandler.cs" />
-     <Compile Include="Assets\Scripts\CardDropHandler.cs" />
      <Compile Include="Assets\Scripts\Model\Attack.cs" />
      <Compile Include="Assets\Scripts\Model\Callback.cs" />
      <Compile Include="Assets\Scripts\Model\CallbackFortification.cs" />
@@ -69,15 +68,17 @@
      <Compile Include="Assets\Scripts\Model\Flank.cs" />
      <Compile Include="Assets\Scripts\Model\Rarity.cs" />
      <Compile Include="Assets\Scripts\Model\Skills.cs" />
-     <Compile Include="Assets\Scripts\Presenter\Controllers\AbstractContainer.cs" />
+     <Compile Include="Assets\Scripts\Presenter\Containers\AbstractContainer.cs" />
+     <Compile Include="Assets\Scripts\Presenter\Containers\ContainerDeck.cs" />
+     <Compile Include="Assets\Scripts\Presenter\Containers\ContainerDrop.cs" />
+     <Compile Include="Assets\Scripts\Presenter\Containers\ContainerFlank.cs" />
+     <Compile Include="Assets\Scripts\Presenter\Containers\ContainerHand.cs" />
      <Compile Include="Assets\Scripts\Presenter\Controllers\AbstractController.cs" />
      <Compile Include="Assets\Scripts\Presenter\Controllers\ComputerController.cs" />
-     <Compile Include="Assets\Scripts\Presenter\Controllers\ContainerDrop.cs" />
-     <Compile Include="Assets\Scripts\Presenter\Controllers\ContainerFlank.cs" />
-     <Compile Include="Assets\Scripts\Presenter\Controllers\ContainerHand.cs" />
      <Compile Include="Assets\Scripts\Presenter\Controllers\PlayerController.cs" />
      <Compile Include="Assets\Scripts\Presenter\CurrentPlayer.cs" />
      <Compile Include="Assets\Scripts\Presenter\Game.cs" />
+     <Compile Include="Assets\Scripts\Presenter\Handlers\FlankDropHandler.cs" />
      <Compile Include="Assets\Scripts\Presenter\Handlers\HandDropHandler.cs" />
      <Compile Include="Assets\Scripts\Presenter\Interfaces\CardContainerItem.cs" />
      <Compile Include="Assets\Scripts\Presenter\ViewAction.cs" />
