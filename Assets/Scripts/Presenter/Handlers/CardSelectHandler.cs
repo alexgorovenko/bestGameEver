@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class CardSelectHandler : MonoBehaviour, ISelectHandler
+public class CardSelectHandler : MonoBehaviour
 {
-  public void OnSelect(BaseEventData eventData)
+  public void OnSelect()
   {
+    Debug.Log("TADA");
     PlayerController player = gameObject.GetComponent<Card>().player.GetComponent<PlayerController>();
     player.SelectCard(gameObject);
   }

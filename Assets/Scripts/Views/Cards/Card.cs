@@ -43,6 +43,9 @@ public class Card : MonoBehaviour, ICardContainerItem
           case ViewAction.TACTICAL_MOVE:
             script.SupportTactical();
             break;
+          case ViewAction.MOBILIZAZATION:
+            script.SupportMobilization();
+            break;
         }
         break;
       case CommandorCard c:

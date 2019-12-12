@@ -60,11 +60,9 @@ public class PlayerController : AbstractController
       _card.transform.SetParent(deck2.transform.Find("CardsContainer").transform);
       Card card = _card.GetComponent<Card>();
       card.SetCard(aCard);
-      deck1.AddCard(card);
+      deck2.AddCard(card);
     }
-    // deck.AddCard();
   }
-
   public void StartGame()
   {
     CurrentPlayer currentPlayer = game.GetCurrentStep();
@@ -129,12 +127,10 @@ public class PlayerController : AbstractController
   }
   public void GetCardFromDeck(CurrentPlayer currentPlayer)
   {
+    Card card = decks[currentPlayer].GetCard();
     List<AbstractCard> _cards = new List<AbstractCard>();
-    decks[currentPlayer].GetCards(4).ForEach(x =>
-    {
-      _cards.Add(x.card);
-      x.transform.SetParent(hands[currentPlayer].transform);
-    });
+    _cards.Add(card.card);
+    card.transform.SetParent(hands[currentPlayer].transform);
     game.AddCardsToHand(currentPlayer, _cards);
   }
   public void GetCardsFromDeck(CurrentPlayer currentPlayer, int amount)
@@ -181,27 +177,26 @@ public class PlayerController : AbstractController
   }
   public void SupportMobilization()
   {
+    Debug.Log("TADA");
     HashSet<SquadCard> noobsLeft = new HashSet<SquadCard>();
     HashSet<SquadCard> noobsRight = new HashSet<SquadCard>();
-    noobsLeft.Add(new SquadCard(Rarity.General, "Новобанец", "", 1, 2, 1, new Skills()));
-    noobsRight.Add(new SquadCard(Rarity.General, "Новобанец", "", 1, 2, 1, new Skills()));
-
-    if (game.GetCardsCount(game.GetCurrentStep(), Flank.Left) == 4)
-    {
-      return;
-    }
-    else
+    SquadCard noobLeft = new SquadCard(Rarity.General, "Новобанец", "", 1, 2, 1, new Skills());
+    SquadCard noobRight = new SquadCard(Rarity.General, "Новобанец", "", 1, 2, 1, new Skills());
+    noobsLeft.Add(noobLeft);
+    noobsRight.Add(noobRight);
+    int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
+    if (game.GetCardsCount(game.GetCurrentStep(), Flank.Left) != 4)
     {
       game.AddCardsToFlank(game.GetCurrentStep(), noobsLeft, Flank.Left);
+      GameObject _card = Instantiate(cardUniversal);
+      _card.transform.SetParent(GameObject.Find($"FlankLeft{step}").transform);
     }
 
-    if (game.GetCardsCount(game.GetCurrentStep(), Flank.Right) == 4)
-    {
-      return;
-    }
-    else
+    if (game.GetCardsCount(game.GetCurrentStep(), Flank.Right) != 4)
     {
       game.AddCardsToFlank(game.GetCurrentStep(), noobsRight, Flank.Right);
+      GameObject _card = Instantiate(cardUniversal);
+      _card.transform.SetParent(GameObject.Find($"FlankRight{step}").transform);
     }
   }
   public void SupportTactical()
@@ -251,9 +246,10 @@ public class PlayerController : AbstractController
   {
     this.game.DropCardFromHand(game.GetCurrentStep() == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST, card);
     this.rearRaidCounter--;
-    if (this.rearRaidCounter == 0) {
+    if (this.rearRaidCounter == 0)
+    {
       hands[game.GetCurrentStep()].GetComponent<ContainerHand>().SetCardHandler(false);
-      int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2
+      int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
       Show("Commandors");
       Show("Flanks");
       Show("HQ1");
@@ -264,6 +260,7 @@ public class PlayerController : AbstractController
   }
   public void SelectCard(GameObject card)
   {
+    Debug.Log("TADA");
     selectedCards.Add(card);
     if (this.callback != null)
     {
