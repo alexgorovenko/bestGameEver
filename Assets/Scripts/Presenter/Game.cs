@@ -166,6 +166,11 @@ public class Game
     return cards;
   }
 
+  public int GetRemainedCards(CurrentPlayer player)
+  {
+    return this.cards[player].Count;
+  }
+
   public CurrentPlayer GetCurrentStep()
   {
     return currentStep;
