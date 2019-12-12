@@ -18,7 +18,7 @@ public class PlayerController : AbstractController
   private int playedSupportCards = 0;
   private int playedFortificationCards = 0;
   public GameObject currentDraggableCard;
-  private List<GameObject> selectedCards;
+  private List<GameObject> selectedCards = new List<GameObject>();
   Dictionary<CurrentPlayer, ContainerDeck> decks;
   public ContainerDeck deck1;
   public ContainerDeck deck2;
