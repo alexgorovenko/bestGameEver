@@ -7,9 +7,9 @@ public interface ICardContainerItem
 {
   string Name { get; }
   [SerializeField] Sprite Image { get; }
-  void onAdd();
-  void onPlay();
-  void onRemove();
+  void OnAdd();
+  void OnPlay();
+  void OnRemove();
   void SetActiveSelectHandler(bool state);
 }
 

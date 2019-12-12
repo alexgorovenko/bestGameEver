@@ -206,32 +206,32 @@ public class PlayerController : AbstractController
   }
 
   public void RearRaid_Start()
-  // {
+  {
     CurrentPlayer currentPlayer = game.GetCurrentStep();
-  hands[currentPlayer].GetComponent<ContainerHand>().SetCardHandler(true);
+    hands[currentPlayer].GetComponent<ContainerHand>().SetCardHandler(true);
 
-  int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
-  Hide("Commandors");
-  Hide("Flanks");
-  Hide("HQ1");
-  Hide("HQ2");
-  Hide($"Hand{step}");
+    int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
+    Hide("Commandors");
+    Hide("Flanks");
+    Hide("HQ1");
+    Hide("HQ2");
+    Hide($"Hand{step}");
 
-  callback = RearRaid_End;
+    callback = RearRaid_End;
   }
-public void RearRaid_End(AbstractCard card)
-{
-}
-public void SelectCard(GameObject card)
-{
-  selectedCards.Add(card);
-}
-public List<GameObject> GetSelectedCards()
-{
-  return selectedCards;
-}
-public void ResetSelectionCards()
-{
-  selectedCards.Clear();
-}
+  public void RearRaid_End(AbstractCard card)
+  {
+  }
+  public void SelectCard(GameObject card)
+  {
+    selectedCards.Add(card);
+  }
+  public List<GameObject> GetSelectedCards()
+  {
+    return selectedCards;
+  }
+  public void ResetSelectionCards()
+  {
+    selectedCards.Clear();
+  }
 }
