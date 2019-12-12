@@ -23,6 +23,9 @@ public class PlayerController : AbstractController
   public ContainerHand hand1;
   public ContainerHand hand2;
 
+  private delegate void Callback(AbstractCard card);
+  private Callback callback;
+
   // Start is called before the first frame update
   void Start()
   {
@@ -156,14 +159,18 @@ public class PlayerController : AbstractController
     if (game.GetCardsCount(game.GetCurrentStep(), Flank.Left) == 4)
     {
       return;
-    } else {
+    }
+    else
+    {
       game.AddCardsToFlank(game.GetCurrentStep(), noobsLeft, Flank.Left);
     }
 
     if (game.GetCardsCount(game.GetCurrentStep(), Flank.Right) == 4)
     {
       return;
-    } else {
+    }
+    else
+    {
       game.AddCardsToFlank(game.GetCurrentStep(), noobsRight, Flank.Right);
     }
   }
@@ -193,5 +200,24 @@ public class PlayerController : AbstractController
     Skills skills = new Skills();
     skills.shelling = 3;
     game.HitSquad(card, skills);
+  }
+
+  public void RearRaid_Start()
+  {
+    CurrentPlayer currentPlayer = game.GetCurrentStep();
+    hands[currentPlayer].GetComponent<ContainerHand>().SetCardHandler(true);
+
+    int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
+    Hide("Commandors");
+    Hide("Flanks");
+    Hide("HQ1");
+    Hide("HQ2");
+    Hide($"Hand{step}");
+
+    callback = RearRaid_End;
+  }
+  public void RearRaid_End(AbstractCard card)
+  {
+    
   }
 }
