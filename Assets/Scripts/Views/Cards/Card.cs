@@ -31,6 +31,7 @@ public class Card : MonoBehaviour, ICardContainerItem
   {
     // Debug.Log(card.GetType());
     PlayerController script = player.GetComponent<PlayerController>();
+    script.SelectCard(gameObject);
     switch (card)
     {
       case SquadCard s:

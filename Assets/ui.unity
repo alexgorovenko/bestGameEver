@@ -1252,7 +1252,7 @@ MonoBehaviour:
   m_Spacing: 10
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
-  m_ChildControlWidth: 0
+  m_ChildControlWidth: 1
   m_ChildControlHeight: 1
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
@@ -3632,7 +3632,12 @@ MonoBehaviour:
   - {fileID: 2057678138}
   - {fileID: 214351425}
   - {fileID: 1057061639}
-  flanks: {fileID: 456064492}
+  hand1Layer: {fileID: 1306947275}
+  hand2Layer: {fileID: 888160911}
+  flanksLayer: {fileID: 456064492}
+  commandorsLayer: {fileID: 1999237652}
+  HQ1Layer: {fileID: 953603809}
+  HQ2Layer: {fileID: 499136265}
   currentDraggableCard: {fileID: 0}
   deck1: {fileID: 15976690}
   deck2: {fileID: 1412809876}
@@ -3764,7 +3769,6 @@ GameObject:
   - component: {fileID: 1513913931}
   - component: {fileID: 1513913929}
   - component: {fileID: 1513913933}
-  - component: {fileID: 1513913930}
   m_Layer: 5
   m_Name: CardUniversal
   m_TagString: Untagged
@@ -3807,18 +3811,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1457967501}
   isDraggable: 0
---- !u!114 &1513913930
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1513913927}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a5196017f7544247b07844ca37b0143, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1513913931
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4711,6 +4703,17 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1513913929}
         m_MethodName: OnPointerClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_MethodName: OnSelect
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

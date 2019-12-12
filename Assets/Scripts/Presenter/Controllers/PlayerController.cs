@@ -12,12 +12,17 @@ public class PlayerController : AbstractController
   [SerializeField] GameObject commandorsOV;
   [SerializeField] GameObject chooseCommandors;
   [SerializeField] List<GameObject> commandorFields;
-  [SerializeField] GameObject flanks;
+  [SerializeField] GameObject hand1Layer;
+  [SerializeField] GameObject hand2Layer;
+  [SerializeField] GameObject flanksLayer;
+  [SerializeField] GameObject commandorsLayer;
+  [SerializeField] GameObject HQ1Layer;
+  [SerializeField] GameObject HQ2Layer;
   private uint commandorsChosen = 0;
   private int playedSquadCards = 0;
   private int playedSupportCards = 0;
   private int playedFortificationCards = 0;
-  public GameObject currentDraggableCard;
+  public Card currentDraggableCard;
   private List<GameObject> selectedCards = new List<GameObject>();
   Dictionary<CurrentPlayer, ContainerDeck> decks;
   public ContainerDeck deck1;
@@ -26,8 +31,7 @@ public class PlayerController : AbstractController
   public ContainerHand hand1;
   public ContainerHand hand2;
   private int rearRaidCounter;
-
-  private delegate void Callback(AbstractCard card);
+  private delegate void Callback(Card card);
   private Callback callback;
 
   // Start is called before the first frame update
@@ -66,11 +70,11 @@ public class PlayerController : AbstractController
   public void StartGame()
   {
     CurrentPlayer currentPlayer = game.GetCurrentStep();
-    GetCardsFromDeck(currentPlayer, 4);
+    GetCardsFromDeckToHand(currentPlayer, 4);
     // muligan?
     Next();
     currentPlayer = game.GetCurrentStep();
-    GetCardsFromDeck(currentPlayer, 6);
+    GetCardsFromDeckToHand(currentPlayer, 6);
 
     // play cards
     // select cards (TODO: drag n drop)
@@ -86,14 +90,6 @@ public class PlayerController : AbstractController
     playedSupportCards = 0;
     playedFortificationCards = 0;
     game.NextStep();
-  }
-  public void Hide(string s)
-  {
-    GameObject.Find(s).SetActive(false);
-  }
-  public void Show(string s)
-  {
-    GameObject.Find(s).SetActive(true);
   }
   public void ShowCommandorsChooseMenu()
   {
@@ -125,22 +121,27 @@ public class PlayerController : AbstractController
       HideCommandorsChooseMenu();
     }
   }
-  public void GetCardFromDeck(CurrentPlayer currentPlayer)
+  public Card GetCardFromDeck(CurrentPlayer currentPlayer)
   {
     Card card = decks[currentPlayer].GetCard();
+    return card;
+  }
+  public void GetCardFromDeckToHand(CurrentPlayer currentPlayer)
+  {
+    Card card = GetCardFromDeck(currentPlayer);
     List<AbstractCard> _cards = new List<AbstractCard>();
     _cards.Add(card.card);
     card.transform.SetParent(hands[currentPlayer].transform);
     game.AddCardsToHand(currentPlayer, _cards);
   }
-  public void GetCardsFromDeck(CurrentPlayer currentPlayer, int amount)
+  public void GetCardsFromDeckToHand(CurrentPlayer currentPlayer, int amount)
   {
     for (int i = 0; i < amount; i++)
     {
-      GetCardFromDeck(currentPlayer);
+      GetCardFromDeckToHand(currentPlayer);
     }
   }
-  public void AddCardToHand(GameObject card)
+  public void AddCardToHand(Card card)
   {
     CurrentPlayer currentPlayer = game.GetCurrentStep();
     List<AbstractCard> addedCards = new List<AbstractCard>();
@@ -149,7 +150,7 @@ public class PlayerController : AbstractController
     game.AddCardsToHand(currentPlayer, addedCards);
     card.transform.SetParent(hands[currentPlayer].transform);
   }
-  public void DropCardToFlank(GameObject card, GameObject flank)
+  public void DropCardToFlank(Card card, GameObject flank)
   {
     AbstractCard cardModel = card.GetComponent<Card>().card;
     Flank flankModel = flank.GetComponent<ContainerFlank>().flank;
@@ -206,21 +207,62 @@ public class PlayerController : AbstractController
   public void SupportTactical()
   {
     int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 2 : 1;
-    Hide("Commandors");
-    Hide("Flanks");
-    Hide("HQ1");
-    Hide("HQ2");
-    Hide($"Hand{step}");
+
+    commandorsLayer.SetActive(false);
+    flanksLayer.SetActive(false);
+    HQ1Layer.SetActive(false);
+    HQ2Layer.SetActive(false);
+    if (step == 1)
+    {
+      hand1Layer.SetActive(false);
+    }
+    else
+    {
+      hand2Layer.SetActive(false);
+    }
 
     temporary.gameObject.SetActive(true);
-    List<AbstractCard> temporaryCards = game.GetSeveralCards(game.GetCurrentStep(), 3);
-    foreach (AbstractCard card in temporaryCards)
+
+    List<Card> temporaryCards = new List<Card>();
+
+    temporaryCards.Add(GetCardFromDeck(game.GetCurrentStep()));
+    temporaryCards.Add(GetCardFromDeck(game.GetCurrentStep()));
+    temporaryCards.Add(GetCardFromDeck(game.GetCurrentStep()));
+
+    foreach (Card card in temporaryCards)
     {
       GameObject _card = Instantiate(cardUniversal);
       _card.transform.SetParent(temporary.transform.Find("CardsContainer").transform);
-      _card.GetComponent<Card>().SetCard(card);
+      _card.GetComponent<Card>().SetCard(card.card);
     }
-    // => drag one => two to drop
+
+    callback = SupportTacticalEnd;
+  }
+
+  public void SupportTacticalEnd(Card card)
+  {
+    Debug.Log("LOGGGGG");
+    int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 2 : 1;
+
+    temporary.gameObject.SetActive(false);
+
+    AddCardToHand(card);
+
+    commandorsLayer.SetActive(true);
+    flanksLayer.SetActive(true);
+    HQ1Layer.SetActive(true);
+    HQ2Layer.SetActive(true);
+    if (step == 1)
+    {
+      hand1Layer.SetActive(true);
+    }
+    else
+    {
+      hand2Layer.SetActive(true);
+    }
+
+    ResetSelectionCards();
+    callback = null;
   }
 
   public void SupportSniper()
@@ -229,26 +271,40 @@ public class PlayerController : AbstractController
     // flanks[currentEnemy].GetComponent<FlankHand>().SetCardHandler(true);
 
     int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
-    Hide("Commandors");
-    Hide("Flanks");
-    Hide("HQ1");
-    Hide("HQ2");
-    Hide($"Hand{step}");
+    commandorsLayer.SetActive(false);
+    flanksLayer.SetActive(false);
+    HQ1Layer.SetActive(false);
+    HQ2Layer.SetActive(false);
+    if (step == 1)
+    {
+      hand1Layer.SetActive(false);
+    }
+    else
+    {
+      hand2Layer.SetActive(false);
+    }
     callback = SupportSniperCallback;
   }
 
-  private void SupportSniperCallback(AbstractCard card)
+  private void SupportSniperCallback(Card card)
   {
     Skills skills = new Skills();
     skills.shelling = 3;
-    // game.HitSquad(card, skills);
+    // game.HitSquad(card.card, skills);
     // flanks[game.GetCurrentStep() == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST].GetComponent<FlankHand>().SetCardHandler(false);
     int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
-    Show("Commandors");
-    Show("Flanks");
-    Show("HQ1");
-    Show("HQ2");
-    Show($"Hand{step}");
+    commandorsLayer.SetActive(true);
+    flanksLayer.SetActive(true);
+    HQ1Layer.SetActive(true);
+    HQ2Layer.SetActive(true);
+    if (step == 1)
+    {
+      hand1Layer.SetActive(true);
+    }
+    else
+    {
+      hand2Layer.SetActive(true);
+    }
     callback = null;
   }
 
@@ -259,38 +315,52 @@ public class PlayerController : AbstractController
     hands[currentEnemy].GetComponent<ContainerHand>().SetCardHandler(true);
 
     int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
-    Hide("Commandors");
-    Hide("Flanks");
-    Hide("HQ1");
-    Hide("HQ2");
-    Hide($"Hand{step}");
+    commandorsLayer.SetActive(false);
+    flanksLayer.SetActive(false);
+    HQ1Layer.SetActive(false);
+    HQ2Layer.SetActive(false);
+    if (step == 1)
+    {
+      hand1Layer.SetActive(false);
+    }
+    else
+    {
+      hand2Layer.SetActive(false);
+    }
 
     callback = RearRaid_End;
   }
-  public void RearRaid_End(AbstractCard card)
+  public void RearRaid_End(Card card)
   {
-    this.game.DropCardFromHand(game.GetCurrentStep() == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST, card);
+    this.game.DropCardFromHand(game.GetCurrentStep() == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST, card.card);
     this.rearRaidCounter--;
     if (this.rearRaidCounter == 0)
     {
       CurrentPlayer currentEnemy = game.GetCurrentStep() == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST;
       hands[currentEnemy].GetComponent<ContainerHand>().SetCardHandler(false);
       int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
-      Show("Commandors");
-      Show("Flanks");
-      Show("HQ1");
-      Show("HQ2");
-      Show($"Hand{step}");
+      commandorsLayer.SetActive(true);
+      flanksLayer.SetActive(true);
+      HQ1Layer.SetActive(true);
+      HQ2Layer.SetActive(true);
+      if (step == 1)
+      {
+        hand1Layer.SetActive(true);
+      }
+      else
+      {
+        hand2Layer.SetActive(true);
+      }
       this.callback = null;
     }
   }
   public void SelectCard(GameObject card)
   {
-    Debug.Log("TADA");
+    Debug.Log("SelectCard");
     selectedCards.Add(card);
     if (this.callback != null)
     {
-      this.callback(card.GetComponent<Card>().card);
+      this.callback(card.GetComponent<Card>());
     }
   }
   public List<GameObject> GetSelectedCards()
