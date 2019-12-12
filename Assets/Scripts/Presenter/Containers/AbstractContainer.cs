@@ -17,10 +17,22 @@ public class AbstractContainer : MonoBehaviour
       CardAdded(this, new CardContainerEventArgs(item));
     }
   }
+  public void addCards(List<ICardContainerItem> items)
+  {
+      foreach (var item in items) {
+          addCard(item);
+      }
+  }
   public void removeCard(ICardContainerItem item)
   {
     mCards.Remove(item);
     item.OnRemove();
+  }
+  public void removeCards(List<ICardContainerItem> items)
+  {
+      foreach (var item in items) {
+          removeCard(item);
+      }
   }
   public void SetCardHandler(bool isActive)
   {
