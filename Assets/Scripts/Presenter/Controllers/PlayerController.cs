@@ -18,7 +18,7 @@ public class PlayerController : AbstractController
   private int playedSupportCards = 0;
   private int playedFortificationCards = 0;
   public GameObject currentDraggableCard;
-  public List<GameObject> selectedCards;
+  private List<GameObject> selectedCards;
   Dictionary<CurrentPlayer, ContainerHand> hands;
   public ContainerHand hand1;
   public ContainerHand hand2;
@@ -193,5 +193,17 @@ public class PlayerController : AbstractController
     Skills skills = new Skills();
     skills.shelling = 3;
     game.HitSquad(card, skills);
+  }
+
+  public void SelectCard(AbstractCard card) {
+    this.selectedCards.Add(card);
+  }
+
+  public List<AbstractCard> GetSelectedCards() {
+    return this.selectedCards;
+  }
+
+  public void ResetSelectionCards() {
+    this.selectedCards.RemoveAll();
   }
 }
