@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class PlayerController : AbstractController
 {
+  [SerializeField] GameObject gameUI;
   [SerializeField] GameObject temporary;
   [SerializeField] GameObject cardCommandor;
   [SerializeField] GameObject cardUniversal;
@@ -74,11 +75,14 @@ public class PlayerController : AbstractController
     game.NextStep();
   }
 
-  public void PlaySquadCard(SquadCard squad)
+  public void Hide(string s)
   {
-    // select flank
+    GameObject.Find(s).SetActive(false);
   }
-
+  public void Show(string s)
+  {
+    GameObject.Find(s).SetActive(true);
+  }
   public void ApplyFortificationCard()
   {
     // get card
@@ -155,6 +159,13 @@ public class PlayerController : AbstractController
   }
   public void SupportTactical()
   {
+    int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 2 : 1;
+    Hide("Commandors");
+    Hide("Flanks");
+    Hide("HQ1");
+    Hide("HQ2");
+    Hide($"Hand{step}");
+
     temporary.gameObject.SetActive(true);
     List<AbstractCard> temporaryCards = game.GetSeveralCards(game.GetCurrentStep(), 3);
     foreach (AbstractCard card in temporaryCards)
