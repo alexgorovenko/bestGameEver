@@ -39,6 +39,7 @@ public class Card : MonoBehaviour, ICardContainerItem
       case FortificationCard f:
         break;
       case SupportCard s:
+        script.ResetSelectionCards();
         switch (s.action)
         {
           case ViewAction.TACTICAL_MOVE:

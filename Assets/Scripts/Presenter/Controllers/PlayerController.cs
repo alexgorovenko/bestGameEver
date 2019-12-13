@@ -27,6 +27,9 @@ public class PlayerController : AbstractController
   Dictionary<CurrentPlayer, ContainerDeck> decks;
   public ContainerDeck deck1;
   public ContainerDeck deck2;
+  Dictionary<CurrentPlayer, ContainerDrop> drops;
+  public ContainerDrop drop1;
+  public ContainerDrop drop2;
   Dictionary<CurrentPlayer, ContainerHand> hands;
   public ContainerHand hand1;
   public ContainerHand hand2;
@@ -67,7 +70,7 @@ public class PlayerController : AbstractController
       deck2.AddCard(card);
     }
   }
-  public void StartGame()
+  public void GameStart()
   {
     CurrentPlayer currentPlayer = game.GetCurrentStep();
     GetCardsFromDeckToHand(currentPlayer, 4);
@@ -117,7 +120,7 @@ public class PlayerController : AbstractController
     }
     if (commandorsChosen == 4)
     {
-      StartGame();
+      GameStart();
       HideCommandorsChooseMenu();
     }
   }
@@ -176,9 +179,25 @@ public class PlayerController : AbstractController
         break;
     }
   }
+
+  public void DropCardToDrop(Card card, CurrentPlayer currentPlayer)
+  {
+    game.DropCardFromHand(currentPlayer, card.card);
+    card.transform.SetParent(drops[currentPlayer].transform);
+  }
+
+  // Attack
+
+  public void AttackStart()
+  {
+
+  }
+
+  // Support cards callbacks
+
   public void SupportMobilization()
   {
-    Debug.Log("TADA");
+    Debug.Log("Support: Mobilization");
     HashSet<SquadCard> noobsLeft = new HashSet<SquadCard>();
     HashSet<SquadCard> noobsRight = new HashSet<SquadCard>();
     SquadCard noobLeft = new SquadCard(Rarity.General, "Новобанец", "", 1, 2, 1, new Skills());
@@ -206,6 +225,7 @@ public class PlayerController : AbstractController
   }
   public void SupportTactical()
   {
+    Debug.Log("Support: Tactical Move");
     int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 2 : 1;
 
     commandorsLayer.SetActive(false);
@@ -241,7 +261,7 @@ public class PlayerController : AbstractController
 
   public void SupportTacticalEnd(Card card)
   {
-    Debug.Log("LOGGGGG");
+    Debug.Log("Support: Tactical Move End");
     int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 2 : 1;
 
     temporary.gameObject.SetActive(false);
@@ -283,10 +303,10 @@ public class PlayerController : AbstractController
     {
       hand2Layer.SetActive(false);
     }
-    callback = SupportSniperCallback;
+    callback = SupportSniperEnd;
   }
 
-  private void SupportSniperCallback(Card card)
+  private void SupportSniperEnd(Card card)
   {
     Skills skills = new Skills();
     skills.shelling = 3;
@@ -357,7 +377,9 @@ public class PlayerController : AbstractController
   public void SelectCard(GameObject card)
   {
     Debug.Log("SelectCard");
+    Debug.Log(selectedCards.Count);
     selectedCards.Add(card);
+
     if (this.callback != null)
     {
       this.callback(card.GetComponent<Card>());
