@@ -43,4 +43,8 @@ public class AbstractContainer : MonoBehaviour
       card.SetActiveSelectHandler(isActive);
     }
   }
+  public List<Card> GetCards()
+  {
+    return this.mCards;
+  }
 }

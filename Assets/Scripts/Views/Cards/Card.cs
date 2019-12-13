@@ -40,6 +40,7 @@ public class Card : MonoBehaviour, ICardContainerItem
       case FortificationCard f:
         break;
       case SupportCard s:
+        script.DropCardToDrop(this, false);
         script.ResetSelectionCards();
         switch (s.action)
         {
