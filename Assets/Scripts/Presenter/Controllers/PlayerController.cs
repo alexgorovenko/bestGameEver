@@ -256,7 +256,6 @@ public class PlayerController : AbstractController
   {
     Debug.Log("in AttackStart");
     // выбраны те, кто атакуют
-    game.Attack(game.GetCurrentStep());
     // запрещаем выбирать чужие карты
     int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 0 : 2;
 
@@ -270,7 +269,19 @@ public class PlayerController : AbstractController
 
   public void DefenceStart()
   {
-    
+    // уже выбраны защитники
+    game.Attack(game.GetCurrentStep());
+    //  Update UI
+
+    int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 0 : 2;
+
+    flanks[step].GetComponent<ContainerFlank>().DestroyDead();
+    flanks[step + 1].GetComponent<ContainerFlank>().DestroyDead();
+
+    HQ1Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.FIRST)}";
+    HQ2Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.SECOND)}";
+
+    Next();
   }
 
   // Support cards callbacks

@@ -17,4 +17,16 @@ public class ContainerFlank : AbstractContainer
       card.isSelectable = card.card.active;
     }
   }
+
+  public void DestroyDead()
+  {
+    foreach (var card in this.mCards)
+    {
+      if (((SquadCard)card.card).stamina <= 0)
+      {
+        mCards.Remove(card);
+        Destroy(card);
+      }
+    }
+  }
 }
