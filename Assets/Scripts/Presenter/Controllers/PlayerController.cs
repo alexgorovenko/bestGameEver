@@ -116,8 +116,6 @@ public class PlayerController : AbstractController
 
     int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 0 : 2;
 
-    GameObject flankContainer = game.GetCurrentStep() == CurrentPlayer.FIRST ? flanks1Layer : flanks2Layer;
-
     flanks[step].GetComponent<ContainerFlank>().RefreshActive();
     flanks[step + 1].GetComponent<ContainerFlank>().RefreshActive();
 
@@ -125,6 +123,9 @@ public class PlayerController : AbstractController
     game.NextStep();
     hands[game.GetCurrentStep()].gameObject.SetActive(true);
     GetCardsFromDeckToHand(game.GetCurrentStep(), 2);
+
+    HQ1Layer.transform.Find("Text").GetComponent<Text>().text = game.GetHeadquarterHealth(CurrentPlayer.FIRST);
+    HQ2Layer.transform.Find("Text").GetComponent<Text>().text = game.GetHeadquarterHealth(CurrentPlayer.SECOND);
 
   }
   public void ShowCommandorsChooseMenu()
