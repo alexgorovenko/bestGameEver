@@ -144,7 +144,7 @@ public class PlayerController : AbstractController
   {
 
   }
-  public Card GetCardFromDeck(CurrentPlayer currentPlayer)
+  private Card GetCardFromDeck(CurrentPlayer currentPlayer)
   {
     Card card = decks[currentPlayer].GetCard();
     return card;
@@ -152,6 +152,7 @@ public class PlayerController : AbstractController
   public void GetCardFromDeckToHand(CurrentPlayer currentPlayer)
   {
     Card card = GetCardFromDeck(currentPlayer);
+    if (card == null) return;    
     List<AbstractCard> _cards = new List<AbstractCard>();
     _cards.Add(card.card);
     card.transform.SetParent(hands[currentPlayer].transform);
