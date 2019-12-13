@@ -58,7 +58,7 @@ public class Card : MonoBehaviour, ICardContainerItem
   {
     // Debug.Log(card.GetType());
     PlayerController script = player.GetComponent<PlayerController>();
-    if (isSelectable) script.SelectCard(gameObject);
+    // if (isSelectable) script.SelectCard(gameObject, );
     Skills skills;
     switch (card)
     {
