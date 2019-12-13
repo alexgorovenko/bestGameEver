@@ -154,7 +154,7 @@ public class PlayerController : AbstractController
   public void GetCardFromDeckToHand(CurrentPlayer currentPlayer)
   {
     Card card = GetCardFromDeck(currentPlayer);
-    if (card == null) return;    
+    if (card == null) return;
     List<AbstractCard> _cards = new List<AbstractCard>();
     _cards.Add(card.card);
     card.transform.SetParent(hands[currentPlayer].transform);
@@ -222,7 +222,11 @@ public class PlayerController : AbstractController
 
   public void AttackStart()
   {
-
+    // выбраны те, кто атакуют
+    // запрещаем выбирать чужие карты
+    // выбираем тех, кто защищается
+    // начать атаку => в бой
+    // применить активные скилы
   }
 
   // Support cards callbacks
