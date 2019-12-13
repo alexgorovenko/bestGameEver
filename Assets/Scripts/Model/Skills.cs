@@ -1,18 +1,18 @@
 ﻿public class Skills
 {
-    public uint support { get; set; }
-    public uint suppression { get; set; }
-    public uint armor { get; set; }
+    public int support { get; set; }
+    public int suppression { get; set; }
+    public int armor { get; set; }
     public bool armorPiercing { get; set; }
-    public uint shelling { get; set; }
-    public uint inspiration { get; set; }
-    public uint massDamage { get; set; }
-    public uint sapper { get; set; }
-    public uint intelligenceService { get; set; }
+    public int shelling { get; set; }
+    public int inspiration { get; set; }
+    public int massDamage { get; set; }
+    public int sapper { get; set; }
+    public int intelligenceService { get; set; }
     public bool breakthrough { get; set; }
     public bool agility { get; set; }
-    public uint medic { get; set; }
-    public uint block { get; set; }
+    public int medic { get; set; }
+    public int block { get; set; }
 
     public Skills()
     {

@@ -119,9 +119,9 @@ public class Attack
         }
     }
 
-    public uint getHeadquartesHurt()
+    public int getHeadquartesHurt()
     {
-        uint totalHurt = 0;
+        int totalHurt = 0;
         foreach (Flank flank in Enum.GetValues(typeof(Flank)))
         {
             applySkills(this.attackerSkills[flank], true, false, flank);
@@ -132,7 +132,7 @@ public class Attack
             }
 
             uint remainInspiration = 1;
-            uint massDamageAttacker = 0;
+            int massDamageAttacker = 0;
             foreach (SquadCard card in attacker[flank])
             {
                 if (card.skills.inspiration > 0)
@@ -149,7 +149,7 @@ public class Attack
             }
 
             remainInspiration = 1;
-            uint massDamageDefender = 0;
+            int massDamageDefender = 0;
             foreach (SquadCard card in deffender[flank])
             {
                 if (card.skills.inspiration > 0)
@@ -185,7 +185,7 @@ public class Attack
                     deffender[flank][i].stamina -= (int)massDamageAttacker;
                     if (deffender[flank][i].stamina < 0 && attacker[flank][i].skills.breakthrough)
                     {
-                        totalHurt += (uint)-deffender[flank][i].stamina;
+                        totalHurt += -deffender[flank][i].stamina;
                     }
                 }
                 else

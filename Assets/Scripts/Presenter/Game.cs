@@ -278,4 +278,9 @@ public class Game
     return fields[player].flanks[flank].Count;
   }
 
+  public int GetHeadsquaterHealth (CurrentPlayer player)
+  {
+    return fields[player].headquartesStrength;
+  }
+
 }

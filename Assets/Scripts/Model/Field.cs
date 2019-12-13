@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class Field
 {
-  public uint headquartesStrength { get; set; }
+  public int headquartesStrength { get; set; }
   private CommandorCard commandorLeft;
   private CommandorCard commandorRight;
   public Dictionary<Flank, HashSet<SquadCard>> flanks { get; }
@@ -62,7 +62,7 @@ public class Field
     }
   }
 
-  public void Attack(uint points)
+  public void Attack(int points)
   {
     this.headquartesStrength -= points;
   }
