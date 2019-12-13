@@ -10,6 +10,13 @@ public class ContainerFlank : AbstractContainer
   public CurrentPlayer currentPlayer;
   [SerializeField] public List<GameObject> squads;
   [SerializeField] PlayerController player;
+  void Start()
+  {
+    for (var i = 0; i < 8; i++)
+    {
+      mCards.Add(null);
+    }
+  }
   public void PlaceCard(Card card, int position)
   {
     mCards[position] = card;
