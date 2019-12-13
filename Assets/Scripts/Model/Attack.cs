@@ -6,8 +6,8 @@ public class Attack
     private Dictionary<Flank, List<SquadCard>> attacker;
     private Dictionary<Flank, List<SquadCard>> deffender;
     private Dictionary<Flank, FortificationCard> deffenderFortification;
-    private Skills attackerSkills;
-    private Skills deffenderSkills;
+    private Dictionary<Flank, Skills> attackerSkills;
+    private Dictionary<Flank, Skills> deffenderSkills;
 
     public Attack()
     {
@@ -41,14 +41,14 @@ public class Attack
         deffender[flank] = squad;
     }
 
-    public void ApplySkillsAttacker(Skills skills)
+    public void ApplySkillsAttacker(Flank flank, Skills skills)
     {
-        this.attackerSkills = skills;
+        this.attackerSkills[flank] = skills;
     }
 
-    public void ApplySkillsDeffender(Skills skills)
+    public void ApplySkillsDeffender(Flank flank, Skills skills)
     {
-        this.deffenderSkills = skills;
+        this.deffenderSkills[flank] = skills;
     }
 
     public void hitToAttacker(uint hp, Flank flank, SquadCard card)
@@ -79,7 +79,7 @@ public class Attack
         {
             foreach (SquadCard card in deffender[flank])
             {
-                if (card != null) card.protection = Math.Min(1, card.protection - attackerSkills.support);
+                if (card != null) card.protection = Math.Min(1, card.protection - attackerSkills[flank].support);
             }
             
             foreach (SquadCard card in attacker[flank])
@@ -100,7 +100,7 @@ public class Attack
         {
             foreach (SquadCard card in attacker[flank])
             {
-                if (card != null) card.attack = Math.Min(1, card.attack - deffenderSkills.suppression);
+                if (card != null) card.attack = Math.Min(1, card.attack - deffenderSkills[flank].suppression);
             }
             
             foreach (SquadCard card in attacker[flank])
@@ -124,8 +124,8 @@ public class Attack
         uint totalHurt = 0;
         foreach (Flank flank in Enum.GetValues(typeof(Flank)))
         {
-            applySkills(this.attackerSkills, true, false, flank);
-            applySkills(this.deffenderSkills, false, false, flank);
+            applySkills(this.attackerSkills[flank], true, false, flank);
+            applySkills(this.deffenderSkills[flank], false, false, flank);
             if (this.deffenderFortification.ContainsKey(flank))
             {
                 this.deffenderFortification[flank].skill(this.attacker[flank], this.deffender[flank]);

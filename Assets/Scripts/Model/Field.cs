@@ -67,4 +67,9 @@ public class Field
     this.headquartesStrength -= points;
   }
 
+  public CommandorCard GetCommandor(Flank flank)
+  {
+    return flank == Flank.Left ? commandorLeft : commandorRight;
+  }
+
 }

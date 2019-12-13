@@ -265,6 +265,11 @@ public class Game
 
   public void Attack(CurrentPlayer player)
   {
+    foreach (Flank flank in Enum.GetValues(typeof(Flank)))
+    {
+      attacks[player].ApplySkillsAttacker(flank, fields[player].GetCommandor(flank).skills);
+      attacks[player].ApplySkillsDeffender(flank, fields[player == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST].GetCommandor(flank).skills);
+    }    
     fields[player].Attack(attacks[player].getHeadquartesHurt());
   }
 
