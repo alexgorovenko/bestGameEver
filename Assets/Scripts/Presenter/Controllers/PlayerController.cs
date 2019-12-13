@@ -27,6 +27,7 @@ public class PlayerController : AbstractController
   private int playedFortificationCards = 0;
   public Card currentDraggableCard;
   private List<Card> attackCards = new List<Card>();
+  private List<Card> defenceCards = new List<Card>();
   List<ContainerFlank> flanks;
   public ContainerFlank flankLeft1;
   public ContainerFlank flankLeft2;
@@ -497,7 +498,14 @@ public class PlayerController : AbstractController
   }
   private void AttackCallback(Card card)
   {
-    attackCards.Add(card);
+    if (attackState == AttackState.ATTACK)
+    {
+      attackCards.Add(card);
+    }
+    else
+    {
+      defenceCards.Add(card);
+    }
     card.Highlight(true);
   }
   public void SelectCard(GameObject card)
