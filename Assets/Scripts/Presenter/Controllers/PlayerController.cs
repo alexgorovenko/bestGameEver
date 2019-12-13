@@ -92,6 +92,9 @@ public class PlayerController : AbstractController
     playedSquadCards = 0;
     playedSupportCards = 0;
     playedFortificationCards = 0;
+
+    UpdateCommandors();
+
     game.NextStep();
   }
   public void ShowCommandorsChooseMenu()
@@ -123,6 +126,15 @@ public class PlayerController : AbstractController
       GameStart();
       HideCommandorsChooseMenu();
     }
+  }
+  public void ActivateCommandor(CommandorCard commandorCard)
+  {
+
+  }
+
+  public void UpdateCommandors()
+  {
+
   }
   public Card GetCardFromDeck(CurrentPlayer currentPlayer)
   {
@@ -393,7 +405,8 @@ public class PlayerController : AbstractController
   }
   public void ResetSelectionCards()
   {
-    foreach (var card in selectedCards) {
+    foreach (var card in selectedCards)
+    {
       card.GetComponent<Card>().isSelected = false;
     }
     selectedCards.Clear();
