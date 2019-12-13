@@ -13,6 +13,7 @@ public class ContainerFlank : AbstractContainer
   public void PlaceCard(Card card, int position)
   {
     mCards[position] = card;
+    card.position = position;
   }
   public void RefreshActive()
   {

@@ -18,6 +18,7 @@ public class Card : MonoBehaviour, ICardContainerItem
   public bool isSelectable = false;
   public bool isDraggable = true;
   public bool isHighlighted = true;
+  public int position = 0;
   public Card() : base()
   {
     rarityColors[Rarity.General] = new Color(0.8f, 0.8f, 0.8f);
@@ -58,7 +59,7 @@ public class Card : MonoBehaviour, ICardContainerItem
   {
     // Debug.Log(card.GetType());
     PlayerController script = player.GetComponent<PlayerController>();
-    // if (isSelectable) script.SelectCard(gameObject, );
+    if (isSelectable) script.SelectCard(gameObject, position);
     Skills skills;
     switch (card)
     {
