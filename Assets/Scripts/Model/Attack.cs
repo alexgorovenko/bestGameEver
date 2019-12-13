@@ -14,6 +14,8 @@ public class Attack
         this.attacker = new Dictionary<Flank, List<SquadCard>>();
         this.deffender = new Dictionary<Flank, List<SquadCard>>();
         this.deffenderFortification = new Dictionary<Flank, FortificationCard>();
+        this.attackerSkills = new Dictionary<Flank, Skills>();
+        this.deffenderSkills = new Dictionary<Flank, Skills>();
         foreach (Flank flank in Enum.GetValues(typeof(Flank)))
         {
             attacker[flank] = new List<SquadCard>();
