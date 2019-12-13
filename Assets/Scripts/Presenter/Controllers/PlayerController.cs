@@ -124,8 +124,8 @@ public class PlayerController : AbstractController
     hands[game.GetCurrentStep()].gameObject.SetActive(true);
     GetCardsFromDeckToHand(game.GetCurrentStep(), 2);
 
-    HQ1Layer.transform.Find("Text").GetComponent<Text>().text = game.GetHeadquarterHealth(CurrentPlayer.FIRST);
-    HQ2Layer.transform.Find("Text").GetComponent<Text>().text = game.GetHeadquarterHealth(CurrentPlayer.SECOND);
+    HQ1Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.FIRST)}";
+    HQ2Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.SECOND)}";
 
   }
   public void ShowCommandorsChooseMenu()
@@ -252,7 +252,12 @@ public class PlayerController : AbstractController
   public void AttackStart()
   {
     // выбраны те, кто атакуют
+
     // запрещаем выбирать чужие карты
+    int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 0 : 2;
+
+    flanks[step].GetComponent<ContainerFlank>().RefreshActive();
+    flanks[step + 1].GetComponent<ContainerFlank>().RefreshActive();
     // выбираем тех, кто защищается
     // начать атаку => в бой
     // применить активные скилы
