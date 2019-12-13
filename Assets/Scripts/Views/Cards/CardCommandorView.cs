@@ -8,15 +8,15 @@ public class CardCommandorView : Card
   uint abilityCounter = 0;
   public void Select()
   {
-    player.GetComponent<PlayerController>().SetCommandor(transform, (CommandorCard)card);
     selectButton.SetActive(false);
     activeButton.SetActive(true);
+    player.GetComponent<PlayerController>().SetCommandor(transform, (CommandorCard)card);
   }
   public void Activate()
   {
     if (abilityCounter % ((CommandorCard)card).period == 0)
     {
-      player.GetComponent<PlayerController>().ActivateCommandor(gameObject.GetComponent<CommandorCard>());
+      player.GetComponent<PlayerController>().ActivateCommandor(gameObject.GetComponent<CardCommandorView>());
     }
   }
   public void UpdateCommandor()

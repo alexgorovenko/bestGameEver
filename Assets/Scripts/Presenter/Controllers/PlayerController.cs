@@ -50,6 +50,10 @@ public class PlayerController : AbstractController
     decks.Add(CurrentPlayer.FIRST, deck1);
     decks.Add(CurrentPlayer.SECOND, deck2);
 
+    drops = new Dictionary<CurrentPlayer, ContainerDrop>();
+    drops.Add(CurrentPlayer.FIRST, drop1);
+    drops.Add(CurrentPlayer.SECOND, drop2);
+
     ShowCommandorsChooseMenu();
     List<AbstractCard> _cards1 = game.GetSeveralCards(CurrentPlayer.FIRST, game.GetRemainedCards(CurrentPlayer.FIRST));
     foreach (AbstractCard aCard in _cards1)
@@ -74,10 +78,11 @@ public class PlayerController : AbstractController
   {
     CurrentPlayer currentPlayer = game.GetCurrentStep();
     GetCardsFromDeckToHand(currentPlayer, 4);
+    hands[game.GetCurrentStep()].gameObject.SetActive(false);
     // muligan?
     Next();
     currentPlayer = game.GetCurrentStep();
-    GetCardsFromDeckToHand(currentPlayer, 6);
+    GetCardsFromDeckToHand(currentPlayer, 4);
 
     // play cards
     // select cards (TODO: drag n drop)
@@ -94,8 +99,11 @@ public class PlayerController : AbstractController
     playedFortificationCards = 0;
 
     UpdateCommandors();
-
+    hands[game.GetCurrentStep()].gameObject.SetActive(false);
     game.NextStep();
+    hands[game.GetCurrentStep()].gameObject.SetActive(true);
+    GetCardsFromDeckToHand(game.GetCurrentStep(), 2);
+
   }
   public void ShowCommandorsChooseMenu()
   {
@@ -119,7 +127,7 @@ public class PlayerController : AbstractController
     commandorsChosen++;
     if (commandorsChosen != 2)
     {
-      Next();
+      game.NextStep();
     }
     if (commandorsChosen == 4)
     {
@@ -127,7 +135,7 @@ public class PlayerController : AbstractController
       HideCommandorsChooseMenu();
     }
   }
-  public void ActivateCommandor(CommandorCard commandorCard)
+  public void ActivateCommandor(CardCommandorView cardCommandorView)
   {
 
   }
@@ -288,10 +296,10 @@ public class PlayerController : AbstractController
     temporary.gameObject.SetActive(false);
 
     AddCardToHand(card);
-    foreach (var _card in temporary.GetCards())
-    {
-      DropCardToDrop(_card);
-    }
+    // foreach (var _card in temporary.GetCards())
+    // {
+    //   DropCardToDrop(_card);
+    // }
 
     commandorsLayer.SetActive(true);
     flanksLayer.SetActive(true);
