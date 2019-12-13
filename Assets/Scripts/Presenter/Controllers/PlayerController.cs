@@ -25,7 +25,7 @@ public class PlayerController : AbstractController
   private int playedSupportCards = 0;
   private int playedFortificationCards = 0;
   public Card currentDraggableCard;
-  private List<GameObject> selectedCards = new List<GameObject>();
+  private List<Card> attackCards = new List<Card>();
   List<ContainerFlank> flanks;
   public ContainerFlank flankLeft1;
   public ContainerFlank flankLeft2;
@@ -49,6 +49,8 @@ public class PlayerController : AbstractController
   void Start()
   {
     game = new Game();
+
+    callback = AttackCallback;
 
     hands = new Dictionary<CurrentPlayer, ContainerHand>();
     hands.Add(CurrentPlayer.FIRST, hand1);
@@ -351,7 +353,7 @@ public class PlayerController : AbstractController
     }
 
     ResetSelectionCards();
-    callback = null;
+    callback = AttackCallback;
   }
 
   public void SupportSniper()
@@ -394,7 +396,7 @@ public class PlayerController : AbstractController
     {
       hand2Layer.SetActive(true);
     }
-    callback = null;
+    callback = AttackCallback;
   }
 
   public void RearRaid_Start()
@@ -440,32 +442,29 @@ public class PlayerController : AbstractController
       {
         hand2Layer.SetActive(true);
       }
-      this.callback = null;
+      this.callback = AttackCallback;
     }
+  }
+  private void AttackCallback (Card card)
+  {
+    attackCards.Add(card);
+    card.Hightlight(true);
   }
   public void SelectCard(GameObject card)
   {
     Debug.Log("SelectCard");
-    Debug.Log(selectedCards.Count);
+    Debug.Log(attackCards.Count);
     if (card.GetComponent<Card>().isSelectable == false) return;
     card.GetComponent<Card>().isSelectable = false;
-    selectedCards.Add(card);
-
-    if (this.callback != null)
-    {
-      this.callback(card.GetComponent<Card>());
-    }
-  }
-  public List<GameObject> GetSelectedCards()
-  {
-    return selectedCards;
+    this.callback(card.GetComponent<Card>());
   }
   public void ResetSelectionCards()
   {
-    foreach (var card in selectedCards)
+    foreach (var card in attackCards)
     {
-      card.GetComponent<Card>().isSelectable = true;
+      card.Highlight(false);
+      card.isSelectable = true;
     }
-    selectedCards.Clear();
+    attackCards.Clear();
   }
 }
