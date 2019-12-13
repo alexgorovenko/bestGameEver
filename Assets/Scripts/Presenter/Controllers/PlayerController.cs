@@ -15,6 +15,8 @@ public class PlayerController : AbstractController
   [SerializeField] GameObject hand1Layer;
   [SerializeField] GameObject hand2Layer;
   [SerializeField] GameObject flanksLayer;
+  [SerializeField] GameObject flanks1Layer;
+  [SerializeField] GameObject flanks2Layer;
   [SerializeField] GameObject commandorsLayer;
   [SerializeField] GameObject HQ1Layer;
   [SerializeField] GameObject HQ2Layer;
