@@ -8,8 +8,8 @@ public class PlayerController : AbstractController
   [SerializeField] GameObject gameUI;
   [SerializeField] GameObject temporary;
   [SerializeField] GameObject cardCommandor;
-  [SerializeField] GameObject cardUniversal;
-  [SerializeField] CardPlaceholder cardPlaceholder;
+  [SerializeField] Card cardUniversal;
+  [SerializeField] public CardPlaceholder cardPlaceholder;
   [SerializeField] GameObject commandorsOV;
   [SerializeField] GameObject chooseCommandors;
   [SerializeField] List<GameObject> commandorFields;
@@ -27,8 +27,8 @@ public class PlayerController : AbstractController
   private int playedSupportCards = 0;
   private int playedFortificationCards = 0;
   public Card currentDraggableCard;
-  private List<Card> attackCards = new List<Card>();
-  private List<Card> defenceCards = new List<Card>();
+  private List<Card> attackCards = new List<Card>(8);
+  private List<Card> defenceCards = new List<Card>(8);
   List<ContainerFlank> flanks;
   public ContainerFlank flankLeft1;
   public ContainerFlank flankLeft2;
@@ -92,11 +92,10 @@ public class PlayerController : AbstractController
     );
     foreach (AbstractCard aCard in _cards1)
     {
-      GameObject _card = Instantiate(cardUniversal);
+      Card _card = Instantiate(cardUniversal);
       _card.transform.SetParent(deck1.transform.Find("CardsContainer").transform);
-      Card card = _card.GetComponent<Card>();
-      card.SetCard(aCard);
-      deck1.AddCard(card);
+      _card.SetCard(aCard);
+      deck1.AddCard(_card);
     }
     List<AbstractCard> _cards2 = game.GetSeveralCards(
       CurrentPlayer.SECOND,
@@ -104,11 +103,10 @@ public class PlayerController : AbstractController
     );
     foreach (AbstractCard aCard in _cards2)
     {
-      GameObject _card = Instantiate(cardUniversal);
+      Card _card = Instantiate(cardUniversal);
       _card.transform.SetParent(deck2.transform.Find("CardsContainer").transform);
-      Card card = _card.GetComponent<Card>();
-      card.SetCard(aCard);
-      deck2.AddCard(card);
+      _card.SetCard(aCard);
+      deck2.AddCard(_card);
     }
   }
   public void GameStart()
@@ -224,25 +222,26 @@ public class PlayerController : AbstractController
   {
     AbstractCard cardModel = card.GetComponent<Card>().card;
     Flank flankModel = flank.GetComponent<ContainerFlank>().flank;
-    flank.GetComponent<ContainerFlank>().PlaceCard(card, position);
     switch (cardModel)
     {
       case SquadCard s:
         if (playedSquadCards < 2)
         {
-          HashSet<SquadCard> placedCards = new HashSet<SquadCard>();
-          placedCards.Add((SquadCard)cardModel);
-          game.AddCardsToFlank(game.GetCurrentStep(), placedCards, flankModel);
-          // card.transform.SetParent(flank.transform.Find("Squad").transform("CardsContainer").transform);
-          if (s.isActive)
+          if (flank.GetComponent<ContainerFlank>().GetCardAt(position) == null)
           {
-            card.isSelectable = true;
+            // add card to model
+            HashSet<SquadCard> placedCards = new HashSet<SquadCard>();
+            placedCards.Add((SquadCard)cardModel);
+            game.AddCardsToFlank(game.GetCurrentStep(), placedCards, flankModel);
+            // add card to view
+            flank.GetComponent<ContainerFlank>().PlaceCard(card, position);
+            Transform container = flank.transform.Find("Squads").Find($"CardsContainer-{position}");
+            GameObject.Destroy(container.Find("CardPlaceholder(Clone)").gameObject);
+            card.transform.SetParent(container.transform);
+            card.isDraggable = false;
+            card.isSelectable = s.isActive;
+            playedSquadCards++;
           }
-          else
-          {
-            card.isSelectable = false;
-          }
-          playedSquadCards++;
         }
         break;
       case FortificationCard f:
@@ -261,7 +260,7 @@ public class PlayerController : AbstractController
     CurrentPlayer player;
     if (isEnemy)
     {
-      player = game.GetCurrentStep() == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST;
+      player = game.GetNextStep();
     }
     else
     {
@@ -295,11 +294,11 @@ public class PlayerController : AbstractController
     // выбраны те, кто атакуют
     // запрещаем выбирать чужие карты
     int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 2 : 0;
-    flanks[step].GetComponent<ContainerFlank>().RefreshActive();
-    flanks[step + 1].GetComponent<ContainerFlank>().RefreshActive();
+    flanks[step].RefreshActive();
+    flanks[step + 1].RefreshActive();
     step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 0 : 2;
-    flanks[step].GetComponent<ContainerFlank>().SetActive(false);
-    flanks[step].GetComponent<ContainerFlank>().SetActive(false);
+    flanks[step].SetActive(false);
+    flanks[step + 1].SetActive(false);
     // выбираем тех, кто защищается
 
     // начать атаку => в бой
@@ -308,7 +307,7 @@ public class PlayerController : AbstractController
 
   public void DefenceStart()
   {
-    CurrentPlayer deffendersStep = game.GetCurrentStep() == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST;
+    CurrentPlayer deffendersStep = game.GetNextStep();
     // уже выбраны защитники
     List<SquadCard> cards = new List<SquadCard>(4);
     cards[0] = (SquadCard)attackCards[0].card;
@@ -370,19 +369,17 @@ public class PlayerController : AbstractController
     if (game.GetCardsCount(game.GetCurrentStep(), Flank.Left) != 4)
     {
       game.AddCardsToFlank(game.GetCurrentStep(), noobsLeft, Flank.Left);
-      GameObject _card = Instantiate(cardUniversal);
+      Card _card = Instantiate(cardUniversal);
       _card.transform.SetParent(GameObject.Find($"FlankLeft{step}").transform.Find("CardsContainer").transform);
-      Card card = _card.GetComponent<Card>();
-      card.SetCard(noobLeft);
+      _card.SetCard(noobLeft);
     }
 
     if (game.GetCardsCount(game.GetCurrentStep(), Flank.Right) != 4)
     {
       game.AddCardsToFlank(game.GetCurrentStep(), noobsRight, Flank.Right);
-      GameObject _card = Instantiate(cardUniversal);
+      Card _card = Instantiate(cardUniversal);
       _card.transform.SetParent(GameObject.Find($"FlankRight{step}").transform.Find("CardsContainer").transform);
-      Card card = _card.GetComponent<Card>();
-      card.SetCard(noobRight);
+      _card.SetCard(noobRight);
     }
   }
   public void SupportTactical()
@@ -413,9 +410,9 @@ public class PlayerController : AbstractController
 
     foreach (Card card in temporaryCards)
     {
-      GameObject _card = Instantiate(cardUniversal);
+      Card _card = Instantiate(cardUniversal);
       _card.transform.SetParent(temporary.transform.Find("CardsContainer").transform);
-      _card.GetComponent<Card>().SetCard(card.card);
+      _card.SetCard(card.card);
     }
 
     callback = SupportTacticalEnd;
@@ -454,7 +451,7 @@ public class PlayerController : AbstractController
   public void SupportSniper(Skills skills)
   {
     this.tempSkills = skills;
-    CurrentPlayer currentEnemy = game.GetCurrentStep() == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST;
+    CurrentPlayer currentEnemy = game.GetNextStep();
     // flanks[currentEnemy].GetComponent<FlankHand>().SetCardHandler(true);
 
     int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
@@ -501,7 +498,7 @@ public class PlayerController : AbstractController
   public void RearRaid_Start()
   {
     this.rearRaidCounter = 2;
-    CurrentPlayer currentEnemy = game.GetCurrentStep() == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST;
+    CurrentPlayer currentEnemy = game.GetNextStep();
     hands[currentEnemy].GetComponent<ContainerHand>().SetCardHandler(true);
 
     int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
@@ -526,7 +523,7 @@ public class PlayerController : AbstractController
     this.rearRaidCounter--;
     if (this.rearRaidCounter == 0)
     {
-      CurrentPlayer currentEnemy = game.GetCurrentStep() == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST;
+      CurrentPlayer currentEnemy = game.GetNextStep();
       hands[currentEnemy].GetComponent<ContainerHand>().SetCardHandler(false);
       int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
       commandorsLayer.SetActive(true);
@@ -546,6 +543,7 @@ public class PlayerController : AbstractController
   }
   private void AttackCallback(Card card)
   {
+    Debug.Log("in attack callback");
     if (attackState == AttackState.ATTACK)
     {
       attackCards[position] = card;

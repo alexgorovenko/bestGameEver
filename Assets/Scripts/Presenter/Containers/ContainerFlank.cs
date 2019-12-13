@@ -19,7 +19,6 @@ public class ContainerFlank : AbstractContainer
   }
   public void PlaceCard(Card card, int position)
   {
-    Debug.Log(mCards[position]);
     mCards[position] = card;
     card.position = position;
   }

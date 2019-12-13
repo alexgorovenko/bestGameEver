@@ -45,13 +45,18 @@ public class AbstractContainer : MonoBehaviour
   }
   public List<Card> GetCards()
   {
-    return this.mCards;
+    return mCards;
+  }
+  public Card GetCardAt(int position)
+  {
+    return mCards[position];
   }
   public void SetActive(bool isActive)
   {
-    foreach (var card in this.mCards)
+    foreach (var card in mCards)
     {
-      card.isSelectable = isActive;
+      if (card != null)
+        card.isSelectable = isActive;
     }
   }
 }

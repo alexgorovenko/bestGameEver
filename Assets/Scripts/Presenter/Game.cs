@@ -171,6 +171,11 @@ public class Game
     return this.cards[player].Count;
   }
 
+  public CurrentPlayer GetNextStep()
+  {
+    return currentStep == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST;
+  }
+
   public CurrentPlayer GetCurrentStep()
   {
     return currentStep;
