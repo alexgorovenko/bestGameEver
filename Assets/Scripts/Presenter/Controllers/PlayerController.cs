@@ -28,6 +28,7 @@ public class PlayerController : AbstractController
   private int playedFortificationCards = 0;
   public Card currentDraggableCard;
   private List<Card> attackCards = new List<Card>();
+  private List<Card> defenceCards = new List<Card>();
   List<ContainerFlank> flanks;
   public ContainerFlank flankLeft1;
   public ContainerFlank flankLeft2;
@@ -47,6 +48,8 @@ public class PlayerController : AbstractController
   private delegate void Callback(Card card);
   private Callback callback;
   private AttackState attackState = AttackState.ATTACK;
+  private Skills tempSkills = null;
+  private int position = 0;
 
   // Start is called before the first frame update
   void Start()
@@ -283,7 +286,7 @@ public class PlayerController : AbstractController
     }
     else
     {
-      DefenceStart();
+      ApplyActiveSkills();
       AttackButton.GetComponentInChildren<Text>().text = "Атака!";
       attackState = AttackState.ATTACK;
     }
@@ -308,7 +311,33 @@ public class PlayerController : AbstractController
 
   public void DefenceStart()
   {
+    CurrentPlayer deffendersStep = game.GetCurrentStep() == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST;
     // уже выбраны защитники
+    List<SquadCard> cards = new List<SquadCard>(4);
+    cards[0] = (SquadCard)attackCards[0].card;
+    cards[1] = (SquadCard)attackCards[1].card;
+    cards[2] = (SquadCard)attackCards[2].card;
+    cards[3] = (SquadCard)attackCards[3].card;
+    game.SetAttackers(game.GetCurrentStep(), cards, Flank.Left);
+    cards = new List<SquadCard>(4);
+    cards[0] = (SquadCard)defenceCards[0].card;
+    cards[1] = (SquadCard)defenceCards[1].card;
+    cards[2] = (SquadCard)defenceCards[2].card;
+    cards[3] = (SquadCard)defenceCards[3].card;
+    game.SetDeffenders(deffendersStep, cards, Flank.Left);
+    game.Attack(game.GetCurrentStep());
+    cards = new List<SquadCard>(4);
+    cards[0] = (SquadCard)attackCards[4].card;
+    cards[1] = (SquadCard)attackCards[5].card;
+    cards[2] = (SquadCard)attackCards[6].card;
+    cards[3] = (SquadCard)attackCards[7].card;
+    game.SetAttackers(game.GetCurrentStep(), cards, Flank.Left);
+    cards = new List<SquadCard>(4);
+    cards[0] = (SquadCard)defenceCards[4].card;
+    cards[1] = (SquadCard)defenceCards[5].card;
+    cards[2] = (SquadCard)defenceCards[6].card;
+    cards[3] = (SquadCard)defenceCards[7].card;
+    game.SetDeffenders(deffendersStep, cards, Flank.Left);
     game.Attack(game.GetCurrentStep());
     //  Update UI
 
@@ -425,8 +454,9 @@ public class PlayerController : AbstractController
     callback = AttackCallback;
   }
 
-  public void SupportSniper()
+  public void SupportSniper(Skills skills)
   {
+    this.tempSkills = skills;
     CurrentPlayer currentEnemy = game.GetCurrentStep() == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST;
     // flanks[currentEnemy].GetComponent<FlankHand>().SetCardHandler(true);
 
@@ -448,9 +478,8 @@ public class PlayerController : AbstractController
 
   private void SupportSniperEnd(Card card)
   {
-    Skills skills = new Skills();
-    skills.shelling = 3;
-    // game.HitSquad(card.card, skills);
+    //TODO
+    // game.HitSquad(card.card, this.tempSkills);
     // flanks[game.GetCurrentStep() == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST].GetComponent<FlankHand>().SetCardHandler(false);
     int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
     commandorsLayer.SetActive(true);
@@ -466,6 +495,10 @@ public class PlayerController : AbstractController
       hand2Layer.SetActive(true);
     }
     callback = AttackCallback;
+    if (this.attackState == AttackState.DEFENCE)
+    {
+      this.ApplyActiveSkills();
+    }
   }
 
   public void RearRaid_Start()
@@ -516,15 +549,23 @@ public class PlayerController : AbstractController
   }
   private void AttackCallback(Card card)
   {
-    attackCards.Add(card);
+    if (attackState == AttackState.ATTACK)
+    {
+      attackCards[position] = card;
+    }
+    else
+    {
+      defenceCards[position] = card;
+    }
     card.Highlight(true);
   }
-  public void SelectCard(GameObject card)
+  public void SelectCard(GameObject card, int position)
   {
     Debug.Log("SelectCard");
     Debug.Log(card.GetComponent<Card>().card.active);
     if (card.GetComponent<Card>().isSelectable == false) return;
     card.GetComponent<Card>().isSelectable = false;
+    this.position = position;
     this.callback(card.GetComponent<Card>());
   }
   public void ResetSelectionCards()
@@ -535,5 +576,105 @@ public class PlayerController : AbstractController
       card.isSelectable = true;
     }
     attackCards.Clear();
+  }
+  public void SupportMedic_Start(Skills skills)
+  {
+    this.tempSkills = skills;
+    this.callback = SupportMedic_End;
+    //TODO
+  }
+  public void SupportMedic_End(Card card)
+  {
+    //TODO
+    this.tempSkills = null;
+    this.callback = AttackCallback;
+    if (this.attackState == AttackState.DEFENCE)
+    {
+      ApplyActiveSkills();
+    }
+  }
+  public void SupportIntelligenceService_Start(Skills skills)
+  {
+    this.tempSkills = skills;
+    this.callback = SupportIntelligenceService_End;
+    //TODO
+  }
+  public void SupportIntelligenceService_End(Card card)
+  {
+    //TODO
+    this.tempSkills = null;
+    this.callback = AttackCallback;
+    if (this.attackState == AttackState.DEFENCE)
+    {
+      ApplyActiveSkills();
+    }
+  }
+  public void SupportSapper_Start(Skills skills)
+  {
+    this.tempSkills = skills;
+    this.callback = SupportSapper_End;
+    //TODO
+  }
+  public void SupportSapper_End(Card card)
+  {
+    //TODO
+    this.tempSkills = null;
+    this.callback = AttackCallback;
+    if (this.attackState == AttackState.DEFENCE)
+    {
+      ApplyActiveSkills();
+    }
+  }
+  public void ApplyActiveSkills()
+  {
+    foreach (var card in attackCards)
+    {
+      Skills skills = ((SquadCard)(card.card)).skills;
+      if (skills.medic > 0)
+      {
+        this.SupportMedic_Start(skills);
+        return;
+      }
+      if (skills.shelling > 0)
+      {
+        this.SupportSniper(skills);
+        return;
+      }
+      if (skills.sapper > 0)
+      {
+        this.SupportSniper(skills);
+        return;
+      }
+      if (skills.intelligenceService > 0)
+      {
+        this.SupportIntelligenceService_Start(skills);
+        return;
+      }
+    }
+    foreach (var card in attackCards)
+    {
+      Skills skills = ((SquadCard)(card.card)).skills;
+      if (skills.medic > 0)
+      {
+        this.SupportMedic_Start(skills);
+        return;
+      }
+      if (skills.shelling > 0)
+      {
+        this.SupportSniper(skills);
+        return;
+      }
+      if (skills.sapper > 0)
+      {
+        this.SupportSniper(skills);
+        return;
+      }
+      if (skills.intelligenceService > 0)
+      {
+        this.SupportIntelligenceService_Start(skills);
+        return;
+      }
+    }
+    this.DefenceStart();
   }
 }
