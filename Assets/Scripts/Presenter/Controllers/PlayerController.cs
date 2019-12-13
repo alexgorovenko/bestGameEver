@@ -220,7 +220,7 @@ public class PlayerController : AbstractController
 
   public void AttackStart()
   {
-
+    
   }
 
   // Support cards callbacks
@@ -412,8 +412,8 @@ public class PlayerController : AbstractController
   {
     Debug.Log("SelectCard");
     Debug.Log(selectedCards.Count);
-    if (card.GetComponent<Card>().isSelected == true) return;
-    card.GetComponent<Card>().isSelected = true;
+    if (card.GetComponent<Card>().isSelectable == false) return;
+    card.GetComponent<Card>().isSelectable = false;
     selectedCards.Add(card);
 
     if (this.callback != null)
@@ -429,7 +429,7 @@ public class PlayerController : AbstractController
   {
     foreach (var card in selectedCards)
     {
-      card.GetComponent<Card>().isSelected = false;
+      card.GetComponent<Card>().isSelectable = true;
     }
     selectedCards.Clear();
   }
