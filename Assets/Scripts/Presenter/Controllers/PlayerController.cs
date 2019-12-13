@@ -276,9 +276,11 @@ public class PlayerController : AbstractController
     // выбраны те, кто атакуют
     // запрещаем выбирать чужие карты
     int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 2 : 0;
-
     flanks[step].GetComponent<ContainerFlank>().RefreshActive();
     flanks[step + 1].GetComponent<ContainerFlank>().RefreshActive();
+    step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 0 : 2;
+    flanks[step].GetComponent<ContainerFlank>().SetActive(false);
+    flanks[step].GetComponent<ContainerFlank>().SetActive(false);
     // выбираем тех, кто защищается
 
     // начать атаку => в бой
@@ -292,9 +294,15 @@ public class PlayerController : AbstractController
     //  Update UI
 
     int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 0 : 2;
-
     flanks[step].GetComponent<ContainerFlank>().DestroyDead();
     flanks[step + 1].GetComponent<ContainerFlank>().DestroyDead();
+    flanks[step].GetComponent<ContainerFlank>().RefreshActive();
+    flanks[step + 1].GetComponent<ContainerFlank>().RefreshActive();
+    step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 2 : 0;
+    flanks[step].GetComponent<ContainerFlank>().DestroyDead();
+    flanks[step + 1].GetComponent<ContainerFlank>().DestroyDead();
+    flanks[step].GetComponent<ContainerFlank>().SetActive(false);
+    flanks[step + 1].GetComponent<ContainerFlank>().SetActive(false);
 
     HQ1Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.FIRST)}";
     HQ2Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.SECOND)}";
