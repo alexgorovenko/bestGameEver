@@ -47,6 +47,7 @@ public class PlayerController : AbstractController
   private delegate void Callback(Card card);
   private Callback callback;
   private AttackState attackState = AttackState.ATTACK;
+  private Skills tempSkills = null;
 
   // Start is called before the first frame update
   void Start()
@@ -265,7 +266,7 @@ public class PlayerController : AbstractController
     }
     else
     {
-      DefenceStart();
+      ApplyActiveSkills();
       AttackButton.GetComponentInChildren<Text>().text = "Атака!";
       attackState = AttackState.ATTACK;
     }
@@ -407,8 +408,9 @@ public class PlayerController : AbstractController
     callback = AttackCallback;
   }
 
-  public void SupportSniper()
+  public void SupportSniper(Skills skills)
   {
+    this.tempSkills = skills;
     CurrentPlayer currentEnemy = game.GetCurrentStep() == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST;
     // flanks[currentEnemy].GetComponent<FlankHand>().SetCardHandler(true);
 
@@ -430,9 +432,8 @@ public class PlayerController : AbstractController
 
   private void SupportSniperEnd(Card card)
   {
-    Skills skills = new Skills();
-    skills.shelling = 3;
-    // game.HitSquad(card.card, skills);
+    //TODO
+    // game.HitSquad(card.card, this.tempSkills);
     // flanks[game.GetCurrentStep() == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST].GetComponent<FlankHand>().SetCardHandler(false);
     int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
     commandorsLayer.SetActive(true);
@@ -448,6 +449,10 @@ public class PlayerController : AbstractController
       hand2Layer.SetActive(true);
     }
     callback = AttackCallback;
+    if (this.attackState == AttackState.DEFENCE)
+    {
+      this.ApplyActiveSkills();
+    }
   }
 
   public void RearRaid_Start()
@@ -524,5 +529,105 @@ public class PlayerController : AbstractController
       card.isSelectable = true;
     }
     attackCards.Clear();
+  }
+  public void SupportMedic_Start(Skills skills)
+  {
+    this.tempSkills = skills;
+    this.callback = SupportMedic_End;
+    //TODO
+  }
+  public void SupportMedic_End(Card card)
+  {
+    //TODO
+    this.tempSkills = null;
+    this.callback = AttackCallback;
+    if (this.attackState == AttackState.DEFENCE)
+    {
+      ApplyActiveSkills();
+    }
+  }
+  public void SupportIntelligenceService_Start(Skills skills)
+  {
+    this.tempSkills = skills;
+    this.callback = SupportIntelligenceService_End;
+    //TODO
+  }
+  public void SupportIntelligenceService_End(Card card)
+  {
+    //TODO
+    this.tempSkills = null;
+    this.callback = AttackCallback;
+    if (this.attackState == AttackState.DEFENCE)
+    {
+      ApplyActiveSkills();
+    }
+  }
+  public void SupportSapper_Start(Skills skills)
+  {
+    this.tempSkills = skills;
+    this.callback = SupportSapper_End;
+    //TODO
+  }
+  public void SupportSapper_End(Card card)
+  {
+    //TODO
+    this.tempSkills = null;
+    this.callback = AttackCallback;
+    if (this.attackState == AttackState.DEFENCE)
+    {
+      ApplyActiveSkills();
+    }
+  }
+  public void ApplyActiveSkills()
+  {
+    foreach (var card in attackCards)
+    {
+      Skills skills = ((SquadCard)(card.card)).skills;
+      if (skills.medic > 0)
+      {
+        this.SupportMedic_Start(skills);
+        return;
+      }
+      if (skills.shelling > 0)
+      {
+        this.SupportSniper(skills);
+        return;
+      }
+      if (skills.sapper > 0)
+      {
+        this.SupportSniper(skills);
+        return;
+      }
+      if (skills.intelligenceService > 0)
+      {
+        this.SupportIntelligenceService_Start(skills);
+        return;
+      }
+    }
+    foreach (var card in attackCards)
+    {
+      Skills skills = ((SquadCard)(card.card)).skills;
+      if (skills.medic > 0)
+      {
+        this.SupportMedic_Start(skills);
+        return;
+      }
+      if (skills.shelling > 0)
+      {
+        this.SupportSniper(skills);
+        return;
+      }
+      if (skills.sapper > 0)
+      {
+        this.SupportSniper(skills);
+        return;
+      }
+      if (skills.intelligenceService > 0)
+      {
+        this.SupportIntelligenceService_Start(skills);
+        return;
+      }
+    }
+    this.DefenceStart();
   }
 }

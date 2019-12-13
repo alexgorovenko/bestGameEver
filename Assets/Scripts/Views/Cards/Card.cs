@@ -59,6 +59,7 @@ public class Card : MonoBehaviour, ICardContainerItem
     // Debug.Log(card.GetType());
     PlayerController script = player.GetComponent<PlayerController>();
     if (isSelectable) script.SelectCard(gameObject);
+    Skills skills;
     switch (card)
     {
       case SquadCard s:
@@ -74,6 +75,19 @@ public class Card : MonoBehaviour, ICardContainerItem
             break;
           case ViewAction.MOBILIZAZATION:
             script.SupportMobilization();
+            break;
+          case ViewAction.SNIPER:
+            skills = new Skills();
+            skills.shelling = 3;
+            script.SupportSniper(skills);
+            break;
+          case ViewAction.REAR_RAID:
+            script.RearRaid_Start();
+            break;
+          case ViewAction.FIELD_MEDICINE:
+            skills = new Skills();
+            skills.medic = 2;
+            script.SupportMedic_Start(skills);
             break;
         }
         break;
