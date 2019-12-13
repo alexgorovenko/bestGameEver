@@ -64,7 +64,6 @@ public class Card : MonoBehaviour, ICardContainerItem
         break;
       case SupportCard s:
         script.DropCardToDrop(this, false);
-        script.ResetSelectionCards();
         switch (s.action)
         {
           case ViewAction.TACTICAL_MOVE:
