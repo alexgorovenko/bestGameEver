@@ -292,7 +292,33 @@ public class PlayerController : AbstractController
 
   public void DefenceStart()
   {
+    CurrentPlayer deffendersStep = game.GetCurrentStep() == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST;
     // уже выбраны защитники
+    List<SquadCard> cards = new List<SquadCard>(4);
+    cards[0] = (SquadCard)attackCards[0].card;
+    cards[1] = (SquadCard)attackCards[1].card;
+    cards[2] = (SquadCard)attackCards[2].card;
+    cards[3] = (SquadCard)attackCards[3].card;
+    game.SetAttackers(game.GetCurrentStep(), cards, Flank.Left);
+    cards = new List<SquadCard>(4);
+    cards[0] = (SquadCard)defenceCards[0].card;
+    cards[1] = (SquadCard)defenceCards[1].card;
+    cards[2] = (SquadCard)defenceCards[2].card;
+    cards[3] = (SquadCard)defenceCards[3].card;
+    game.SetDeffenders(deffendersStep, cards, Flank.Left);
+    game.Attack(game.GetCurrentStep());
+    cards = new List<SquadCard>(4);
+    cards[0] = (SquadCard)attackCards[4].card;
+    cards[1] = (SquadCard)attackCards[5].card;
+    cards[2] = (SquadCard)attackCards[6].card;
+    cards[3] = (SquadCard)attackCards[7].card;
+    game.SetAttackers(game.GetCurrentStep(), cards, Flank.Left);
+    cards = new List<SquadCard>(4);
+    cards[0] = (SquadCard)defenceCards[4].card;
+    cards[1] = (SquadCard)defenceCards[5].card;
+    cards[2] = (SquadCard)defenceCards[6].card;
+    cards[3] = (SquadCard)defenceCards[7].card;
+    game.SetDeffenders(deffendersStep, cards, Flank.Left);
     game.Attack(game.GetCurrentStep());
     //  Update UI
 
