@@ -180,10 +180,19 @@ public class PlayerController : AbstractController
     }
   }
 
-  public void DropCardToDrop(Card card, CurrentPlayer currentPlayer)
+  public void DropCardToDrop(Card card, bool isEnemy)
   {
-    game.DropCardFromHand(currentPlayer, card.card);
-    card.transform.SetParent(drops[currentPlayer].transform);
+    CurrentPlayer player;
+    if (isEnemy)
+    {
+      player = game.GetCurrentStep() == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST;
+    }
+    else
+    {
+      player = game.GetCurrentStep();
+    }
+    game.DropCardFromHand(player, card.card);
+    card.transform.SetParent(drops[player].transform);
   }
 
   // Attack
@@ -267,6 +276,10 @@ public class PlayerController : AbstractController
     temporary.gameObject.SetActive(false);
 
     AddCardToHand(card);
+    foreach (var _card in temporary.GetCards())
+    {
+      DropCardToDrop(_card);
+    }
 
     commandorsLayer.SetActive(true);
     flanksLayer.SetActive(true);
@@ -352,7 +365,7 @@ public class PlayerController : AbstractController
   }
   public void RearRaid_End(Card card)
   {
-    this.game.DropCardFromHand(game.GetCurrentStep() == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST, card.card);
+    this.DropCardToDrop(card, true);
     this.rearRaidCounter--;
     if (this.rearRaidCounter == 0)
     {
