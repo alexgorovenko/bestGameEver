@@ -9,6 +9,7 @@ public class PlayerController : AbstractController
   [SerializeField] GameObject temporary;
   [SerializeField] GameObject cardCommandor;
   [SerializeField] GameObject cardUniversal;
+  [SerializeField] CardPlaceholder cardPlaceholder;
   [SerializeField] GameObject commandorsOV;
   [SerializeField] GameObject chooseCommandors;
   [SerializeField] List<GameObject> commandorFields;
@@ -72,8 +73,23 @@ public class PlayerController : AbstractController
     flanks.Add(flankLeft2);
     flanks.Add(flankRight2);
 
+    int index = 0;
+    foreach (var flank in flanks)
+    {
+      CardPlaceholder _card = Instantiate(cardPlaceholder);
+      _card.transform.SetParent(
+        flank.GetComponent<ContainerFlank>().squads[index]
+        .transform.Find($"CardsContainer{index}").transform
+      );
+      index++;
+      if (index == 7) index = 0;
+    }
+
     ShowCommandorsChooseMenu();
-    List<AbstractCard> _cards1 = game.GetSeveralCards(CurrentPlayer.FIRST, game.GetRemainedCards(CurrentPlayer.FIRST));
+    List<AbstractCard> _cards1 = game.GetSeveralCards(
+      CurrentPlayer.FIRST,
+      game.GetRemainedCards(CurrentPlayer.FIRST)
+    );
     foreach (AbstractCard aCard in _cards1)
     {
       GameObject _card = Instantiate(cardUniversal);
@@ -82,7 +98,10 @@ public class PlayerController : AbstractController
       card.SetCard(aCard);
       deck1.AddCard(card);
     }
-    List<AbstractCard> _cards2 = game.GetSeveralCards(CurrentPlayer.SECOND, game.GetRemainedCards(CurrentPlayer.SECOND));
+    List<AbstractCard> _cards2 = game.GetSeveralCards(
+      CurrentPlayer.SECOND,
+      game.GetRemainedCards(CurrentPlayer.SECOND)
+    );
     foreach (AbstractCard aCard in _cards2)
     {
       GameObject _card = Instantiate(cardUniversal);
@@ -201,11 +220,11 @@ public class PlayerController : AbstractController
     game.AddCardsToHand(currentPlayer, addedCards);
     card.transform.SetParent(hands[currentPlayer].transform);
   }
-  public void DropCardToFlank(Card card, GameObject flank)
+  public void DropCardToFlank(Card card, int position, ContainerFlank flank)
   {
     AbstractCard cardModel = card.GetComponent<Card>().card;
     Flank flankModel = flank.GetComponent<ContainerFlank>().flank;
-    flank.GetComponent<ContainerFlank>().AddCard(card);
+    flank.GetComponent<ContainerFlank>().PlaceCard(card, position);
     switch (cardModel)
     {
       case SquadCard s:
@@ -214,7 +233,7 @@ public class PlayerController : AbstractController
           HashSet<SquadCard> placedCards = new HashSet<SquadCard>();
           placedCards.Add((SquadCard)cardModel);
           game.AddCardsToFlank(game.GetCurrentStep(), placedCards, flankModel);
-          card.transform.SetParent(flank.transform.Find("CardsContainer").transform);
+          // card.transform.SetParent(flank.transform.Find("Squad").transform("CardsContainer").transform);
           if (s.isActive)
           {
             card.isSelectable = true;
