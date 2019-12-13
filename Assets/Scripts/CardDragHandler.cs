@@ -15,8 +15,6 @@ public class CardDragHandler : MonoBehaviour, IDragHandler, IBeginDragHandler, I
   public void OnDrag(PointerEventData eventData)
   {
     player.GetComponent<PlayerController>().currentDraggableCard = gameObject.GetComponent<Card>();
-    Debug.Log(eventData.position);
-    Debug.Log(Screen.width);
     float xT = eventData.position.x / Screen.width * 1280 - 640;
     float yT = eventData.position.y / Screen.height * 720 - 360;
     float zT = 0;

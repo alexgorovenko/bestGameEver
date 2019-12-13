@@ -203,6 +203,7 @@ public class PlayerController : AbstractController
   {
     AbstractCard cardModel = card.GetComponent<Card>().card;
     Flank flankModel = flank.GetComponent<ContainerFlank>().flank;
+    flank.GetComponent<ContainerFlank>().AddCard(card);
     switch (cardModel)
     {
       case SquadCard s:
@@ -253,16 +254,23 @@ public class PlayerController : AbstractController
 
   public void AttackStart()
   {
+    Debug.Log("in AttackStart");
     // выбраны те, кто атакуют
-
+    game.Attack(game.GetCurrentStep());
     // запрещаем выбирать чужие карты
     int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 0 : 2;
 
     flanks[step].GetComponent<ContainerFlank>().RefreshActive();
     flanks[step + 1].GetComponent<ContainerFlank>().RefreshActive();
     // выбираем тех, кто защищается
+
     // начать атаку => в бой
     // применить активные скилы
+  }
+
+  public void DefenceStart()
+  {
+    
   }
 
   // Support cards callbacks
@@ -339,10 +347,10 @@ public class PlayerController : AbstractController
     temporary.gameObject.SetActive(false);
 
     AddCardToHand(card);
-    // foreach (var _card in temporary.GetCards())
-    // {
-    //   DropCardToDrop(_card);
-    // }
+    foreach (var _card in temporary.GetComponent<AbstractContainer>().GetCards())
+    {
+      DropCardToDrop(_card, false);
+    }
 
     commandorsLayer.SetActive(true);
     flanksLayer.SetActive(true);
@@ -450,15 +458,15 @@ public class PlayerController : AbstractController
       this.callback = AttackCallback;
     }
   }
-  private void AttackCallback (Card card)
+  private void AttackCallback(Card card)
   {
     attackCards.Add(card);
-    card.Hightlight(true);
+    card.Highlight(true);
   }
   public void SelectCard(GameObject card)
   {
     Debug.Log("SelectCard");
-    Debug.Log(attackCards.Count);
+    Debug.Log(card.GetComponent<Card>().card.active);
     if (card.GetComponent<Card>().isSelectable == false) return;
     card.GetComponent<Card>().isSelectable = false;
     this.callback(card.GetComponent<Card>());

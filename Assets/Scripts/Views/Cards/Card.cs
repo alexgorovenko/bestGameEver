@@ -15,30 +15,33 @@ public class Card : MonoBehaviour, ICardContainerItem
   [SerializeField] public GameObject border;
   [SerializeField] public Sprite Image { get; }
   protected TextMeshProUGUI _fieldName;
-  public bool isSelectable = true;
+  public bool isSelectable = false;
   public bool isDraggable = true;
   public bool isHighlighted = true;
   public Card() : base()
   {
-    rarityColors[Rarity.General] = Color.gray;
-    rarityColors[Rarity.Rare] = Color.blue;
-    rarityColors[Rarity.Epic] = Color.magenta;
-    rarityColors[Rarity.Legendary] = Color.yellow;
+    rarityColors[Rarity.General] = new Color(0.8f, 0.8f, 0.8f);
+    rarityColors[Rarity.Rare] = new Color(24.0f / 255.0f, 97.0f / 255.0f, 242.0f / 255.0f);
+    rarityColors[Rarity.Epic] = new Color(97.0f / 255.0f, 24.0f / 255.0f, 242.0f / 255.0f);
+    rarityColors[Rarity.Legendary] = new Color(242.0f / 255.0f, 170.0f / 255.0f, 24.0f / 255.0f);
   }
   public void OnAdd() { }
   public void OnPlay() { }
   public void OnRemove() { }
   public void Highlight(bool state)
   {
+    Debug.Log("in highlight");
     ColorBlock colors = border.GetComponent<Button>().colors;
     if (state)
     {
-      colors.normalColor = Color.green;
+      colors.normalColor = new Color(140.0f / 255.0f, 242.0f / 255.0f, 140.0f / 255.0f);
+      colors.selectedColor = new Color(140.0f / 255.0f, 242.0f / 255.0f, 140.0f / 255.0f);
     }
     else
     {
       colors.normalColor = rarityColors[card.rarity];
     }
+    border.GetComponent<Button>().colors = colors;
   }
   public void SetCard(AbstractCard card)
   {
@@ -55,7 +58,7 @@ public class Card : MonoBehaviour, ICardContainerItem
   {
     // Debug.Log(card.GetType());
     PlayerController script = player.GetComponent<PlayerController>();
-    script.SelectCard(gameObject);
+    if (isSelectable) script.SelectCard(gameObject);
     switch (card)
     {
       case SquadCard s:

@@ -222,7 +222,7 @@ public class Game
     // Debug.Log(player);
     // Debug.Log(cards);
     // Debug.Log(flank);
-    Debug.Log(fields[player].flanks);
+    // Debug.Log(fields[player].flanks);
     fields[player].flanks[flank].UnionWith(cards);
   }
 
@@ -241,12 +241,15 @@ public class Game
 
   public void RefreshSquads()
   {
+    Debug.Log("in ref sq");
     foreach (CurrentPlayer player in Enum.GetValues(typeof(CurrentPlayer)))
     {
       foreach (Flank flank in Enum.GetValues(typeof(Flank)))
       {
+        Debug.Log("in ref sq2");
         foreach (AbstractCard card in fields[player].flanks[flank])
         {
+          Debug.Log("in ref sq3");
           card.active = true;
         }
       }
@@ -269,7 +272,7 @@ public class Game
     {
       attacks[player].ApplySkillsAttacker(flank, fields[player].GetCommandor(flank).skills);
       attacks[player].ApplySkillsDeffender(flank, fields[player == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST].GetCommandor(flank).skills);
-    }    
+    }
     fields[player].Attack(attacks[player].getHeadquartesHurt());
     RefreshSquads();
   }
@@ -279,7 +282,7 @@ public class Game
     return fields[player].flanks[flank].Count;
   }
 
-  public int GetHeadsquaterHealth (CurrentPlayer player)
+  public int GetHeadsquaterHealth(CurrentPlayer player)
   {
     return fields[player].headquartesStrength;
   }
