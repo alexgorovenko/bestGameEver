@@ -48,6 +48,7 @@ public class PlayerController : AbstractController
   private Callback callback;
   private AttackState attackState = AttackState.ATTACK;
   private Skills tempSkills = null;
+  private int position = 0;
 
   // Start is called before the first frame update
   void Start()
@@ -505,20 +506,21 @@ public class PlayerController : AbstractController
   {
     if (attackState == AttackState.ATTACK)
     {
-      attackCards.Add(card);
+      attackCards[position] = card;
     }
     else
     {
-      defenceCards.Add(card);
+      defenceCards[position] = card;
     }
     card.Highlight(true);
   }
-  public void SelectCard(GameObject card)
+  public void SelectCard(GameObject card, int position)
   {
     Debug.Log("SelectCard");
     Debug.Log(card.GetComponent<Card>().card.active);
     if (card.GetComponent<Card>().isSelectable == false) return;
     card.GetComponent<Card>().isSelectable = false;
+    this.position = position;
     this.callback(card.GetComponent<Card>());
   }
   public void ResetSelectionCards()
