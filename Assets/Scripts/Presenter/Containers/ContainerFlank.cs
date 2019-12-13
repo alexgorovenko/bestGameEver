@@ -12,6 +12,7 @@ public class ContainerFlank : AbstractContainer
   [SerializeField] PlayerController player;
   public void PlaceCard(Card card, int position)
   {
+    Debug.Log(mCards[position]);
     mCards[position] = card;
   }
   public void RefreshActive()

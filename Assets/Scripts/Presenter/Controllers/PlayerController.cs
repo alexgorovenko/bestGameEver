@@ -76,16 +76,13 @@ public class PlayerController : AbstractController
     flanks.Add(flankLeft2);
     flanks.Add(flankRight2);
 
-    int index = 0;
     foreach (var flank in flanks)
     {
-      CardPlaceholder _card = Instantiate(cardPlaceholder);
-      _card.transform.SetParent(
-        flank.GetComponent<ContainerFlank>().squads[index]
-        .transform.Find($"CardsContainer{index}").transform
-      );
-      index++;
-      if (index == 7) index = 0;
+      for (int i = 0; i < 4; i++)
+      {
+        CardPlaceholder _card = Instantiate(cardPlaceholder);
+        _card.transform.SetParent(flank.GetComponent<ContainerFlank>().squads[i].transform);
+      }
     }
 
     ShowCommandorsChooseMenu();

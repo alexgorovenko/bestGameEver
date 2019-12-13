@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class AbstractContainer : MonoBehaviour
 {
-  protected List<Card> mCards = new List<Card>();
+  protected List<Card> mCards = new List<Card>(8);
   public event EventHandler<CardContainerEventArgs> CardAdded;
   public void AddCard(Card item)
   {
