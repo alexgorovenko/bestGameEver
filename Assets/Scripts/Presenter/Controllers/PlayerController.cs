@@ -26,6 +26,12 @@ public class PlayerController : AbstractController
   private int playedFortificationCards = 0;
   public Card currentDraggableCard;
   private List<GameObject> selectedCards = new List<GameObject>();
+  List<ContainerFlank> flanks;
+  public ContainerFlank flankLeft1;
+  public ContainerFlank flankLeft2;
+  public ContainerFlank flankRight1;
+  public ContainerFlank flankRight2;
+
   Dictionary<CurrentPlayer, ContainerDeck> decks;
   public ContainerDeck deck1;
   public ContainerDeck deck2;
@@ -55,6 +61,12 @@ public class PlayerController : AbstractController
     drops = new Dictionary<CurrentPlayer, ContainerDrop>();
     drops.Add(CurrentPlayer.FIRST, drop1);
     drops.Add(CurrentPlayer.SECOND, drop2);
+
+    flanks = new List<ContainerFlank>();
+    flanks.Add(flankLeft1);
+    flanks.Add(flankRight1);
+    flanks.Add(flankLeft2);
+    flanks.Add(flankRight2);
 
     ShowCommandorsChooseMenu();
     List<AbstractCard> _cards1 = game.GetSeveralCards(CurrentPlayer.FIRST, game.GetRemainedCards(CurrentPlayer.FIRST));
@@ -101,6 +113,14 @@ public class PlayerController : AbstractController
     playedFortificationCards = 0;
 
     UpdateCommandors();
+
+    int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 0 : 2;
+
+    GameObject flankContainer = game.GetCurrentStep() == CurrentPlayer.FIRST ? flanks1Layer : flanks2Layer;
+
+    flanks[step].GetComponent<ContainerFlank>().RefreshActive();
+    flanks[step + 1].GetComponent<ContainerFlank>().RefreshActive();
+
     hands[game.GetCurrentStep()].gameObject.SetActive(false);
     game.NextStep();
     hands[game.GetCurrentStep()].gameObject.SetActive(true);
@@ -189,6 +209,14 @@ public class PlayerController : AbstractController
           placedCards.Add((SquadCard)cardModel);
           game.AddCardsToFlank(game.GetCurrentStep(), placedCards, flankModel);
           card.transform.SetParent(flank.transform.Find("CardsContainer").transform);
+          if (s.isActive)
+          {
+            card.isSelectable = true;
+          }
+          else
+          {
+            card.isSelectable = false;
+          }
           playedSquadCards++;
         }
         break;
