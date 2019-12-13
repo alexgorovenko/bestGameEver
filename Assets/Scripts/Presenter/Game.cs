@@ -271,6 +271,7 @@ public class Game
       attacks[player].ApplySkillsDeffender(flank, fields[player == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST].GetCommandor(flank).skills);
     }    
     fields[player].Attack(attacks[player].getHeadquartesHurt());
+    RefreshSquads();
   }
 
   public int GetCardsCount(CurrentPlayer player, Flank flank)
