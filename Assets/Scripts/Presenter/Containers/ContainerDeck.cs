@@ -8,6 +8,7 @@ public class ContainerDeck : AbstractContainer
 {
   public Card GetCard()
   {
+    if (this.mCards.Count == 0) return null;
     Card card = this.mCards[0];
     this.mCards.RemoveAt(0);
     return card;
@@ -15,6 +16,7 @@ public class ContainerDeck : AbstractContainer
 
   public List<Card> GetCards(int number)
   {
+    number = Math.Min(number, this.mCards.Count);
     List<Card> cards = new List<Card>(number);
     for (var i = 0; i < number; i++)
     {
