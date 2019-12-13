@@ -44,6 +44,7 @@ public class PlayerController : AbstractController
   private int rearRaidCounter;
   private delegate void Callback(Card card);
   private Callback callback;
+  private AttackState attackState = AttackState.ATTACK;
 
   // Start is called before the first frame update
   void Start()
@@ -251,6 +252,22 @@ public class PlayerController : AbstractController
   }
 
   // Attack
+
+  public void Attack()
+  {
+    if (this.attackState == AttackState.ATTACK)
+    {
+      AttackStart();
+      GameObject.Find("Attack").Find("Text").GetComponent<Text>().text = "В бой!";
+      attackState = AttackState.DEFENCE;
+    }
+    else
+    {
+      DefenceStart();
+      GameObject.Find("Attack").Find("Text").GetComponent<temp>().text = "Атака!";
+      attackState = AttackState.ATTACK;
+    }
+  }
 
   public void AttackStart()
   {
