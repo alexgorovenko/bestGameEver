@@ -57,6 +57,7 @@ public class Attack
     {
         foreach (SquadCard _card in attacker[flank])
         {
+            if (_card == null) continue;
             if (card == _card)
             {
                 card.stamina -= (int)hp;
@@ -68,6 +69,7 @@ public class Attack
     {
         foreach (SquadCard _card in deffender[flank])
         {
+            if (card == null) continue;
             if (card == _card)
             {
                 card.stamina -= (int)hp;
@@ -86,6 +88,7 @@ public class Attack
             
             foreach (SquadCard card in attacker[flank])
             {
+                if (card == null) continue;
                 if (inspirated && card.skills != skills)
                 {
                     card.attack += card.skills.inspiration;
@@ -107,6 +110,7 @@ public class Attack
             
             foreach (SquadCard card in attacker[flank])
             {
+                if (card == null) continue;
                 if (inspirated && card.skills != skills)
                 {
                     card.attack += card.skills.inspiration;
@@ -137,6 +141,7 @@ public class Attack
             int massDamageAttacker = 0;
             foreach (SquadCard card in attacker[flank])
             {
+                if (card == null) continue;
                 if (card.skills.inspiration > 0)
                 {
                     remainInspiration -= 1;
@@ -147,6 +152,7 @@ public class Attack
 
             foreach (SquadCard card in attacker[flank])
             {
+                if (card == null) continue;
                 applySkills(card.skills, true, remainInspiration < 0, flank);
             }
 
@@ -154,6 +160,7 @@ public class Attack
             int massDamageDefender = 0;
             foreach (SquadCard card in deffender[flank])
             {
+                if (card == null) continue;
                 if (card.skills.inspiration > 0)
                 {
                     remainInspiration -= 1;
@@ -164,11 +171,13 @@ public class Attack
 
             foreach (SquadCard card in deffender[flank])
             {
+                if (card == null) continue;
                 applySkills(card.skills, false, remainInspiration < 0, flank);
             }
 
             for (int i = 0; i < attacker[flank].Count; i++)
             {
+                if (attacker[flank][i] == null) continue;
                 if (deffender[flank][i] != null)
                 {
                     attacker[flank][i].stamina -= (int)deffender[flank][i].protection;
@@ -197,6 +206,7 @@ public class Attack
             }
             foreach (SquadCard card in this.attacker[flank])
             {
+                if (card == null) continue;
                 card.active = false;
             }
             foreach (SquadCard card in this.deffender[flank])

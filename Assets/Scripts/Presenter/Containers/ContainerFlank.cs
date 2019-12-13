@@ -28,14 +28,18 @@ public class ContainerFlank : AbstractContainer
     Debug.Log(mCards.Count);
     foreach (var card in this.mCards)
     {
-      Debug.Log(card.card.active);
-      card.isSelectable = card.card.active;
+      if (card != null)
+      {
+        Debug.Log(card.card.active);
+        card.isSelectable = card.card.active;
+      }
     }
   }
   public void DestroyDead()
   {
     foreach (var card in this.mCards)
     {
+      if (card == null) continue;
       if (((SquadCard)card.card).stamina <= 0)
       {
         mCards.Remove(card);
