@@ -12,6 +12,7 @@ public class Card : MonoBehaviour, ICardContainerItem
   [SerializeField] public GameObject player;
   [SerializeField] public Sprite Image { get; }
   protected TextMeshProUGUI _fieldName;
+  public bool isSelected = false;
   public bool isDraggable = true;
   public void OnAdd() { }
   public void OnPlay() { }

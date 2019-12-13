@@ -378,6 +378,8 @@ public class PlayerController : AbstractController
   {
     Debug.Log("SelectCard");
     Debug.Log(selectedCards.Count);
+    if (card.GetComponent<Card>().isSelected == true) return;
+    card.GetComponent<Card>().isSelected = true;
     selectedCards.Add(card);
 
     if (this.callback != null)
@@ -391,6 +393,9 @@ public class PlayerController : AbstractController
   }
   public void ResetSelectionCards()
   {
+    foreach (var card in selectedCards) {
+      card.GetComponent<Card>().isSelected = false;
+    }
     selectedCards.Clear();
   }
 }
