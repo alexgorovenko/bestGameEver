@@ -20,6 +20,7 @@ public class PlayerController : AbstractController
   [SerializeField] GameObject commandorsLayer;
   [SerializeField] GameObject HQ1Layer;
   [SerializeField] GameObject HQ2Layer;
+  [SerializeField] GameObject AttackButton;
   private uint commandorsChosen = 0;
   private int playedSquadCards = 0;
   private int playedSupportCards = 0;
@@ -255,16 +256,16 @@ public class PlayerController : AbstractController
 
   public void Attack()
   {
-    if (this.attackState == AttackState.ATTACK)
+    if (attackState == AttackState.ATTACK)
     {
       AttackStart();
-      GameObject.Find("Attack").Find("Text").GetComponent<Text>().text = "В бой!";
+      AttackButton.GetComponentInChildren<Text>().text = "В бой!";
       attackState = AttackState.DEFENCE;
     }
     else
     {
       DefenceStart();
-      GameObject.Find("Attack").Find("Text").GetComponent<temp>().text = "Атака!";
+      AttackButton.GetComponentInChildren<Text>().text = "Атака!";
       attackState = AttackState.ATTACK;
     }
   }
