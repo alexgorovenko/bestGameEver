@@ -40,6 +40,7 @@ public class AbstractContainer : MonoBehaviour
   {
     foreach (var card in mCards)
     {
+      if (card == null) continue;
       card.SetActiveSelectHandler(isActive);
     }
   }
@@ -55,8 +56,7 @@ public class AbstractContainer : MonoBehaviour
   {
     foreach (var card in mCards)
     {
-      if (card != null)
-        card.isSelectable = isActive;
+      if (card != null) card.isSelectable = isActive;
     }
   }
 }
