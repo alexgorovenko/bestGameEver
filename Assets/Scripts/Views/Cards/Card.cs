@@ -19,6 +19,7 @@ public class Card : MonoBehaviour, ICardContainerItem
   public bool isDraggable = true;
   public bool isHighlighted = true;
   public int position = -1;
+  public Sprite sprite = null;
   public Card() : base()
   {
     rarityColors[Rarity.General] = new Color(0.8f, 0.8f, 0.8f);

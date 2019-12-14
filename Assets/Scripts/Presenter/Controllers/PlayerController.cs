@@ -51,6 +51,55 @@ public class PlayerController : AbstractController
   private Skills tempSkills = null;
   private int position = 0;
 
+    void UpdateSprite (string cardName, Card _card)
+    {
+        switch (cardName)
+        {
+            case "Линейная пехота":
+                _card.sprite = Resources.Load<Sprite>("Пехота 1");
+                break;
+            case "Рейд по тылам":
+                _card.sprite = Resources.Load<Sprite>("Рейды по тылам3");
+                break;
+            case "Дворфы защитники":
+                _card.sprite = Resources.Load<Sprite>("дворф");
+                break;
+            case "Колючая проволока":
+                _card.sprite = Resources.Load<Sprite>("колючая проволока1");
+                break;
+            case "Мобилизация":
+                _card.sprite = Resources.Load<Sprite>("мобилизация");
+                break;
+            case "Полевая медицина":
+                _card.sprite = Resources.Load<Sprite>("полевая медицина5");
+                break;
+            case "Прыгуны":
+                _card.sprite = Resources.Load<Sprite>("прыгун");
+                break;
+            case "Пулеметчики":
+                _card.sprite = Resources.Load<Sprite>("пулеметчики1");
+                break;
+            case "Снайпер":
+                _card.sprite = Resources.Load<Sprite>("снайпер2");
+                break;
+            case "Тактический ход":
+                _card.sprite = Resources.Load<Sprite>("тактический ход1");
+                break;
+            case "Танк":
+                _card.sprite = Resources.Load<Sprite>("танкБритания");
+                break;
+            case "Техномаг":
+                _card.sprite = Resources.Load<Sprite>("техномаги");
+                break;
+            case "Укрепленная траншея":
+                _card.sprite = Resources.Load<Sprite>("укрепленная траншея");
+                break;
+            case "Штрафники":
+                _card.sprite = Resources.Load<Sprite>("штрафники1");
+                break;
+        }
+    }
+
   // Start is called before the first frame update
   void Start()
   {
@@ -93,6 +142,7 @@ public class PlayerController : AbstractController
     foreach (AbstractCard aCard in _cards1)
     {
       Card _card = Instantiate(cardUniversal);
+      UpdateSprite(aCard.name, _card);
       _card.transform.SetParent(deck1.transform.Find("CardsContainer").transform);
       _card.SetCard(aCard);
       deck1.AddCard(_card);
@@ -104,6 +154,7 @@ public class PlayerController : AbstractController
     foreach (AbstractCard aCard in _cards2)
     {
       Card _card = Instantiate(cardUniversal);
+      UpdateSprite(aCard.name, _card);
       _card.transform.SetParent(deck2.transform.Find("CardsContainer").transform);
       _card.SetCard(aCard);
       deck2.AddCard(_card);
@@ -155,7 +206,22 @@ public class PlayerController : AbstractController
     foreach (CommandorCard commandor in game.freeCommandors)
     {
       GameObject _cardCommandor = Instantiate(cardCommandor);
-      _cardCommandor.transform.SetParent(chooseCommandors.transform);
+        switch (commandor.name)
+        {
+            case "Мастер защиты":
+                _cardCommandor.sprite = Resources.Load<Sprite>("Командир1");
+                break;
+            case "Мастер атаки":
+                _cardCommandor.sprite = Resources.Load<Sprite>("командир4");
+                break;
+            case "Координатор":
+                _cardCommandor.sprite = Resources.Load<Sprite>("командир6");
+                break;
+            case "Ветеран":
+                _cardCommandor.sprite = Resources.Load<Sprite>("командир7");
+                break;
+        }
+        _cardCommandor.transform.SetParent(chooseCommandors.transform);
       _cardCommandor.GetComponent<CardCommandorView>().SetCard(commandor);
     }
   }
