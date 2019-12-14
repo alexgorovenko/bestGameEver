@@ -13,13 +13,20 @@ public class Card : MonoBehaviour, ICardContainerItem
   public AbstractCard card;
   [SerializeField] public GameObject player;
   [SerializeField] public GameObject border;
-  [SerializeField] public Sprite Image { get; }
+  [SerializeField]
+  public Sprite Image
+  {
+    get
+    {
+      return gameObject.GetComponent<Image>().sprite;
+    }
+    set { gameObject.GetComponent<Image>().sprite = value; }
+  }
   protected TextMeshProUGUI _fieldName;
   public bool isSelectable = false;
   public bool isDraggable = true;
   public bool isHighlighted = true;
   public int position = -1;
-  public Sprite sprite = null;
   public Card() : base()
   {
     rarityColors[Rarity.General] = new Color(0.8f, 0.8f, 0.8f);

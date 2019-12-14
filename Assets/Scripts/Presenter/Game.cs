@@ -119,20 +119,20 @@ public class Game
       {
         cards[player].Add(new FortificationCard(Rarity.Rare, "Укрепленная траншея", "", this.FortifiedTrenchCallback));
       }
-      for (int i = 0; i < 3; i++)
-      {
-        cards[player].Add(new SupportCard(Rarity.General, "Мобилизация", "", ViewAction.MOBILIZAZATION));
-      }
-      for (int i = 0; i < 3; i++)
-      {
-        cards[player].Add(new SupportCard(Rarity.General, "Тактический ход", "", ViewAction.TACTICAL_MOVE));
-      }
-      for (int i = 0; i < 2; i++)
-      {
-        cards[player].Add(new SupportCard(Rarity.Rare, "Снайпер", "", ViewAction.SNIPER));
-      }
-      cards[player].Add(new SupportCard(Rarity.Epic, "Рейд по тылам", "", ViewAction.REAR_RAID));
-      cards[player].Add(new SupportCard(Rarity.Legendary, "Полевая медицина", "", ViewAction.FIELD_MEDICINE));
+      // for (int i = 0; i < 3; i++)
+      // {
+      //   cards[player].Add(new SupportCard(Rarity.General, "Мобилизация", "", ViewAction.MOBILIZAZATION));
+      // }
+      // for (int i = 0; i < 3; i++)
+      // {
+      //   cards[player].Add(new SupportCard(Rarity.General, "Тактический ход", "", ViewAction.TACTICAL_MOVE));
+      // }
+      // for (int i = 0; i < 2; i++)
+      // {
+      //   cards[player].Add(new SupportCard(Rarity.Rare, "Снайпер", "", ViewAction.SNIPER));
+      // }
+      // cards[player].Add(new SupportCard(Rarity.Epic, "Рейд по тылам", "", ViewAction.REAR_RAID));
+      // cards[player].Add(new SupportCard(Rarity.Legendary, "Полевая медицина", "", ViewAction.FIELD_MEDICINE));
     }
     skills = new Skills();
     skills.suppression = 1;

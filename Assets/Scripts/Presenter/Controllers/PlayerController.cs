@@ -7,7 +7,7 @@ public class PlayerController : AbstractController
 {
   [SerializeField] GameObject gameUI;
   [SerializeField] GameObject temporary;
-  [SerializeField] GameObject cardCommandor;
+  [SerializeField] CardCommandorView cardCommandor;
   [SerializeField] Card cardUniversal;
   [SerializeField] public CardPlaceholder cardPlaceholder;
   [SerializeField] GameObject commandorsOV;
@@ -34,7 +34,6 @@ public class PlayerController : AbstractController
   public ContainerFlank flankLeft2;
   public ContainerFlank flankRight1;
   public ContainerFlank flankRight2;
-
   Dictionary<CurrentPlayer, ContainerDeck> decks;
   public ContainerDeck deck1;
   public ContainerDeck deck2;
@@ -51,58 +50,64 @@ public class PlayerController : AbstractController
   private Skills tempSkills = null;
   private int position = 0;
 
-    void UpdateSprite (string cardName, Card _card)
+  void UpdateSprite(string cardName, Card _card)
+  {
+    switch (cardName)
     {
-        switch (cardName)
-        {
-            case "Линейная пехота":
-                _card.sprite = Resources.Load<Sprite>("Пехота 1");
-                break;
-            case "Рейд по тылам":
-                _card.sprite = Resources.Load<Sprite>("Рейды по тылам3");
-                break;
-            case "Дворфы защитники":
-                _card.sprite = Resources.Load<Sprite>("дворф");
-                break;
-            case "Колючая проволока":
-                _card.sprite = Resources.Load<Sprite>("колючая проволока1");
-                break;
-            case "Мобилизация":
-                _card.sprite = Resources.Load<Sprite>("мобилизация");
-                break;
-            case "Полевая медицина":
-                _card.sprite = Resources.Load<Sprite>("полевая медицина5");
-                break;
-            case "Прыгуны":
-                _card.sprite = Resources.Load<Sprite>("прыгун");
-                break;
-            case "Пулеметчики":
-                _card.sprite = Resources.Load<Sprite>("пулеметчики1");
-                break;
-            case "Снайпер":
-                _card.sprite = Resources.Load<Sprite>("снайпер2");
-                break;
-            case "Тактический ход":
-                _card.sprite = Resources.Load<Sprite>("тактический ход1");
-                break;
-            case "Танк":
-                _card.sprite = Resources.Load<Sprite>("танкБритания");
-                break;
-            case "Техномаг":
-                _card.sprite = Resources.Load<Sprite>("техномаги");
-                break;
-            case "Укрепленная траншея":
-                _card.sprite = Resources.Load<Sprite>("укрепленная траншея");
-                break;
-            case "Штрафники":
-                _card.sprite = Resources.Load<Sprite>("штрафники1");
-                break;
-        }
+      case "Линейная пехота":
+        _card.Image = Resources.Load<Sprite>("Пехота 1");
+        break;
+      case "Рейд по тылам":
+        _card.Image = Resources.Load<Sprite>("Рейды по тылам3");
+        break;
+      case "Дворфы защитники":
+        _card.Image = Resources.Load<Sprite>("дворф");
+        break;
+      case "Колючая проволока":
+        _card.Image = Resources.Load<Sprite>("колючая проволока1");
+        break;
+      case "Мобилизация":
+        _card.Image = Resources.Load<Sprite>("мобилизация");
+        break;
+      case "Полевая медицина":
+        _card.Image = Resources.Load<Sprite>("полевая медицина5");
+        break;
+      case "Прыгуны":
+        _card.Image = Resources.Load<Sprite>("прыгун");
+        break;
+      case "Пулеметчики":
+        _card.Image = Resources.Load<Sprite>("пулеметчики1");
+        break;
+      case "Снайпер":
+        _card.Image = Resources.Load<Sprite>("снайпер2");
+        break;
+      case "Тактический ход":
+        _card.Image = Resources.Load<Sprite>("тактический ход1");
+        break;
+      case "Танк":
+        _card.Image = Resources.Load<Sprite>("танкБритания");
+        break;
+      case "Техномаг":
+        _card.Image = Resources.Load<Sprite>("техномаги");
+        break;
+      case "Укрепленная траншея":
+        _card.Image = Resources.Load<Sprite>("укрепленная траншея");
+        break;
+      case "Штрафники":
+        _card.Image = Resources.Load<Sprite>("штрафники1");
+        break;
     }
+  }
 
   // Start is called before the first frame update
   void Start()
   {
+    for (int i = 0; i < 8; i++)
+    {
+      attackCards.Add(null);
+      defenceCards.Add(null);
+    }
+
     game = new Game();
 
     callback = AttackCallback;
@@ -205,23 +210,23 @@ public class PlayerController : AbstractController
     // render commandors
     foreach (CommandorCard commandor in game.freeCommandors)
     {
-      GameObject _cardCommandor = Instantiate(cardCommandor);
-        switch (commandor.name)
-        {
-            case "Мастер защиты":
-                _cardCommandor.sprite = Resources.Load<Sprite>("Командир1");
-                break;
-            case "Мастер атаки":
-                _cardCommandor.sprite = Resources.Load<Sprite>("командир4");
-                break;
-            case "Координатор":
-                _cardCommandor.sprite = Resources.Load<Sprite>("командир6");
-                break;
-            case "Ветеран":
-                _cardCommandor.sprite = Resources.Load<Sprite>("командир7");
-                break;
-        }
-        _cardCommandor.transform.SetParent(chooseCommandors.transform);
+      CardCommandorView _cardCommandor = Instantiate(cardCommandor);
+      switch (commandor.name)
+      {
+        case "Мастер защиты":
+          _cardCommandor.Image = Resources.Load<Sprite>("Командир1");
+          break;
+        case "Мастер атаки":
+          _cardCommandor.Image = Resources.Load<Sprite>("командир4");
+          break;
+        case "Координатор":
+          _cardCommandor.Image = Resources.Load<Sprite>("командир6");
+          break;
+        case "Ветеран":
+          _cardCommandor.Image = Resources.Load<Sprite>("командир7");
+          break;
+      }
+      _cardCommandor.transform.SetParent(chooseCommandors.transform);
       _cardCommandor.GetComponent<CardCommandorView>().SetCard(commandor);
     }
   }
@@ -375,30 +380,31 @@ public class PlayerController : AbstractController
   {
     CurrentPlayer deffendersStep = game.GetNextStep();
     // уже выбраны защитники
-    List<SquadCard> cards = new List<SquadCard>(4);
-    cards[0] = attackCards[0] == null ? null : (SquadCard)attackCards[0].card;
-    cards[1] = attackCards[1] == null ? null : (SquadCard)attackCards[1].card;
-    cards[2] = attackCards[2] == null ? null : (SquadCard)attackCards[2].card;
-    cards[3] = attackCards[3] == null ? null : (SquadCard)attackCards[3].card;
+    List<SquadCard> cards = new List<SquadCard>();
+    Debug.Log(attackCards[0]);
+    cards.Add(attackCards[0] == null ? null : (SquadCard)attackCards[0].card);
+    cards.Add(attackCards[1] == null ? null : (SquadCard)attackCards[1].card);
+    cards.Add(attackCards[2] == null ? null : (SquadCard)attackCards[2].card);
+    cards.Add(attackCards[3] == null ? null : (SquadCard)attackCards[3].card);
     game.SetAttackers(game.GetCurrentStep(), cards, Flank.Left);
     cards = new List<SquadCard>(4);
-    cards[0] = defenceCards[0] == null ? null : (SquadCard)defenceCards[0].card;
-    cards[1] = defenceCards[1] == null ? null : (SquadCard)defenceCards[1].card;
-    cards[2] = defenceCards[2] == null ? null : (SquadCard)defenceCards[2].card;
-    cards[3] = defenceCards[3] == null ? null : (SquadCard)defenceCards[3].card;
+    cards.Add(defenceCards[0] == null ? null : (SquadCard)defenceCards[0].card);
+    cards.Add(defenceCards[1] == null ? null : (SquadCard)defenceCards[1].card);
+    cards.Add(defenceCards[2] == null ? null : (SquadCard)defenceCards[2].card);
+    cards.Add(defenceCards[3] == null ? null : (SquadCard)defenceCards[3].card);
     game.SetDeffenders(deffendersStep, cards, Flank.Left);
     game.Attack(game.GetCurrentStep());
     cards = new List<SquadCard>(4);
-    cards[0] = attackCards[4] == null ? null : (SquadCard)attackCards[4].card;
-    cards[1] = attackCards[5] == null ? null : (SquadCard)attackCards[5].card;
-    cards[2] = attackCards[6] == null ? null : (SquadCard)attackCards[6].card;
-    cards[3] = attackCards[7] == null ? null : (SquadCard)attackCards[7].card;
+    cards.Add(attackCards[4] == null ? null : (SquadCard)attackCards[4].card);
+    cards.Add(attackCards[5] == null ? null : (SquadCard)attackCards[5].card);
+    cards.Add(attackCards[6] == null ? null : (SquadCard)attackCards[6].card);
+    cards.Add(attackCards[7] == null ? null : (SquadCard)attackCards[7].card);
     game.SetAttackers(game.GetCurrentStep(), cards, Flank.Left);
     cards = new List<SquadCard>(4);
-    cards[0] = defenceCards[4] == null ? null : (SquadCard)defenceCards[4].card;
-    cards[1] = defenceCards[5] == null ? null : (SquadCard)defenceCards[5].card;
-    cards[2] = defenceCards[6] == null ? null : (SquadCard)defenceCards[6].card;
-    cards[3] = defenceCards[7] == null ? null : (SquadCard)defenceCards[7].card;
+    cards.Add(defenceCards[4] == null ? null : (SquadCard)defenceCards[4].card);
+    cards.Add(defenceCards[5] == null ? null : (SquadCard)defenceCards[5].card);
+    cards.Add(defenceCards[6] == null ? null : (SquadCard)defenceCards[6].card);
+    cards.Add(defenceCards[7] == null ? null : (SquadCard)defenceCards[7].card);
     game.SetDeffenders(deffendersStep, cards, Flank.Left);
     game.Attack(game.GetCurrentStep());
     //  Update UI
@@ -434,18 +440,40 @@ public class PlayerController : AbstractController
     int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
     if (game.GetCardsCount(game.GetCurrentStep(), Flank.Left) != 4)
     {
+      int position = -1;
+      ContainerFlank flank = GameObject.Find($"FlankLeft{step}").GetComponent<ContainerFlank>();
+      for (int i = 0; i < 4; i++)
+      {
+        if (flank.GetCardAt(i) == null) position = i;
+      }
+      Card card = Instantiate(cardUniversal);
+      card.SetCard(noobLeft);
       game.AddCardsToFlank(game.GetCurrentStep(), noobsLeft, Flank.Left);
-      Card _card = Instantiate(cardUniversal);
-      _card.transform.SetParent(GameObject.Find($"FlankLeft{step}").transform.Find("CardsContainer").transform);
-      _card.SetCard(noobLeft);
+      flank.PlaceCard(card, position);
+      Transform container = flank.transform.Find("Squads").Find($"CardsContainer-{position}");
+      GameObject.Destroy(container.Find("CardPlaceholder(Clone)").gameObject);
+      card.transform.SetParent(container.transform);
+      card.isDraggable = false;
+      card.isSelectable = false;
     }
 
     if (game.GetCardsCount(game.GetCurrentStep(), Flank.Right) != 4)
     {
+      int position = -1;
+      ContainerFlank flank = GameObject.Find($"FlankRight{step}").GetComponent<ContainerFlank>();
+      for (int i = 4; i < 8; i++)
+      {
+        if (flank.GetCardAt(i) == null) position = i;
+      }
+      Card card = Instantiate(cardUniversal);
+      card.SetCard(noobRight);
       game.AddCardsToFlank(game.GetCurrentStep(), noobsRight, Flank.Right);
-      Card _card = Instantiate(cardUniversal);
-      _card.transform.SetParent(GameObject.Find($"FlankRight{step}").transform.Find("CardsContainer").transform);
-      _card.SetCard(noobRight);
+      flank.PlaceCard(card, position);
+      Transform container = flank.transform.Find("Squads").Find($"CardsContainer-{position}");
+      GameObject.Destroy(container.Find("CardPlaceholder(Clone)").gameObject);
+      card.transform.SetParent(container.transform);
+      card.isDraggable = false;
+      card.isSelectable = false;
     }
   }
   public void SupportTactical()
@@ -610,6 +638,7 @@ public class PlayerController : AbstractController
   private void AttackCallback(Card card)
   {
     Debug.Log("in attack callback");
+    Debug.Log(position);
     if (attackState == AttackState.ATTACK)
     {
       attackCards[position] = card;
@@ -688,54 +717,56 @@ public class PlayerController : AbstractController
   }
   public void ApplyActiveSkills()
   {
-    foreach (var card in attackCards)
-    {
-      Skills skills = ((SquadCard)(card.card)).skills;
-      if (skills.medic > 0)
-      {
-        this.SupportMedic_Start(skills);
-        return;
-      }
-      if (skills.shelling > 0)
-      {
-        this.SupportSniper(skills);
-        return;
-      }
-      if (skills.sapper > 0)
-      {
-        this.SupportSniper(skills);
-        return;
-      }
-      if (skills.intelligenceService > 0)
-      {
-        this.SupportIntelligenceService_Start(skills);
-        return;
-      }
-    }
-    foreach (var card in attackCards)
-    {
-      Skills skills = ((SquadCard)(card.card)).skills;
-      if (skills.medic > 0)
-      {
-        this.SupportMedic_Start(skills);
-        return;
-      }
-      if (skills.shelling > 0)
-      {
-        this.SupportSniper(skills);
-        return;
-      }
-      if (skills.sapper > 0)
-      {
-        this.SupportSniper(skills);
-        return;
-      }
-      if (skills.intelligenceService > 0)
-      {
-        this.SupportIntelligenceService_Start(skills);
-        return;
-      }
-    }
+    // foreach (var card in attackCards)
+    // {
+    //   if (card == null) continue;
+    //   Skills skills = ((SquadCard)(card.card)).skills;
+    //   if (skills.medic > 0)
+    //   {
+    //     this.SupportMedic_Start(skills);
+    //     return;
+    //   }
+    //   if (skills.shelling > 0)
+    //   {
+    //     this.SupportSniper(skills);
+    //     return;
+    //   }
+    //   if (skills.sapper > 0)
+    //   {
+    //     this.SupportSniper(skills);
+    //     return;
+    //   }
+    //   if (skills.intelligenceService > 0)
+    //   {
+    //     this.SupportIntelligenceService_Start(skills);
+    //     return;
+    //   }
+    // }
+    // foreach (var card in defenceCards)
+    // {
+    //   if (card == null) continue;
+    //   Skills skills = ((SquadCard)(card.card)).skills;
+    //   if (skills.medic > 0)
+    //   {
+    //     this.SupportMedic_Start(skills);
+    //     return;
+    //   }
+    //   if (skills.shelling > 0)
+    //   {
+    //     this.SupportSniper(skills);
+    //     return;
+    //   }
+    //   if (skills.sapper > 0)
+    //   {
+    //     this.SupportSniper(skills);
+    //     return;
+    //   }
+    //   if (skills.intelligenceService > 0)
+    //   {
+    //     this.SupportIntelligenceService_Start(skills);
+    //     return;
+    //   }
+    // }
     this.DefenceStart();
   }
 }
