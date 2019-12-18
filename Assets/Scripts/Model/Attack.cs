@@ -82,11 +82,6 @@ public class Attack
   {
     if (isAttacker)
     {
-      foreach (SquadCard card in deffender[flank])
-      {
-        if (card != null) card.protection = Math.Min(1, card.protection - attackerSkills[flank].support);
-      }
-
       foreach (SquadCard card in attacker[flank])
       {
         if (card == null) continue;
@@ -94,11 +89,6 @@ public class Attack
         {
           card.attack += card.skills.inspiration;
           card.protection += card.skills.inspiration;
-        }
-
-        if (skills.block > 0)
-        {
-          card.skills.armor++;
         }
       }
     }
@@ -106,21 +96,11 @@ public class Attack
     {
       foreach (SquadCard card in attacker[flank])
       {
-        if (card != null) card.attack = Math.Min(1, card.attack - deffenderSkills[flank].suppression);
-      }
-
-      foreach (SquadCard card in attacker[flank])
-      {
         if (card == null) continue;
         if (inspirated && card.skills != skills)
         {
           card.attack += card.skills.inspiration;
           card.protection += card.skills.inspiration;
-        }
-
-        if (skills.block > 0)
-        {
-          card.skills.armor++;
         }
       }
     }
