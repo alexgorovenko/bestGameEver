@@ -9,6 +9,7 @@ public class PlayerController : AbstractController
   [SerializeField] GameObject temporary;
   [SerializeField] CardCommandorView cardCommandor;
   [SerializeField] Card cardUniversal;
+  [SerializeField] CardSquad cardSquad;
   [SerializeField] public CardPlaceholder cardPlaceholder;
   [SerializeField] GameObject commandorsOV;
   [SerializeField] GameObject chooseCommandors;
@@ -146,11 +147,23 @@ public class PlayerController : AbstractController
     );
     foreach (AbstractCard aCard in _cards1)
     {
-      Card _card = Instantiate(cardUniversal);
-      UpdateSprite(aCard.name, _card);
-      _card.transform.SetParent(deck1.transform.Find("CardsContainer").transform);
-      _card.SetCard(aCard);
-      deck1.AddCard(_card);
+      switch (aCard)
+      {
+        case SquadCard s:
+          CardSquad cs = Instantiate(cardSquad);
+          UpdateSprite(aCard.name, cs);
+          cs.transform.SetParent(deck1.transform.Find("CardsContainer").transform);
+          cs.SetCard((SquadCard)aCard);
+          deck1.AddCard(cs);
+          break;
+        default:
+          Card cu = Instantiate(cardUniversal);
+          UpdateSprite(aCard.name, cu);
+          cu.transform.SetParent(deck1.transform.Find("CardsContainer").transform);
+          cu.SetCard(aCard);
+          deck1.AddCard(cu);
+          break;
+      }
     }
     List<AbstractCard> _cards2 = game.GetSeveralCards(
       CurrentPlayer.SECOND,
@@ -158,11 +171,23 @@ public class PlayerController : AbstractController
     );
     foreach (AbstractCard aCard in _cards2)
     {
-      Card _card = Instantiate(cardUniversal);
-      UpdateSprite(aCard.name, _card);
-      _card.transform.SetParent(deck2.transform.Find("CardsContainer").transform);
-      _card.SetCard(aCard);
-      deck2.AddCard(_card);
+      switch (aCard)
+      {
+        case SquadCard s:
+          CardSquad cs = Instantiate(cardSquad);
+          UpdateSprite(aCard.name, cs);
+          cs.transform.SetParent(deck2.transform.Find("CardsContainer").transform);
+          cs.SetCard(aCard);
+          deck2.AddCard(cs);
+          break;
+        default:
+          Card cu = Instantiate(cardUniversal);
+          UpdateSprite(aCard.name, cu);
+          cu.transform.SetParent(deck2.transform.Find("CardsContainer").transform);
+          cu.SetCard(aCard);
+          deck2.AddCard(cu);
+          break;
+      }
     }
   }
   public void GameStart()
