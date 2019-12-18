@@ -12,17 +12,14 @@ public class Card : MonoBehaviour, ICardContainerItem
   static Dictionary<Rarity, Color> rarityColors = new Dictionary<Rarity, Color>();
   public AbstractCard card;
   [SerializeField] public GameObject player;
+  [SerializeField] public TextMeshProUGUI fieldName;
   [SerializeField] public GameObject border;
   [SerializeField]
   public Sprite Image
   {
-    get
-    {
-      return gameObject.GetComponent<Image>().sprite;
-    }
+    get { return gameObject.GetComponent<Image>().sprite; }
     set { gameObject.GetComponent<Image>().sprite = value; }
   }
-  protected TextMeshProUGUI _fieldName;
   public bool isSelectable = false;
   public bool isDraggable = true;
   public bool isHighlighted = true;
@@ -56,8 +53,7 @@ public class Card : MonoBehaviour, ICardContainerItem
   {
     if (card.GetType() == typeof(SupportCard)) isDraggable = false;
     this.card = card;
-    _fieldName = GetComponentInChildren<TextMeshProUGUI>();
-    _fieldName.SetText(card.name);
+    fieldName.SetText(card.name);
   }
   public void SetActiveSelectHandler(bool state)
   {

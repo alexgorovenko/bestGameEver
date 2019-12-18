@@ -88,6 +88,7 @@
      <Compile Include="Assets\Scripts\Views\Cards\Card.cs" />
      <Compile Include="Assets\Scripts\Views\Cards\CardCommandorView.cs" />
      <Compile Include="Assets\Scripts\Views\Cards\CardPlaceholder.cs" />
+     <Compile Include="Assets\Scripts\Views\Cards\CardSquad.cs" />
      <Compile Include="Assets\Scripts\Views\FlangView.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01_UGUI.cs" />
