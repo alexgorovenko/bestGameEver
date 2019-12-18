@@ -77,6 +77,8 @@ public class Card : MonoBehaviour, ICardContainerItem
         break;
       case SupportCard s:
         script.DropCardToDrop(this, false);
+        List<Tuple<Skills.SkillCallback, int>> activeSkills = new List<Tuple<Skills.SkillCallback, int>>();
+        List<Tuple<Skills.SkillCallback, int>> instantSkills = new List<Tuple<Skills.SkillCallback, int>>();
         switch (s.action)
         {
           case ViewAction.TACTICAL_MOVE:
@@ -86,17 +88,17 @@ public class Card : MonoBehaviour, ICardContainerItem
             script.SupportMobilization();
             break;
           case ViewAction.SNIPER:
-            skills = new Skills();
-            skills.shelling = 3;
+            instantSkills.Add(new Tuple<Skills.SkillCallback, int>(Skills.Shelling, 3));
+            skills = new Skills(null, instantSkills);
             script.SupportSniper(skills);
             break;
           case ViewAction.REAR_RAID:
             script.RearRaid_Start();
             break;
           case ViewAction.FIELD_MEDICINE:
-            skills = new Skills();
-            skills.medic = 2;
-            script.SupportMedic_Start(skills);
+            instantSkills.Add(new Tuple<Skills.SkillCallback, int>(Skills.Medicine, 2));
+            skills = new Skills(null, instantSkills);
+            script.SupportMedicine_Start(skills);
             break;
         }
         break;

@@ -33,6 +33,8 @@ public class Game
     this.fields = new Dictionary<CurrentPlayer, Field>();
     this.freeCommandors = new HashSet<CommandorCard>();
     Skills skills;
+    List<Tuple<Skills.SkillCallback, int>> activeSkills;
+    List<Tuple<Skills.SkillCallback, int>> instantSkills;
     foreach (CurrentPlayer player in Enum.GetValues(typeof(CurrentPlayer)))
     {
       attacks[player] = new Attack();
@@ -73,41 +75,52 @@ public class Game
         cards[player].Add(new SquadCard(Rarity.Rare, "Офицер", "", 2, 2, 2, skills));
       }
       skills = new Skills();
-      skills.armorPiercing = true;
+      skills.pierce = true;
       skills.armor = 1;
       skills.massDamage = 1;
       cards[player].Add(new SquadCard(Rarity.Epic, "Огнеметчики", "", 2, 2, 1, skills));
-      skills = new Skills();
-      skills.sapper = 2;
-      skills.armorPiercing = true;
+
+      instantSkills = new List<Tuple<Skills.SkillCallback, int>>();
+      instantSkills.Add(new Tuple<Skills.SkillCallback, int>(Skills.Sapper, 2));
+      skills = new Skills(null, instantSkills);
+      skills.pierce = true;
       cards[player].Add(new SquadCard(Rarity.Epic, "Полевые инженеры", "", 2, 3, 2, skills));
-      skills = new Skills();
-      skills.intelligenceService = 2;
+
+      instantSkills = new List<Tuple<Skills.SkillCallback, int>>();
+      instantSkills.Add(new Tuple<Skills.SkillCallback, int>(Skills.Scouting, 2));
+      skills = new Skills(null, instantSkills);
       cards[player].Add(new SquadCard(Rarity.Epic, "Скауты", "", 2, 3, 2, skills));
+
       skills = new Skills();
       skills.armor = 1;
       skills.breakthrough = true;
       cards[player].Add(new SquadCard(Rarity.Epic, "Уланы", "", 4, 2, 1, skills));
-      skills = new Skills();
-      skills.support = 1;
-      skills.suppression = 2;
+
+      activeSkills = new List<Tuple<Skills.SkillCallback, int>>();
+      activeSkills.Add(new Tuple<Skills.SkillCallback, int>(Skills.Support, 1));
+      activeSkills.Add(new Tuple<Skills.SkillCallback, int>(Skills.Suppression, 2));
+      skills = new Skills(activeSkills, null);
       cards[player].Add(new SquadCard(Rarity.Epic, "Пулеметчики", "", 0, 3, 2, skills));
-      skills = new Skills();
-      skills.medic = 2;
-      cards[player].Add(new SquadCard(Rarity.Epic, "Полевой медик", "", 2, 3, 2, skills));
+
       skills = new Skills();
       skills.armor = 1;
       skills.breakthrough = true;
       skills.agility = true;
       cards[player].Add(new SquadCard(Rarity.Legendary, "Прыгуны", "", 4, 2, 2, skills));
-      skills = new Skills();
-      skills.shelling = 4;
-      skills.support = 2;
+
+      activeSkills = new List<Tuple<Skills.SkillCallback, int>>();
+      activeSkills.Add(new Tuple<Skills.SkillCallback, int>(Skills.Support, 2));
+      instantSkills = new List<Tuple<Skills.SkillCallback, int>>();
+      instantSkills.Add(new Tuple<Skills.SkillCallback, int>(Skills.Shelling, 4));
+      skills = new Skills(activeSkills, instantSkills);
       cards[player].Add(new SquadCard(Rarity.Legendary, "Техномаг", "", 2, 3, 2, skills));
-      skills = new Skills();
-      skills.block = 1;
-      skills.suppression = 1;
+
+      activeSkills = new List<Tuple<Skills.SkillCallback, int>>();
+      activeSkills.Add(new Tuple<Skills.SkillCallback, int>(Skills.Block, 1));
+      activeSkills.Add(new Tuple<Skills.SkillCallback, int>(Skills.Suppression, 1));
+      skills = new Skills(activeSkills, null);
       cards[player].Add(new SquadCard(Rarity.Legendary, "Дворфы защитники", "", 2, 4, 2, skills));
+
       skills = new Skills();
       skills.armor = 2;
       cards[player].Add(new SquadCard(Rarity.Legendary, "Танк", "", 2, 5, 0, skills));
@@ -134,18 +147,31 @@ public class Game
       // cards[player].Add(new SupportCard(Rarity.Epic, "Рейд по тылам", "", ViewAction.REAR_RAID));
       // cards[player].Add(new SupportCard(Rarity.Legendary, "Полевая медицина", "", ViewAction.FIELD_MEDICINE));
     }
-    skills = new Skills();
-    skills.suppression = 1;
+    // Командиры
+
+    // Мастер защиты
+    activeSkills = new List<Tuple<Skills.SkillCallback, int>>();
+    activeSkills.Add(new Tuple<Skills.SkillCallback, int>(Skills.Suppression, 1));
+    skills = new Skills(activeSkills, null);
     freeCommandors.Add(new CommandorCard(Rarity.Rare, "Мастер защиты", "", skills, 1));
-    skills = new Skills();
-    skills.support = 1;
+
+    // Мастер атаки
+    activeSkills = new List<Tuple<Skills.SkillCallback, int>>();
+    activeSkills.Add(new Tuple<Skills.SkillCallback, int>(Skills.Support, 1));
+    skills = new Skills(activeSkills, null);
     freeCommandors.Add(new CommandorCard(Rarity.Rare, "Мастер атаки", "", skills, 1));
-    skills = new Skills();
-    skills.shelling = 1;
+
+    // Координатор
+    activeSkills = new List<Tuple<Skills.SkillCallback, int>>();
+    activeSkills.Add(new Tuple<Skills.SkillCallback, int>(Skills.Shelling, 1));
+    skills = new Skills(activeSkills, null);
     freeCommandors.Add(new CommandorCard(Rarity.Epic, "Координатор", "", skills, 2));
+
+    // Ветеран войны
     skills = new Skills();
     skills.inspiration = 1;
-    freeCommandors.Add(new CommandorCard(Rarity.Legendary, "Ветеран", "", skills, 1));
+    freeCommandors.Add(new CommandorCard(Rarity.Legendary, "Ветеран войны", "", skills, 1));
+
     currentStep = UnityEngine.Random.value > 0.5f ? CurrentPlayer.FIRST : CurrentPlayer.SECOND;
   }
 
@@ -206,9 +232,9 @@ public class Game
     return this.fields[player].drop;
   }
 
-  public void HitSquad(SquadCard card, Skills skills)
+  public void HitSquad(SquadCard card, int damage)
   {
-    card.stamina -= (int)skills.shelling;
+    card.stamina -= damage;
   }
 
   public void DropFortification(CurrentPlayer player, Flank flank)

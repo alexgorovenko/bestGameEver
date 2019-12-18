@@ -667,13 +667,13 @@ public class PlayerController : AbstractController
     }
     attackCards.Clear();
   }
-  public void SupportMedic_Start(Skills skills)
+  public void SupportMedicine_Start(Skills skills)
   {
     this.tempSkills = skills;
-    this.callback = SupportMedic_End;
+    this.callback = SupportMedicine_End;
     //TODO
   }
-  public void SupportMedic_End(Card card)
+  public void SupportMedicine_End(Card card)
   {
     //TODO
     this.tempSkills = null;
@@ -683,13 +683,13 @@ public class PlayerController : AbstractController
       ApplyActiveSkills();
     }
   }
-  public void SupportIntelligenceService_Start(Skills skills)
+  public void SupportScouting_Start(Skills skills)
   {
     this.tempSkills = skills;
-    this.callback = SupportIntelligenceService_End;
+    this.callback = SupportScouting_End;
     //TODO
   }
-  public void SupportIntelligenceService_End(Card card)
+  public void SupportScouting_End(Card card)
   {
     //TODO
     this.tempSkills = null;
@@ -721,7 +721,7 @@ public class PlayerController : AbstractController
     // {
     //   if (card == null) continue;
     //   Skills skills = ((SquadCard)(card.card)).skills;
-    //   if (skills.medic > 0)
+    //   if (skills.medicine > 0)
     //   {
     //     this.SupportMedic_Start(skills);
     //     return;
@@ -736,9 +736,9 @@ public class PlayerController : AbstractController
     //     this.SupportSniper(skills);
     //     return;
     //   }
-    //   if (skills.intelligenceService > 0)
+    //   if (skills.scouting > 0)
     //   {
-    //     this.SupportIntelligenceService_Start(skills);
+    //     this.SupportScouting_Start(skills);
     //     return;
     //   }
     // }
@@ -746,9 +746,9 @@ public class PlayerController : AbstractController
     // {
     //   if (card == null) continue;
     //   Skills skills = ((SquadCard)(card.card)).skills;
-    //   if (skills.medic > 0)
+    //   if (skills.medicine > 0)
     //   {
-    //     this.SupportMedic_Start(skills);
+    //     this.SupportMedicine_Start(skills);
     //     return;
     //   }
     //   if (skills.shelling > 0)
@@ -761,9 +761,9 @@ public class PlayerController : AbstractController
     //     this.SupportSniper(skills);
     //     return;
     //   }
-    //   if (skills.intelligenceService > 0)
+    //   if (skills.scouting > 0)
     //   {
-    //     this.SupportIntelligenceService_Start(skills);
+    //     this.SupportScouting_Start(skills);
     //     return;
     //   }
     // }

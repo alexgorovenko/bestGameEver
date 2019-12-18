@@ -183,14 +183,14 @@ public class Attack
         if (deffender[flank][i] != null)
         {
           attacker[flank][i].stamina -= (int)deffender[flank][i].protection;
-          if (!deffender[flank][i].skills.armorPiercing)
+          if (!deffender[flank][i].skills.pierce)
           {
             attacker[flank][i].stamina += (int)Math.Min(attacker[flank][i].skills.armor, deffender[flank][i].protection - 1);
           }
 
           attacker[flank][i].stamina -= (int)massDamageDefender;
           deffender[flank][i].stamina -= (int)attacker[flank][i].attack;
-          if (!attacker[flank][i].skills.armorPiercing)
+          if (!attacker[flank][i].skills.pierce)
           {
             deffender[flank][i].stamina += (int)Math.Min(deffender[flank][i].skills.armor, attacker[flank][i].protection - 1);
           }
