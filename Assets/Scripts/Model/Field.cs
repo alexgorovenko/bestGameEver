@@ -4,6 +4,7 @@ using System.Collections.Generic;
 public class Field
 {
   public int headquartesStrength { get; set; }
+  public int addHeadquartesStrength { get; set; }
   private CommandorCard commandorLeft;
   private CommandorCard commandorRight;
   public Dictionary<Flank, HashSet<SquadCard>> flanks { get; }
@@ -64,7 +65,13 @@ public class Field
 
   public void Attack(int points)
   {
-    this.headquartesStrength -= points;
+      this.addHeadquartesStrength = -points;
+  }
+
+  public void ApplyAttack()
+  {
+    this.headquartesStrength += this.addHeadquartesStrength;
+    this.addHeadquartesStrength = 0;
   }
 
   public CommandorCard GetCommandor(Flank flank)

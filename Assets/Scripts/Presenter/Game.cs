@@ -11,19 +11,16 @@ public class Game
   private CurrentPlayer currentStep;
   public HashSet<CommandorCard> freeCommandors { get; }
 
-  private void BarbWireCallback(List<SquadCard> attacker, List<SquadCard> deffender)
+  private void BarbWireCallback(List<SquadCard> attacker, List<SquadCard> deffender, Skills attackerSkills, Skills deffenderSkills)
   {
     int count = attacker.Count;
-    attacker[(int)Math.Round(UnityEngine.Random.value * count)].protection--;
-    attacker[(int)Math.Round(UnityEngine.Random.value * count)].protection--;
+    attacker[(int)Math.Round(UnityEngine.Random.value * count)].addProtection--;
+    attacker[(int)Math.Round(UnityEngine.Random.value * count)].addProtection--;
   }
 
-  private void FortifiedTrenchCallback(List<SquadCard> attacker, List<SquadCard> deffender)
+  private void FortifiedTrenchCallback(List<SquadCard> attacker, List<SquadCard> deffender, Skills attackerSkills, Skills deffenderSkills)
   {
-    foreach (SquadCard deff in deffender)
-    {
-      deff.skills.armor++;
-    }
+    deffenderSkills.armor++;
   }
 
   public Game()
@@ -305,6 +302,13 @@ public class Game
       attacks[player].ApplySkillsDeffender(flank, fields[player == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST].GetCommandor(flank).skills);
     }
     fields[player].Attack(attacks[player].getHeadquartesHurt());
+    RefreshSquads();
+  }
+
+  public void ApplyAttack(CurrentPlayer player)
+  {
+    attacks[player].ApplyAttack();
+    fields[player].ApplyAttack();
     RefreshSquads();
   }
 

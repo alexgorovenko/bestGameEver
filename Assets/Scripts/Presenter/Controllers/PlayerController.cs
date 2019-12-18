@@ -432,6 +432,7 @@ public class PlayerController : AbstractController
     cards.Add(defenceCards[7] == null ? null : (SquadCard)defenceCards[7].card);
     game.SetDeffenders(deffendersStep, cards, Flank.Left);
     game.Attack(game.GetCurrentStep());
+    game.ApplyAttack(game.GetCurrentStep());
     //  Update UI
 
     int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 0 : 2;
