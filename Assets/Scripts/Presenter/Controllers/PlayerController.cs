@@ -247,7 +247,7 @@ public class PlayerController : AbstractController
         case "Координатор":
           _cardCommandor.Image = Resources.Load<Sprite>("командир6");
           break;
-        case "Ветеран":
+        case "Ветеран войны":
           _cardCommandor.Image = Resources.Load<Sprite>("командир7");
           break;
       }
