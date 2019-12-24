@@ -445,6 +445,20 @@ public class PlayerController : AbstractController
     flanks[step].GetComponent<ContainerFlank>().SetActive(false);
     flanks[step + 1].GetComponent<ContainerFlank>().SetActive(false);
 
+    for (int i = 0; i < 8; i++)
+    {
+      if (attackCards[i] != null)
+      {
+        attackCards[i].Highlight(false);
+        attackCards[i] = null;
+      }
+      if (defenceCards[i] != null)
+      {
+        defenceCards[i].Highlight(false);
+        defenceCards[i] = null;
+      }
+    }
+
     HQ1Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.FIRST)}";
     HQ2Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.SECOND)}";
 
