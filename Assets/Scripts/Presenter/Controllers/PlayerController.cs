@@ -232,6 +232,7 @@ public class PlayerController : AbstractController
   }
   public void ShowCommandorsChooseMenu()
   {
+    commandorsOV.SetActive(true);
     // render commandors
     foreach (CommandorCard commandor in game.freeCommandors)
     {

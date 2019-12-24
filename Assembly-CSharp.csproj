@@ -174,6 +174,18 @@
  <Reference Include="UnityEditor.UI">
  <HintPath>C:/Users/inkshir/Develop/game/BGE/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
  </Reference>
+ <Reference Include="Unity.VectorGraphics">
+ <HintPath>C:/Users/inkshir/Develop/game/BGE/Library/ScriptAssemblies/Unity.VectorGraphics.dll</HintPath>
+ </Reference>
+ <Reference Include="Unity.InternalAPIEditorBridge.003">
+ <HintPath>C:/Users/inkshir/Develop/game/BGE/Library/ScriptAssemblies/Unity.InternalAPIEditorBridge.003.dll</HintPath>
+ </Reference>
+ <Reference Include="Unity.VectorGraphics.Editor">
+ <HintPath>C:/Users/inkshir/Develop/game/BGE/Library/ScriptAssemblies/Unity.VectorGraphics.Editor.dll</HintPath>
+ </Reference>
+ <Reference Include="Unity.InternalAPIEngineBridge.003">
+ <HintPath>C:/Users/inkshir/Develop/game/BGE/Library/ScriptAssemblies/Unity.InternalAPIEngineBridge.003.dll</HintPath>
+ </Reference>
  <Reference Include="UnityEngine.AIModule">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.0f1/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
  </Reference>
