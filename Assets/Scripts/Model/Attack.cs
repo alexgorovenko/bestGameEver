@@ -94,7 +94,7 @@ public class Attack
     }
     else
     {
-      foreach (SquadCard card in attacker[flank])
+      foreach (SquadCard card in deffender[flank])
       {
         if (card == null) continue;
         if (card.skills != skills)

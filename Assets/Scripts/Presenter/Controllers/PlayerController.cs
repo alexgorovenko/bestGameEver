@@ -154,6 +154,7 @@ public class PlayerController : AbstractController
           UpdateSprite(aCard.name, cs);
           cs.transform.SetParent(deck1.transform.Find("CardsContainer").transform);
           cs.SetCard((SquadCard)aCard);
+          cs.Highlight(false);
           deck1.AddCard(cs);
           break;
         default:
@@ -161,6 +162,7 @@ public class PlayerController : AbstractController
           UpdateSprite(aCard.name, cu);
           cu.transform.SetParent(deck1.transform.Find("CardsContainer").transform);
           cu.SetCard(aCard);
+          cu.Highlight(false);
           deck1.AddCard(cu);
           break;
       }
@@ -178,6 +180,7 @@ public class PlayerController : AbstractController
           UpdateSprite(aCard.name, cs);
           cs.transform.SetParent(deck2.transform.Find("CardsContainer").transform);
           cs.SetCard(aCard);
+          cs.Highlight(false);
           deck2.AddCard(cs);
           break;
         default:
@@ -185,6 +188,7 @@ public class PlayerController : AbstractController
           UpdateSprite(aCard.name, cu);
           cu.transform.SetParent(deck2.transform.Find("CardsContainer").transform);
           cu.SetCard(aCard);
+          cu.Highlight(false);
           deck2.AddCard(cu);
           break;
       }
@@ -445,6 +449,20 @@ public class PlayerController : AbstractController
     flanks[step + 1].GetComponent<ContainerFlank>().DestroyDead();
     flanks[step].GetComponent<ContainerFlank>().SetActive(false);
     flanks[step + 1].GetComponent<ContainerFlank>().SetActive(false);
+
+    for (int i = 0; i < 8; i++)
+    {
+      if (attackCards[i] != null)
+      {
+        attackCards[i].Highlight(false);
+        attackCards[i] = null;
+      }
+      if (defenceCards[i] != null)
+      {
+        defenceCards[i].Highlight(false);
+        defenceCards[i] = null;
+      }
+    }
 
     HQ1Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.FIRST)}";
     HQ2Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.SECOND)}";
