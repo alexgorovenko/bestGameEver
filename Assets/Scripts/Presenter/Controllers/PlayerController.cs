@@ -216,7 +216,7 @@ public class PlayerController : AbstractController
 
     UpdateCommandors();
 
-    int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 0 : 2;
+    int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 2 : 0;
 
     flanks[step].GetComponent<ContainerFlank>().RefreshActive();
     flanks[step + 1].GetComponent<ContainerFlank>().RefreshActive();

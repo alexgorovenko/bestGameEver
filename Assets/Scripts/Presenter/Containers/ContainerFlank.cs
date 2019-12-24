@@ -21,6 +21,7 @@ public class ContainerFlank : AbstractContainer
   {
     mCards[position] = card;
     card.position = position;
+    RefreshActive();
   }
   public void RefreshActive()
   {

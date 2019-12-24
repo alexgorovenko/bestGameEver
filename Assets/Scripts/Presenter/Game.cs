@@ -14,8 +14,24 @@ public class Game
   private void BarbWireCallback(List<SquadCard> attacker, List<SquadCard> deffender, Skills attackerSkills, Skills deffenderSkills)
   {
     int count = attacker.Count;
-    attacker[(int)Math.Round(UnityEngine.Random.value * count)].addProtection--;
-    attacker[(int)Math.Round(UnityEngine.Random.value * count)].addProtection--;
+    if (count > 1)
+    {
+      SquadCard squad = attacker[(int)Math.Round(UnityEngine.Random.value * 3)];
+      while (squad != null)
+      {
+        squad = attacker[(int)Math.Round(UnityEngine.Random.value * 3)];
+      }
+      squad.addProtection--;
+    }
+    if (count > 0)
+    {
+      SquadCard squad = attacker[(int)Math.Round(UnityEngine.Random.value * 3)];
+      while (squad != null)
+      {
+        squad = attacker[(int)Math.Round(UnityEngine.Random.value * 3)];
+      }
+      squad.addProtection--;
+    }
   }
 
   private void FortifiedTrenchCallback(List<SquadCard> attacker, List<SquadCard> deffender, Skills attackerSkills, Skills deffenderSkills)
