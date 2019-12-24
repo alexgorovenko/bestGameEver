@@ -22,4 +22,12 @@ public class CardSquad : Card
     fieldStamina.SetText($"{card.stamina}");
     fieldDefence.SetText($"{card.protection}");
   }
+
+  public void Update()
+  {
+    if (this.card == null) return;
+    fieldAttack.SetText($"{((SquadCard)card).attack}");
+    fieldStamina.SetText($"{((SquadCard)card).stamina}");
+    fieldDefence.SetText($"{((SquadCard)card).protection}");
+  }
 }
