@@ -2351,7 +2351,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 098466fa77bc76d45afadff18e4b7147, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flank: 1
+  flank: 0
   currentPlayer: 0
   squads:
   - {fileID: 1462634682}
@@ -6328,7 +6328,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 098466fa77bc76d45afadff18e4b7147, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flank: 1
+  flank: 0
   currentPlayer: 1
   squads:
   - {fileID: 1647260225}
