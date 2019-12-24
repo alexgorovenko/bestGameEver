@@ -7,6 +7,7 @@ public class AbstractContainer : MonoBehaviour
 {
   protected List<Card> mCards = new List<Card>(8);
   public event EventHandler<CardContainerEventArgs> CardAdded;
+  public bool canBeDropped { get; set; }
   public void AddCard(Card item)
   {
     mCards.Add(item);
