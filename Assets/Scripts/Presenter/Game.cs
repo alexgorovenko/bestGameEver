@@ -311,14 +311,14 @@ public class Game
       attacks[player].ApplySkillsAttacker(flank, fields[player].GetCommandor(flank).skills);
       attacks[player].ApplySkillsDeffender(flank, fields[player == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST].GetCommandor(flank).skills);
     }
-    fields[player].Attack(attacks[player].getHeadquartesHurt());
+    fields[player == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST].Attack(attacks[player].getHeadquartesHurt());
     RefreshSquads();
   }
 
   public void ApplyAttack(CurrentPlayer player)
   {
     attacks[player].ApplyAttack();
-    fields[player].ApplyAttack();
+    fields[player == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST].ApplyAttack();
     RefreshSquads();
   }
 
