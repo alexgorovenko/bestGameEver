@@ -418,19 +418,18 @@ public class PlayerController : AbstractController
     cards.Add(defenceCards[2] == null ? null : (SquadCard)defenceCards[2].card);
     cards.Add(defenceCards[3] == null ? null : (SquadCard)defenceCards[3].card);
     game.SetDeffenders(deffendersStep, cards, Flank.Left);
-    game.Attack(game.GetCurrentStep());
     cards = new List<SquadCard>(4);
     cards.Add(attackCards[4] == null ? null : (SquadCard)attackCards[4].card);
     cards.Add(attackCards[5] == null ? null : (SquadCard)attackCards[5].card);
     cards.Add(attackCards[6] == null ? null : (SquadCard)attackCards[6].card);
     cards.Add(attackCards[7] == null ? null : (SquadCard)attackCards[7].card);
-    game.SetAttackers(game.GetCurrentStep(), cards, Flank.Left);
+    game.SetAttackers(game.GetCurrentStep(), cards, Flank.Right);
     cards = new List<SquadCard>(4);
     cards.Add(defenceCards[4] == null ? null : (SquadCard)defenceCards[4].card);
     cards.Add(defenceCards[5] == null ? null : (SquadCard)defenceCards[5].card);
     cards.Add(defenceCards[6] == null ? null : (SquadCard)defenceCards[6].card);
     cards.Add(defenceCards[7] == null ? null : (SquadCard)defenceCards[7].card);
-    game.SetDeffenders(deffendersStep, cards, Flank.Left);
+    game.SetDeffenders(deffendersStep, cards, Flank.Right);
     game.Attack(game.GetCurrentStep());
     game.ApplyAttack(game.GetCurrentStep());
     //  Update UI
