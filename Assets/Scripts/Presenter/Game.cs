@@ -14,23 +14,17 @@ public class Game
   private void BarbWireCallback(List<SquadCard> attacker, List<SquadCard> deffender, Skills attackerSkills, Skills deffenderSkills)
   {
     int count = attacker.Count;
-    if (count > 1)
-    {
-      SquadCard squad = attacker[(int)Math.Round(UnityEngine.Random.value * 3)];
-      while (squad != null)
-      {
-        squad = attacker[(int)Math.Round(UnityEngine.Random.value * 3)];
-      }
-      squad.addProtection--;
-    }
     if (count > 0)
     {
-      SquadCard squad = attacker[(int)Math.Round(UnityEngine.Random.value * 3)];
-      while (squad != null)
+      for (int i = 0; i < 2; i++)
       {
-        squad = attacker[(int)Math.Round(UnityEngine.Random.value * 3)];
+        SquadCard squad = attacker[(int)Math.Round(UnityEngine.Random.value * 3)];
+        while (squad != null)
+        {
+          squad = attacker[(int)Math.Round(UnityEngine.Random.value * 3)];
+        }
+        squad.addProtection--;
       }
-      squad.addProtection--;
     }
   }
 

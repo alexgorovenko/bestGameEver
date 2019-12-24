@@ -154,6 +154,7 @@ public class PlayerController : AbstractController
           UpdateSprite(aCard.name, cs);
           cs.transform.SetParent(deck1.transform.Find("CardsContainer").transform);
           cs.SetCard((SquadCard)aCard);
+          cs.Highlight(false);
           deck1.AddCard(cs);
           break;
         default:
@@ -161,6 +162,7 @@ public class PlayerController : AbstractController
           UpdateSprite(aCard.name, cu);
           cu.transform.SetParent(deck1.transform.Find("CardsContainer").transform);
           cu.SetCard(aCard);
+          cu.Highlight(false);
           deck1.AddCard(cu);
           break;
       }
@@ -178,6 +180,7 @@ public class PlayerController : AbstractController
           UpdateSprite(aCard.name, cs);
           cs.transform.SetParent(deck2.transform.Find("CardsContainer").transform);
           cs.SetCard(aCard);
+          cs.Highlight(false);
           deck2.AddCard(cs);
           break;
         default:
@@ -185,6 +188,7 @@ public class PlayerController : AbstractController
           UpdateSprite(aCard.name, cu);
           cu.transform.SetParent(deck2.transform.Find("CardsContainer").transform);
           cu.SetCard(aCard);
+          cu.Highlight(false);
           deck2.AddCard(cu);
           break;
       }
