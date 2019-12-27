@@ -97,6 +97,9 @@ public class PlayerController : AbstractController
       case "Штрафники":
         _card.Image = Resources.Load<Sprite>("штрафники1");
         break;
+      case "Штурмовики":
+        _card.Image = Resources.Load<Sprite>("Пехота 2");
+        break;
     }
   }
 
