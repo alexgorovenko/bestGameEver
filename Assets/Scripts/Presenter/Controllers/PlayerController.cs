@@ -470,8 +470,18 @@ public class PlayerController : AbstractController
 
     HQ1Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.FIRST)}";
     HQ2Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.SECOND)}";
-
-    Next();
+    if (game.GetHeadsquaterHealth(CurrentPlayer.FIRST) <= 0)
+    {
+      //TODO SECOND WIN UI
+    }
+    else if (game.GetHeadsquaterHealth(CurrentPlayer.SECOND) <= 0)
+    {
+      //TODO FIRST WIN UI
+    }
+    else
+    {
+      Next();
+    }
   }
 
   // Support cards callbacks

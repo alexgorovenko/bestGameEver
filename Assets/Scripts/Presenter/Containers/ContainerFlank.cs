@@ -38,14 +38,15 @@ public class ContainerFlank : AbstractContainer
   }
   public void DestroyDead()
   {
-    foreach (var card in this.mCards)
+    for (var i = 0; i < 8; i++)
     {
-      if (card == null) continue;
-      if (((SquadCard)card.card).stamina <= 0)
+      if (mCards[i] == null) continue;
+      if (((SquadCard)mCards[i].card).stamina <= 0)
       {
-        mCards.Remove(card);
-        Destroy(card);
-        player.DropCardToDrop(card, player.game.GetCurrentStep() == currentPlayer);
+        player.DropCardToDrop(mCards[i], player.game.GetCurrentStep() == currentPlayer);
+        mCards[i] = null;
+        CardPlaceholder _card = Instantiate(player.cardPlaceholder);
+        _card.transform.SetParent(squads[i].transform);
       }
     }
   }
