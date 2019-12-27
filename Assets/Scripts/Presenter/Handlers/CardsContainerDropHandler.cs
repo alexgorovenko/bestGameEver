@@ -21,7 +21,7 @@ public class CardsContainerDropHandler : MonoBehaviour, IDropHandler
     {
       CardPlaceholder _card = Instantiate(player.cardPlaceholder);
       Transform container = flank.transform.Find("Squads").Find($"CardsContainer-{_position}");
-      _card.transform.SetParent(container.transform);
+      _card.transform.SetParent(container.transform, false);
     }
     int position = gameObject.name[gameObject.name.Length - 1] - '0';
     Debug.Log(position);

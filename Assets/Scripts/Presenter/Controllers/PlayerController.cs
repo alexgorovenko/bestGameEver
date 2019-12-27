@@ -136,7 +136,7 @@ public class PlayerController : AbstractController
       for (int i = 0; i < 4; i++)
       {
         CardPlaceholder _card = Instantiate(cardPlaceholder);
-        _card.transform.SetParent(flank.GetComponent<ContainerFlank>().squads[i].transform);
+        _card.transform.SetParent(flank.GetComponent<ContainerFlank>().squads[i].transform, false);
       }
     }
 
@@ -152,7 +152,8 @@ public class PlayerController : AbstractController
         case SquadCard s:
           CardSquad cs = Instantiate(cardSquad);
           UpdateSprite(aCard.name, cs);
-          cs.transform.SetParent(deck1.transform.Find("CardsContainer").transform);
+          cs.transform.localScale = deck1.transform.localScale;
+          cs.transform.SetParent(deck1.transform.Find("CardsContainer").transform, false);
           cs.SetCard((SquadCard)aCard);
           cs.Highlight(false);
           deck1.AddCard(cs);
@@ -160,7 +161,8 @@ public class PlayerController : AbstractController
         default:
           Card cu = Instantiate(cardUniversal);
           UpdateSprite(aCard.name, cu);
-          cu.transform.SetParent(deck1.transform.Find("CardsContainer").transform);
+          cu.transform.localScale = deck1.transform.localScale;
+          cu.transform.SetParent(deck1.transform.Find("CardsContainer").transform, false);
           cu.SetCard(aCard);
           cu.Highlight(false);
           deck1.AddCard(cu);
@@ -178,7 +180,8 @@ public class PlayerController : AbstractController
         case SquadCard s:
           CardSquad cs = Instantiate(cardSquad);
           UpdateSprite(aCard.name, cs);
-          cs.transform.SetParent(deck2.transform.Find("CardsContainer").transform);
+          cs.transform.localScale = deck2.transform.localScale;
+          cs.transform.SetParent(deck2.transform.Find("CardsContainer").transform, false);
           cs.SetCard(aCard);
           cs.Highlight(false);
           deck2.AddCard(cs);
@@ -186,7 +189,8 @@ public class PlayerController : AbstractController
         default:
           Card cu = Instantiate(cardUniversal);
           UpdateSprite(aCard.name, cu);
-          cu.transform.SetParent(deck2.transform.Find("CardsContainer").transform);
+          cu.transform.localScale = deck2.transform.localScale;
+          cu.transform.SetParent(deck2.transform.Find("CardsContainer").transform, false);
           cu.SetCard(aCard);
           cu.Highlight(false);
           deck2.AddCard(cu);
@@ -256,7 +260,7 @@ public class PlayerController : AbstractController
           _cardCommandor.Image = Resources.Load<Sprite>("командир7");
           break;
       }
-      _cardCommandor.transform.SetParent(chooseCommandors.transform);
+      _cardCommandor.transform.SetParent(chooseCommandors.transform, false);
       _cardCommandor.GetComponent<CardCommandorView>().SetCard(commandor);
     }
   }
@@ -268,7 +272,7 @@ public class PlayerController : AbstractController
   {
     Debug.Log($"{commandor.name} is set");
     game.SetCommandor(game.GetCurrentStep(), commandor);
-    transform.SetParent(commandorFields[(int)commandorsChosen].transform);
+    transform.SetParent(commandorFields[(int)commandorsChosen].transform, false);
     commandorsChosen++;
     if (commandorsChosen != 2)
     {
@@ -300,7 +304,7 @@ public class PlayerController : AbstractController
     if (card == null) return;
     List<AbstractCard> _cards = new List<AbstractCard>();
     _cards.Add(card.card);
-    card.transform.SetParent(hands[currentPlayer].transform);
+    card.transform.SetParent(hands[currentPlayer].transform, false);
     game.AddCardsToHand(currentPlayer, _cards);
   }
   public void GetCardsFromDeckToHand(CurrentPlayer currentPlayer, int amount)
@@ -317,7 +321,7 @@ public class PlayerController : AbstractController
     AbstractCard cardModel = card.GetComponent<Card>().card;
     addedCards.Add(cardModel);
     game.AddCardsToHand(currentPlayer, addedCards);
-    card.transform.SetParent(hands[currentPlayer].transform);
+    card.transform.SetParent(hands[currentPlayer].transform, false);
   }
   public void DropCardToFlank(Card card, int position, ContainerFlank flank)
   {
@@ -338,7 +342,7 @@ public class PlayerController : AbstractController
             flank.GetComponent<ContainerFlank>().PlaceCard(card, position);
             Transform container = flank.transform.Find("Squads").Find($"CardsContainer-{position}");
             GameObject.Destroy(container.Find("CardPlaceholder(Clone)").gameObject);
-            card.transform.SetParent(container.transform);
+            card.transform.SetParent(container.transform, false);
             card.isDraggable = false;
             card.isSelectable = s.isActive;
             playedSquadCards++;
@@ -368,7 +372,7 @@ public class PlayerController : AbstractController
       player = game.GetCurrentStep();
     }
     game.DropCardFromHand(player, card.card);
-    card.transform.SetParent(drops[player].transform);
+    card.transform.SetParent(drops[player].transform, false);
   }
 
   // Attack
@@ -496,7 +500,7 @@ public class PlayerController : AbstractController
       flank.PlaceCard(card, position);
       Transform container = flank.transform.Find("Squads").Find($"CardsContainer-{position}");
       GameObject.Destroy(container.Find("CardPlaceholder(Clone)").gameObject);
-      card.transform.SetParent(container.transform);
+      card.transform.SetParent(container.transform, false);
       card.isDraggable = false;
       card.isSelectable = false;
     }
@@ -515,7 +519,7 @@ public class PlayerController : AbstractController
       flank.PlaceCard(card, position);
       Transform container = flank.transform.Find("Squads").Find($"CardsContainer-{position}");
       GameObject.Destroy(container.Find("CardPlaceholder(Clone)").gameObject);
-      card.transform.SetParent(container.transform);
+      card.transform.SetParent(container.transform, false);
       card.isDraggable = false;
       card.isSelectable = false;
     }
@@ -549,7 +553,7 @@ public class PlayerController : AbstractController
     foreach (Card card in temporaryCards)
     {
       Card _card = Instantiate(cardUniversal);
-      _card.transform.SetParent(temporary.transform.Find("CardsContainer").transform);
+      _card.transform.SetParent(temporary.transform.Find("CardsContainer").transform, false);
       _card.SetCard(card.card);
     }
 

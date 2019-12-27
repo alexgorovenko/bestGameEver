@@ -14,11 +14,12 @@ public class Card : MonoBehaviour, ICardContainerItem
   [SerializeField] public GameObject player;
   [SerializeField] public TextMeshProUGUI fieldName;
   [SerializeField] public GameObject border;
+  [SerializeField] public GameObject image;
   [SerializeField]
   public Sprite Image
   {
-    get { return gameObject.GetComponent<Image>().sprite; }
-    set { gameObject.GetComponent<Image>().sprite = value; }
+    get { return image.GetComponent<Image>().sprite; }
+    set { image.GetComponent<Image>().sprite = value; }
   }
   public bool isSelectable = false;
   public bool isDraggable = true;
