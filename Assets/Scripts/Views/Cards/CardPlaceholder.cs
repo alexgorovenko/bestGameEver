@@ -7,5 +7,5 @@ using UnityEngine.UI;
 
 public class CardPlaceholder : Card
 {
-  public new AbstractCard card = null;
+    public new AbstractCard card = null;
 }

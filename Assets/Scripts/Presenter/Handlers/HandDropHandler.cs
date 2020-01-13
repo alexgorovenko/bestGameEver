@@ -5,11 +5,12 @@ using UnityEngine.EventSystems;
 
 public class HandDropHandler : MonoBehaviour, IDropHandler
 {
-  [SerializeField] GameObject player;
-  public void OnDrop(PointerEventData eventData)
-  {
-    PlayerController script = player.GetComponent<PlayerController>();
-    script.AddCardToHand(script.currentDraggableCard);
-    player.GetComponent<PlayerController>().currentDraggableCard = null;
-  }
+    [SerializeField]
+    GameObject player;
+    public void OnDrop(PointerEventData eventData)
+    {
+        PlayerController script = player.GetComponent<PlayerController>();
+        script.AddCardToHand(script.currentDraggableCard);
+        player.GetComponent<PlayerController>().currentDraggableCard = null;
+    }
 }

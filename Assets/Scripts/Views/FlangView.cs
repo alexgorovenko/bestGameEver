@@ -5,17 +5,17 @@ using UnityEngine;
 public class FlangView : MonoBehaviour
 {
 
-  public GameObject player1;
-  public GameObject player2;
+    public GameObject player1;
+    public GameObject player2;
 
-  void Start()
-  {
-    Game game = new Game();
-    Debug.Log(game.freeCommandors);
-  }
+    void Start()
+    {
+        Game game = new Game();
+        Debug.Log(game.freeCommandors);
+    }
 
-  void Update()
-  {
+    void Update()
+    {
 
-  }
+    }
 }
