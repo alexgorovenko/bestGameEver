@@ -20,7 +20,9 @@ public class PlayerController : AbstractController
     [SerializeField]
     GameObject commandorsOV;
     [SerializeField]
-    GameObject chooseCommandors;
+    GameObject chooseCommandors1;
+    [SerializeField]
+    GameObject chooseCommandors2;
     [SerializeField]
     List<GameObject> commandorFields;
     [SerializeField]
@@ -263,7 +265,7 @@ public class PlayerController : AbstractController
     {
         commandorsOV.SetActive(true);
         // render commandors
-        foreach (CommandorCard commandor in game.freeCommandors)
+        foreach (CommandorCard commandor in game.freeCommandors1)
         {
             CardCommandorView _cardCommandor = Instantiate(cardCommandor);
             switch (commandor.name)
@@ -281,9 +283,32 @@ public class PlayerController : AbstractController
                     _cardCommandor.Image = Resources.Load<Sprite>("командир7");
                     break;
             }
-            _cardCommandor.transform.SetParent(chooseCommandors.transform, false);
+            _cardCommandor.transform.SetParent(chooseCommandors1.transform, false);
             _cardCommandor.GetComponent<CardCommandorView>().SetCard(commandor);
         }
+        foreach (CommandorCard commandor in game.freeCommandors2)
+        {
+            CardCommandorView _cardCommandor = Instantiate(cardCommandor);
+            switch (commandor.name)
+            {
+                case "Мастер защиты":
+                    _cardCommandor.Image = Resources.Load<Sprite>("Командир1");
+                    break;
+                case "Мастер атаки":
+                    _cardCommandor.Image = Resources.Load<Sprite>("командир4");
+                    break;
+                case "Координатор":
+                    _cardCommandor.Image = Resources.Load<Sprite>("командир6");
+                    break;
+                case "Ветеран войны":
+                    _cardCommandor.Image = Resources.Load<Sprite>("командир7");
+                    break;
+            }
+            _cardCommandor.transform.SetParent(chooseCommandors2.transform, false);
+            _cardCommandor.GetComponent<CardCommandorView>().SetCard(commandor);
+        }
+        chooseCommandors2.SetActive(false);
+
     }
     public void HideCommandorsChooseMenu()
     {
@@ -295,6 +320,16 @@ public class PlayerController : AbstractController
         game.SetCommandor(game.GetCurrentStep(), commandor);
         transform.SetParent(commandorFields[(int)commandorsChosen].transform, false);
         commandorsChosen++;
+        if (commandorsChosen == 1)
+        {
+            chooseCommandors1.SetActive(false);
+            chooseCommandors2.SetActive(true);
+        }
+        if (commandorsChosen == 3)
+        {
+            chooseCommandors1.SetActive(true);
+            chooseCommandors2.SetActive(false);
+        }
         if (commandorsChosen != 2)
         {
             game.NextStep();

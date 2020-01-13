@@ -9,7 +9,8 @@ public class Game
     private Dictionary<CurrentPlayer, Attack> attacks;
     private Dictionary<CurrentPlayer, Field> fields;
     private CurrentPlayer currentStep;
-    public HashSet<CommandorCard> freeCommandors { get; }
+    public HashSet<CommandorCard> freeCommandors1 { get; }
+    public HashSet<CommandorCard> freeCommandors2 { get; }
 
     private void BarbWireCallback(List<SquadCard> attacker, List<SquadCard> deffender, Skills attackerSkills, Skills deffenderSkills)
     {
@@ -43,7 +44,8 @@ public class Game
         this.cards = new Dictionary<CurrentPlayer, List<AbstractCard>>();
         this.attacks = new Dictionary<CurrentPlayer, Attack>();
         this.fields = new Dictionary<CurrentPlayer, Field>();
-        this.freeCommandors = new HashSet<CommandorCard>();
+        this.freeCommandors1 = new HashSet<CommandorCard>();
+        this.freeCommandors2 = new HashSet<CommandorCard>();
         Skills skills;
         List<Tuple<Skills.SkillCallback, int>> activeSkills;
         List<Tuple<Skills.SkillCallback, int>> instantSkills;
@@ -165,24 +167,39 @@ public class Game
         activeSkills = new List<Tuple<Skills.SkillCallback, int>>();
         activeSkills.Add(new Tuple<Skills.SkillCallback, int>(Skills.Suppression, 1));
         skills = new Skills(activeSkills, null);
-        freeCommandors.Add(new CommandorCard(Rarity.Rare, "Мастер защиты", "", skills, 1));
+        freeCommandors1.Add(new CommandorCard(Rarity.Rare, "Мастер защиты", "", skills, 1));
+        activeSkills = new List<Tuple<Skills.SkillCallback, int>>();
+        activeSkills.Add(new Tuple<Skills.SkillCallback, int>(Skills.Suppression, 1));
+        skills = new Skills(activeSkills, null);
+        freeCommandors2.Add(new CommandorCard(Rarity.Rare, "Мастер защиты", "", skills, 1));
 
         // Мастер атаки
         activeSkills = new List<Tuple<Skills.SkillCallback, int>>();
         activeSkills.Add(new Tuple<Skills.SkillCallback, int>(Skills.Support, 1));
         skills = new Skills(activeSkills, null);
-        freeCommandors.Add(new CommandorCard(Rarity.Rare, "Мастер атаки", "", skills, 1));
+        freeCommandors1.Add(new CommandorCard(Rarity.Rare, "Мастер атаки", "", skills, 1));
+        activeSkills = new List<Tuple<Skills.SkillCallback, int>>();
+        activeSkills.Add(new Tuple<Skills.SkillCallback, int>(Skills.Support, 1));
+        skills = new Skills(activeSkills, null);
+        freeCommandors2.Add(new CommandorCard(Rarity.Rare, "Мастер атаки", "", skills, 1));
 
         // Координатор
         activeSkills = new List<Tuple<Skills.SkillCallback, int>>();
         activeSkills.Add(new Tuple<Skills.SkillCallback, int>(Skills.Shelling, 1));
         skills = new Skills(activeSkills, null);
-        freeCommandors.Add(new CommandorCard(Rarity.Epic, "Координатор", "", skills, 2));
+        freeCommandors1.Add(new CommandorCard(Rarity.Epic, "Координатор", "", skills, 2));
+        activeSkills = new List<Tuple<Skills.SkillCallback, int>>();
+        activeSkills.Add(new Tuple<Skills.SkillCallback, int>(Skills.Shelling, 1));
+        skills = new Skills(activeSkills, null);
+        freeCommandors2.Add(new CommandorCard(Rarity.Epic, "Координатор", "", skills, 2));
 
         // Ветеран войны
         skills = new Skills();
         skills.inspiration = 1;
-        freeCommandors.Add(new CommandorCard(Rarity.Legendary, "Ветеран войны", "", skills, 1));
+        freeCommandors1.Add(new CommandorCard(Rarity.Legendary, "Ветеран войны", "", skills, 1));
+        skills = new Skills();
+        skills.inspiration = 1;
+        freeCommandors2.Add(new CommandorCard(Rarity.Legendary, "Ветеран войны", "", skills, 1));
 
         currentStep = UnityEngine.Random.value > 0.5f ? CurrentPlayer.FIRST : CurrentPlayer.SECOND;
     }

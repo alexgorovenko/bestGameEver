@@ -11,7 +11,6 @@ public class FlangView : MonoBehaviour
     void Start()
     {
         Game game = new Game();
-        Debug.Log(game.freeCommandors);
     }
 
     void Update()
