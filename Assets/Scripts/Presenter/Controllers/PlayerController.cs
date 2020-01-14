@@ -380,6 +380,18 @@ public class PlayerController : AbstractController
         game.AddCardsToHand(currentPlayer, addedCards);
         card.transform.SetParent(hands[currentPlayer].transform, false);
     }
+    public CardSquad GetOppositeCard(Card card, int position)
+    {
+        if (this.attackCards[position] != null && this.attackCards[position] != card)
+        {
+            return (CardSquad)this.attackCards[position];
+        }
+        if (this.defenceCards[position] != card)
+        {
+            return (CardSquad)this.defenceCards[position];
+        }
+        return null;
+    }
     public void DropCardToFlank(Card card, int position, ContainerFlank flank)
     {
         AbstractCard cardModel = card.GetComponent<Card>().card;
@@ -456,9 +468,12 @@ public class PlayerController : AbstractController
         // выбраны те, кто атакуют
         // запрещаем выбирать чужие карты
         int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 2 : 0;
-        flanks[step].RefreshActive();
-        flanks[step + 1].RefreshActive();
+        Debug.Log(game.GetCurrentStep());
+        flanks[step].SetEnabledDrag(false);
+        flanks[step + 1].SetEnabledDrag(false);
         step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 0 : 2;
+        flanks[step].SetDrag(CardsContainerDropHandler.State.DEFENCE);
+        flanks[step + 1].SetDrag(CardsContainerDropHandler.State.DEFENCE);
         flanks[step].SetActive(false);
         flanks[step + 1].SetActive(false);
         // выбираем тех, кто защищается
@@ -472,29 +487,40 @@ public class PlayerController : AbstractController
         CurrentPlayer deffendersStep = game.GetNextStep();
         // уже выбраны защитники
         List<SquadCard> cards = new List<SquadCard>();
-        Debug.Log(attackCards[0]);
-        cards.Add(attackCards[0] == null ? null : (SquadCard)attackCards[0].card);
-        cards.Add(attackCards[1] == null ? null : (SquadCard)attackCards[1].card);
-        cards.Add(attackCards[2] == null ? null : (SquadCard)attackCards[2].card);
-        cards.Add(attackCards[3] == null ? null : (SquadCard)attackCards[3].card);
+        for (var i = 0; i < 4; i++)
+        {
+            cards.Add(attackCards[i] == null ? null : (SquadCard)attackCards[i].card);
+        }
         game.SetAttackers(game.GetCurrentStep(), cards, Flank.Left);
         cards = new List<SquadCard>(4);
-        cards.Add(defenceCards[0] == null ? null : (SquadCard)defenceCards[0].card);
-        cards.Add(defenceCards[1] == null ? null : (SquadCard)defenceCards[1].card);
-        cards.Add(defenceCards[2] == null ? null : (SquadCard)defenceCards[2].card);
-        cards.Add(defenceCards[3] == null ? null : (SquadCard)defenceCards[3].card);
+        for (var i = 0; i < 4; i++)
+        {
+            if (attackCards[i] == null)
+            {
+                cards.Add(null);
+                continue;
+            }
+            Debug.Log("Card Block");
+            Debug.Log(i);
+            cards.Add(((CardSquad)(attackCards[i])).attackCard == null ? null : (SquadCard)((CardSquad)(attackCards[i])).attackCard.card);
+        }
         game.SetDeffenders(deffendersStep, cards, Flank.Left);
         cards = new List<SquadCard>(4);
-        cards.Add(attackCards[4] == null ? null : (SquadCard)attackCards[4].card);
-        cards.Add(attackCards[5] == null ? null : (SquadCard)attackCards[5].card);
-        cards.Add(attackCards[6] == null ? null : (SquadCard)attackCards[6].card);
-        cards.Add(attackCards[7] == null ? null : (SquadCard)attackCards[7].card);
+        for (var i = 4; i < 8; i++)
+        {
+            cards.Add(attackCards[i] == null ? null : (SquadCard)attackCards[i].card);
+        }
         game.SetAttackers(game.GetCurrentStep(), cards, Flank.Right);
         cards = new List<SquadCard>(4);
-        cards.Add(defenceCards[4] == null ? null : (SquadCard)defenceCards[4].card);
-        cards.Add(defenceCards[5] == null ? null : (SquadCard)defenceCards[5].card);
-        cards.Add(defenceCards[6] == null ? null : (SquadCard)defenceCards[6].card);
-        cards.Add(defenceCards[7] == null ? null : (SquadCard)defenceCards[7].card);
+        for (var i = 4; i < 8; i++)
+        {
+            if (attackCards[i] == null)
+            {
+                cards.Add(null);
+                continue;
+            }
+            cards.Add(((CardSquad)(attackCards[i])).attackCard == null ? null : (SquadCard)((CardSquad)(attackCards[i])).attackCard.card);
+        }
         game.SetDeffenders(deffendersStep, cards, Flank.Right);
         game.Attack(game.GetCurrentStep());
         game.ApplyAttack(game.GetCurrentStep());
@@ -505,22 +531,27 @@ public class PlayerController : AbstractController
         flanks[step + 1].GetComponent<ContainerFlank>().DestroyDead();
         flanks[step].GetComponent<ContainerFlank>().RefreshActive();
         flanks[step + 1].GetComponent<ContainerFlank>().RefreshActive();
+        flanks[step].SetDrag(CardsContainerDropHandler.State.ATTACK);
+        flanks[step + 1].SetDrag(CardsContainerDropHandler.State.ATTACK);
         step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 2 : 0;
         flanks[step].GetComponent<ContainerFlank>().DestroyDead();
         flanks[step + 1].GetComponent<ContainerFlank>().DestroyDead();
+        flanks[step].GetComponent<ContainerFlank>().SetEnabledDrag(true);
+        flanks[step + 1].GetComponent<ContainerFlank>().SetEnabledDrag(true);
         flanks[step].GetComponent<ContainerFlank>().SetActive(false);
         flanks[step + 1].GetComponent<ContainerFlank>().SetActive(false);
-
         for (int i = 0; i < 8; i++)
         {
             if (attackCards[i] != null)
             {
                 attackCards[i].Highlight(false);
+                ((CardSquad)(attackCards[i])).attackCard = null;
                 attackCards[i] = null;
             }
             if (defenceCards[i] != null)
             {
                 defenceCards[i].Highlight(false);
+                ((CardSquad)(defenceCards[i])).attackCard = null;
                 defenceCards[i] = null;
             }
         }

@@ -5,29 +5,66 @@ using UnityEngine.EventSystems;
 
 public class CardsContainerDropHandler : MonoBehaviour, IDropHandler
 {
+    public enum State
+    {
+        ATTACK,
+        DEFENCE
+    };
     [SerializeField]
     PlayerController player;
     [SerializeField]
     ContainerFlank flank;
+    public State state = State.ATTACK;
     public void OnDrop(PointerEventData eventData)
     {
-        switch (player.currentDraggableCard.GetComponent<Card>().card)
-        {
-            case SupportCard s:
-                return;
+        Debug.Log(gameObject.name);
+        if (this.state == State.ATTACK) {
+            switch (player.currentDraggableCard.GetComponent<Card>().card)
+            {
+
+                case SupportCard s:
+                    return;
+            }
+            int _position = player.currentDraggableCard.GetComponent<Card>().position;
+            Debug.Log("TADA");
+            Debug.Log(_position);
+            if (_position != -1)
+            {
+                CardPlaceholder _card = Instantiate(player.cardPlaceholder);
+                Transform container = flank.transform.Find("Squads").Find($"CardsContainer-{_position}");
+                _card.transform.SetParent(container.transform, false);
+            }
+            int position = gameObject.name[gameObject.name.Length - 1] - '0';
+            Debug.Log(position);
+            player.DropCardToFlank(player.currentDraggableCard, position, flank);
+            player.currentDraggableCard = null;
         }
-        int _position = player.currentDraggableCard.GetComponent<Card>().position;
-        Debug.Log("TADA");
-        Debug.Log(_position);
-        if (_position != -1)
+        else if (this.state == State.DEFENCE)
         {
-            CardPlaceholder _card = Instantiate(player.cardPlaceholder);
-            Transform container = flank.transform.Find("Squads").Find($"CardsContainer-{_position}");
-            _card.transform.SetParent(container.transform, false);
+            if (player.currentDraggableCard.GetComponent<Card>().card is SquadCard &&
+                player.currentDraggableCard.GetComponent<Card>().card.active) {
+                int _position = gameObject.name[gameObject.name.Length - 1] - '0';
+                Debug.Log("drop defence");
+                Debug.Log(gameObject.name);
+                CardSquad card = (CardSquad)player.currentDraggableCard.GetComponent<Card>();
+                if (_position != -1)
+                {
+                    card.attackCard = player.GetOppositeCard(card, _position);
+                    if (card.attackCard)
+                    {
+                        card.attackCard.attackCard = card;
+                    }
+                }
+                else
+                {
+                    if (card.attackCard)
+                    {
+                        card.attackCard.attackCard = null;
+                    }
+                    card.attackCard = null;
+                }
+                card.Highlight(card.attackCard != null);
+            }
         }
-        int position = gameObject.name[gameObject.name.Length - 1] - '0';
-        Debug.Log(position);
-        player.DropCardToFlank(player.currentDraggableCard, position, flank);
-        player.currentDraggableCard = null;
     }
 }

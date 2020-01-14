@@ -15,6 +15,7 @@ public class CardSquad : Card
     public TextMeshProUGUI fieldStamina;
     [SerializeField]
     public TextMeshProUGUI fieldDefence;
+    public CardSquad attackCard;
 
     public void SetCard(SquadCard card)
     {

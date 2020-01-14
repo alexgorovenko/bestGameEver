@@ -52,4 +52,19 @@ public class ContainerFlank : AbstractContainer
             }
         }
     }
+    public void SetDrag(CardsContainerDropHandler.State state)
+    {
+        foreach (GameObject squad in this.squads)
+        {
+            squad.GetComponent<CardsContainerDropHandler>().state = state;
+        }
+    }
+    public void SetEnabledDrag(bool isEnabled)
+    {
+        GetComponent<CardsContainerDropHandler>().enabled = isEnabled;
+        foreach (GameObject squad in this.squads)
+        {
+            squad.GetComponent<CardsContainerDropHandler>().enabled = isEnabled;
+        }
+    }
 }
