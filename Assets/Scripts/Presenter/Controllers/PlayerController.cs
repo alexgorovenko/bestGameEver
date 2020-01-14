@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : AbstractController
 {
@@ -528,11 +529,11 @@ public class PlayerController : AbstractController
         HQ2Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.SECOND)}";
         if (game.GetHeadsquaterHealth(CurrentPlayer.FIRST) <= 0)
         {
-            //TODO SECOND WIN UI
+            SceneManager.LoadScene("Loose");
         }
         else if (game.GetHeadsquaterHealth(CurrentPlayer.SECOND) <= 0)
         {
-            //TODO FIRST WIN UI
+            SceneManager.LoadScene("Win");
         }
         else
         {
