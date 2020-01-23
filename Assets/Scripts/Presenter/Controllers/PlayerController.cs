@@ -421,7 +421,7 @@ public class PlayerController : AbstractController
             case FortificationCard f:
                 if (playedFortificationCards < 1)
                 {
-                    game.ApplyFortificationCard(game.GetCurrentStep(), f, flankModel);
+                    game.ApplyAttackerFortificationCard(game.GetCurrentStep(), f, flankModel);
                     card.transform.SetParent(flank.transform.Find("FortificationContainer").transform);
                     playedFortificationCards++;
                 }

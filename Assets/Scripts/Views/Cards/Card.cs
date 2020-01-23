@@ -82,7 +82,7 @@ public class Card : MonoBehaviour, ICardContainerItem
                 List<Tuple<Skills.SkillCallback, int>> instantSkills = new List<Tuple<Skills.SkillCallback, int>>();
                 switch (s.action)
                 {
-                    case ViewAction.TACTICAL_MOVE:
+/*                    case ViewAction.TACTICAL_MOVE:
                         script.SupportTactical();
                         break;
                     case ViewAction.MOBILIZAZATION:
@@ -100,7 +100,7 @@ public class Card : MonoBehaviour, ICardContainerItem
                         instantSkills.Add(new Tuple<Skills.SkillCallback, int>(Skills.Medicine, 2));
                         skills = new Skills(null, instantSkills);
                         script.SupportMedicine_Start(skills);
-                        break;
+                        break;*/ //TODO
                 }
                 break;
             case CommandorCard c:

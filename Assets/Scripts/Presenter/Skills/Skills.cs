@@ -8,7 +8,6 @@ using UnityEngine.Events;
 public class Skills
 {
     public delegate void SkillCallback(int power);
-    public List<Tuple<SkillCallback, int>> activeSkills { get; set; }
     public List<Tuple<SkillCallback, int>> instantSkills { get; set; }
 
     // passive skills
@@ -16,56 +15,36 @@ public class Skills
     public int armor { get; set; }
     public int inspiration { get; set; }
     public int massDamage { get; set; }
-    public bool breakthrough { get; set; }
     public bool agility { get; set; }
+    public bool brotherhood { get; set; }
+    public bool revenge { get; set; } // для лидера сопротивления
+    public bool forceShelling { get; set; } // для координатора
+    public bool supportRevenge { get; set; }
+    public bool forceRevenge { get; set; }
+    public bool forceAgility { get; set; }
 
     public Skills(
-      List<Tuple<SkillCallback, int>> activeSkills,
       List<Tuple<SkillCallback, int>> instantSkills
-    )
+    ) : base()
     {
-        this.activeSkills = activeSkills;
         this.instantSkills = instantSkills;
-
-        this.pierce = false;
-        this.armor = 0;
-        this.inspiration = 0;
-        this.massDamage = 0;
-        this.breakthrough = false;
-
-        this.agility = false;
     }
 
     public Skills()
     {
-        this.activeSkills = null;
         this.instantSkills = null;
 
         this.pierce = false;
         this.armor = 0;
         this.inspiration = 0;
         this.massDamage = 0;
-        this.breakthrough = false;
-
         this.agility = false;
-    }
-
-    public static void Block(int power)
-    {
-
-    }
-    public static void Suppression(int power)
-    {
-
-    }
-    public static void Support(int power)
-    {
-
-    }
-
-    public static void Medicine(int power)
-    {
-
+        this.brotherhood = false;
+        this.revenge = false;
+        this.forceShelling = false;
+        this.supportRevenge = false;
+        this.forceRevenge = false;
+        this.forceAgility = false;
     }
 
     public static void Shelling(int power)
@@ -77,6 +56,10 @@ public class Skills
 
     }
     public static void Sapper(int power)
+    {
+
+    }
+    public static void Stun(int power)
     {
 
     }

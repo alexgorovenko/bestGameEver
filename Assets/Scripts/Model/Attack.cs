@@ -6,6 +6,7 @@ public class Attack
 {
     private Dictionary<Flank, List<SquadCard>> attacker;
     private Dictionary<Flank, List<SquadCard>> deffender;
+    private Dictionary<Flank, FortificationCard> attackerFortification;
     private Dictionary<Flank, FortificationCard> deffenderFortification;
     private Dictionary<Flank, Skills> attackerSkills;
     private Dictionary<Flank, Skills> deffenderSkills;
@@ -14,6 +15,7 @@ public class Attack
     {
         this.attacker = new Dictionary<Flank, List<SquadCard>>();
         this.deffender = new Dictionary<Flank, List<SquadCard>>();
+        this.attackerFortification = new Dictionary<Flank, FortificationCard>();
         this.deffenderFortification = new Dictionary<Flank, FortificationCard>();
         this.attackerSkills = new Dictionary<Flank, Skills>();
         this.deffenderSkills = new Dictionary<Flank, Skills>();
@@ -24,12 +26,22 @@ public class Attack
         }
     }
 
-    public void SetFortificationCard(FortificationCard card, Flank flank)
+    public void SetAttackerFortificationCard(FortificationCard card, Flank flank)
+    {
+        attackerFortification[flank] = card;
+    }
+
+    public void SetDeffenderFortificationCard(FortificationCard card, Flank flank)
     {
         deffenderFortification[flank] = card;
     }
 
-    public FortificationCard GetFortificationCard(Flank flank)
+    public FortificationCard GetAttackerFortificationCard(Flank flank)
+    {
+        return attackerFortification[flank];
+    }
+
+    public FortificationCard GetDeffenderFortificationCard(Flank flank)
     {
         return deffenderFortification[flank];
     }
@@ -84,11 +96,14 @@ public class Attack
         {
             foreach (SquadCard card in attacker[flank])
             {
-                if (card == null) continue;
+                if (card == null || card.isDeaf) continue;
                 if (card.skills != skills)
                 {
                     card.addAttack += card.skills.inspiration;
                     card.addProtection += card.skills.inspiration;
+                    card.addAttack += card.skills.brotherhood ? 1 : 0;
+                    card.addProtection += card.skills.brotherhood ? 1 : 0;
+                    card.addStamina += card.skills.brotherhood ? 1 : 0;
                 }
             }
         }
@@ -96,11 +111,14 @@ public class Attack
         {
             foreach (SquadCard card in deffender[flank])
             {
-                if (card == null) continue;
+                if (card == null || card.isDeaf) continue;
                 if (card.skills != skills)
                 {
                     card.addAttack += card.skills.inspiration;
                     card.addProtection += card.skills.inspiration;
+                    card.addAttack += card.skills.brotherhood ? 1 : 0;
+                    card.addProtection += card.skills.brotherhood ? 1 : 0;
+                    card.addStamina += card.skills.brotherhood ? 1 : 0;
                 }
             }
         }
@@ -114,34 +132,38 @@ public class Attack
         {
             applyInspiration(this.attackerSkills[flank], true, flank);
             applyInspiration(this.deffenderSkills[flank], false, flank);
+            if (this.attackerFortification.ContainsKey(flank))
+            {
+                this.attackerFortification[flank].skill(this.deffender[flank], this.attacker[flank], this.deffenderSkills[flank], this.attackerSkills[flank], true);
+            }
             if (this.deffenderFortification.ContainsKey(flank))
             {
-                this.deffenderFortification[flank].skill(this.attacker[flank], this.deffender[flank], this.attackerSkills[flank], this.deffenderSkills[flank]);
+                this.deffenderFortification[flank].skill(this.attacker[flank], this.deffender[flank], this.attackerSkills[flank], this.deffenderSkills[flank], false);
             }
 
             int massDamageAttacker = 0;
             foreach (SquadCard card in attacker[flank])
             {
-                if (card == null) continue;
+                if (card == null || card.isDeaf) continue;
                 massDamageAttacker += card.skills.massDamage;
             }
 
             foreach (SquadCard card in attacker[flank])
             {
-                if (card == null) continue;
+                if (card == null || card.isDeaf) continue;
                 applyInspiration(card.skills, true, flank);
             }
 
             int massDamageDefender = 0;
             foreach (SquadCard card in deffender[flank])
             {
-                if (card == null) continue;
+                if (card == null || card.isDeaf) continue;
                 massDamageDefender += card.skills.massDamage;
             }
 
             foreach (SquadCard card in deffender[flank])
             {
-                if (card == null) continue;
+                if (card == null || card.isDeaf) continue;
                 applyInspiration(card.skills, false, flank);
             }
 
@@ -152,19 +174,15 @@ public class Attack
                 {
                     attacker[flank][i].addStamina -= (int)deffender[flank][i].protection + deffender[flank][i].addProtection;
                     attacker[flank][i].addStamina -= (int)massDamageDefender;
-                    if (!deffender[flank][i].skills.pierce)
+                    if ((!deffender[flank][i].skills.pierce || deffender[flank][i].isDeaf) && !attacker[flank][i].isDeaf)
                     {
                         attacker[flank][i].addStamina += (int)Math.Min(attacker[flank][i].skills.armor + attackerSkills[flank].armor, attacker[flank][i].addStamina - 1);
                     }
                     deffender[flank][i].addStamina -= (int)attacker[flank][i].attack + attacker[flank][i].addAttack;
                     deffender[flank][i].stamina -= (int)massDamageAttacker;
-                    if (!attacker[flank][i].skills.pierce)
+                    if ((!attacker[flank][i].skills.pierce || attacker[flank][i].isDeaf) && !attacker[flank][i].isDeaf)
                     {
                         deffender[flank][i].addStamina += (int)Math.Min(deffender[flank][i].skills.armor + deffenderSkills[flank].armor, deffender[flank][i].addStamina - 1);
-                    }
-                    if (deffender[flank][i].stamina + deffender[flank][i].addStamina < 0 && attacker[flank][i].skills.breakthrough)
-                    {
-                        totalHurt -= deffender[flank][i].stamina + deffender[flank][i].addStamina;
                     }
                 }
                 else
