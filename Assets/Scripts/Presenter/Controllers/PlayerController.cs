@@ -326,13 +326,19 @@ public class PlayerController : AbstractController
         game.SetCommandor(game.GetCurrentStep(), commandor);
         transform.SetParent(commandorFields[(int)commandorsChosen].transform, false);
         commandorsChosen++;
+        if (commandorsChosen == 0)
+        {
+            flankLeft1.commandor = commandor;
+        }
         if (commandorsChosen == 1)
         {
+            flankLeft2.commandor = commandor;
             chooseCommandors1.SetActive(false);
             chooseCommandors2.SetActive(true);
         }
         if (commandorsChosen == 3)
         {
+            flankRight2.commandor = commandor;
             chooseCommandors1.SetActive(true);
             chooseCommandors2.SetActive(false);
         }
@@ -342,6 +348,7 @@ public class PlayerController : AbstractController
         }
         if (commandorsChosen == 4)
         {
+            flankRight1.commandor = commandor;
             GameStart();
             HideCommandorsChooseMenu();
         }
@@ -403,11 +410,22 @@ public class PlayerController : AbstractController
         Flank flankModel = flank.GetComponent<ContainerFlank>().flank;
         switch (cardModel)
         {
-            case SquadCard s:
+            case SquadCard s:              
                 if (playedSquadCards < 2)
                 {
                     if (flank.GetComponent<ContainerFlank>().GetCardAt(position) == null)
                     {
+                        if (playedSquadCards == 0)
+                        {
+                            if (flank.GetComponent<ContainerFlank>().commandor.skills.forceAgility)
+                            {
+                                cardModel.active = true;
+                            }
+                        }
+                        if (flank.GetComponent<ContainerFlank>().commandor.skills.forceRevenge)
+                        {
+                            game.HitHeadsquater(game.GetNextStep(), 1);
+                        }
                         // add card to model
                         HashSet<SquadCard> placedCards = new HashSet<SquadCard>();
                         placedCards.Add((SquadCard)cardModel);
@@ -464,7 +482,45 @@ public class PlayerController : AbstractController
         {
             AttackButton.GetComponentInChildren<Text>().text = "Атака!";
             FillActiveSkills();
-            ApplyActiveSkills();
+            bool needActive = true;
+            if (game.GetCurrentStep() == CurrentPlayer.FIRST)
+            {
+                if (flankLeft1.commandor.skills.forceShelling)
+                {
+                    this.isAttackActiveSkills = true;
+                    this.position = 0;
+                    this.SupportShelling_Start(1);
+                    needActive = false;
+                }
+                if (flankRight1.commandor.skills.forceShelling)
+                {
+                    this.isAttackActiveSkills = true;
+                    this.position = 4;
+                    this.SupportShelling_Start(1);
+                    needActive = false;
+                }
+            }
+            if (game.GetCurrentStep() == CurrentPlayer.SECOND)
+            {
+                if (flankLeft2.commandor.skills.forceShelling)
+                {
+                    this.isAttackActiveSkills = true;
+                    this.position = 0;
+                    this.SupportShelling_Start(1);
+                    needActive = false;
+                }
+                if (flankRight2.commandor.skills.forceShelling)
+                {
+                    this.isAttackActiveSkills = true;
+                    this.position = 4;
+                    this.SupportShelling_Start(1);
+                    needActive = false;
+                }
+            }
+            if (needActive)
+            {
+                ApplyActiveSkills();
+            }
             attackState = AttackState.ATTACK;
         }
     }
@@ -531,15 +587,32 @@ public class PlayerController : AbstractController
         //  Update UI
 
         int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 0 : 2;
-        flanks[step].GetComponent<ContainerFlank>().DestroyDead();
-        flanks[step + 1].GetComponent<ContainerFlank>().DestroyDead();
+        int count;
+        count = flanks[step].GetComponent<ContainerFlank>().DestroyDead();
+        if (flanks[step].commandor.skills.revenge)
+        {
+            game.HitHeadsquater(game.GetNextStep(), count);
+        }
+        count = flanks[step + 1].GetComponent<ContainerFlank>().DestroyDead();
+        if (flanks[step + 1].commandor.skills.revenge)
+        {
+            game.HitHeadsquater(game.GetNextStep(), count);
+        }
         flanks[step].GetComponent<ContainerFlank>().RefreshActive();
         flanks[step + 1].GetComponent<ContainerFlank>().RefreshActive();
         flanks[step].SetDrag(CardsContainerDropHandler.State.ATTACK);
         flanks[step + 1].SetDrag(CardsContainerDropHandler.State.ATTACK);
         step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 2 : 0;
-        flanks[step].GetComponent<ContainerFlank>().DestroyDead();
-        flanks[step + 1].GetComponent<ContainerFlank>().DestroyDead();
+        count = flanks[step].GetComponent<ContainerFlank>().DestroyDead();
+        if (flanks[step].commandor.skills.revenge)
+        {
+            game.HitHeadsquater(game.GetCurrentStep(), count);
+        }
+        count = flanks[step + 1].GetComponent<ContainerFlank>().DestroyDead();
+        if (flanks[step + 1].commandor.skills.revenge)
+        {
+            game.HitHeadsquater(game.GetCurrentStep(), count);
+        }
         flanks[step].GetComponent<ContainerFlank>().SetEnabledDrag(true);
         flanks[step + 1].GetComponent<ContainerFlank>().SetEnabledDrag(true);
         flanks[step].GetComponent<ContainerFlank>().SetActive(false);
@@ -775,6 +848,10 @@ public class PlayerController : AbstractController
     {
         int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 2 : 0;
         ContainerFlank flank = card.position > 3 ? flanks[step + 1] : flanks[step];
+        if (flank.GetComponent<ContainerFlank>().commandor.skills.supportRevenge)
+        {
+            game.HitHeadsquater(game.GetNextStep(), 2);
+        }
         foreach (Card _card in flank.GetCards())
         {
             if (_card == null) continue;
@@ -818,16 +895,31 @@ public class PlayerController : AbstractController
     public void SupportBattleCry_Start()
     {
         int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 0 : 2;
-        foreach (Card _card in flanks[step].GetCards())
+        if (flanks[step].GetCardsCapacity() == 0 && flanks[step].GetCardsCapacity() == 0) return;
+        flanks[step]._SetActive(true);
+        flanks[step + 1]._SetActive(true);
+        AttackButton.GetComponentInChildren<Text>().text = "Боевой клич!";
+        callback = SupportBattleCry_End;
+    }
+
+    private void SupportBattleCry_End(Card card)
+    {
+        int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 0 : 2;
+        ContainerFlank flank = card.position > 3 ? flanks[step + 1] : flanks[step];
+        if (flank.GetComponent<ContainerFlank>().commandor.skills.supportRevenge)
+        {
+            game.HitHeadsquater(game.GetNextStep(), 2);
+        }
+        foreach (Card _card in flank.GetCards())
         {
             if (_card == null) continue;
             ((SquadCard)_card.card).addAttack++;
         }
-        foreach (Card _card in flanks[step + 1].GetCards())
-        {
-            if (_card == null) continue;
-            ((SquadCard)_card.card).addAttack++;
-        }
+        flanks[step].RefreshActive();
+        flanks[step + 1].RefreshActive();
+        AttackButton.GetComponentInChildren<Text>().text = "Атака!";
+        ResetSelectionCards();
+        callback = AttackCallback;
     }
 
     public void SupportClanCall_Start()
@@ -843,6 +935,10 @@ public class PlayerController : AbstractController
         {
             int position = -1;
             ContainerFlank flank = GameObject.Find($"FlankLeft{step}").GetComponent<ContainerFlank>();
+            if (flank.GetComponent<ContainerFlank>().commandor.skills.supportRevenge)
+            {
+                game.HitHeadsquater(game.GetNextStep(), 2);
+            }
             for (int i = 0; i < 4; i++)
             {
                 if (flank.GetCardAt(i) == null) position = i;
@@ -861,6 +957,10 @@ public class PlayerController : AbstractController
         {
             int position = -1;
             ContainerFlank flank = GameObject.Find($"FlankRight{step}").GetComponent<ContainerFlank>();
+            if (flank.GetComponent<ContainerFlank>().commandor.skills.supportRevenge)
+            {
+                game.HitHeadsquater(game.GetNextStep(), 2);
+            }
             for (int i = 4; i < 8; i++)
             {
                 if (flank.GetCardAt(i) == null) position = i;
@@ -1156,6 +1256,10 @@ public class PlayerController : AbstractController
     {
         int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 2 : 0;
         ContainerFlank flank = card.position > 3 ? flanks[step + 1] : flanks[step];
+        if (flank.GetComponent<ContainerFlank>().commandor.skills.supportRevenge)
+        {
+            game.HitHeadsquater(game.GetNextStep(), 2);
+        }
         this.DropCardToDrop(flank.transform.Find("FortificationContainer").GetComponentInChildren<Card>(), !this.isAttackActiveSkills);
         List<Card> cards = flank.GetCards();
         if (flank.GetCardsCapacity() > 1)

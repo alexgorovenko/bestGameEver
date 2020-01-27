@@ -12,6 +12,7 @@ public class ContainerFlank : AbstractContainer
     public List<GameObject> squads;
     [SerializeField]
     PlayerController player;
+    public CommandorCard commandor;
     void Start()
     {
         for (var i = 0; i < 8; i++)
@@ -45,19 +46,22 @@ public class ContainerFlank : AbstractContainer
             }
         }
     }
-    public void DestroyDead()
+    public int DestroyDead()
     {
+        int count = 0;
         for (var i = 0; i < 8; i++)
         {
             if (mCards[i] == null) continue;
             if (((SquadCard)mCards[i].card).stamina <= 0)
             {
+                count++;
                 player.DropCardToDrop(mCards[i], player.game.GetCurrentStep() == currentPlayer);
                 mCards[i] = null;
                 CardPlaceholder _card = Instantiate(player.cardPlaceholder);
                 _card.transform.SetParent(squads[i].transform);
             }
         }
+        return count;
     }
     public void SetDrag(CardsContainerDropHandler.State state)
     {

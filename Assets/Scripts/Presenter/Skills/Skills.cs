@@ -19,9 +19,9 @@ public class Skills
     public bool brotherhood { get; set; }
     public bool revenge { get; set; } // для лидера сопротивления
     public bool forceShelling { get; set; } // для координатора
-    public bool supportRevenge { get; set; }
-    public bool forceRevenge { get; set; }
-    public bool forceAgility { get; set; }
+    public bool supportRevenge { get; set; } // чародей
+    public bool forceRevenge { get; set; } // мастер муштры
+    public bool forceAgility { get; set; } // старейшина клана
 
     public Skills(
       List<Tuple<SkillCallback, int>> instantSkills

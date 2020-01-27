@@ -524,4 +524,9 @@ public class Game
         return fields[player].headquartesStrength;
     }
 
+    public void HitHeadsquater(CurrentPlayer player, int hp)
+    {
+        fields[player].headquartesStrength -= hp;
+    }
+
 }
