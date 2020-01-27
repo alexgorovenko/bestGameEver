@@ -76,6 +76,7 @@ public class PlayerController : AbstractController
     private int selected;
     private List<Tuple<Tuple<Skills.SkillCallback, int>, int>> attackInstants = new List<Tuple<Tuple<Skills.SkillCallback, int>, int>>();
     private List<Tuple<Tuple<Skills.SkillCallback, int>, int>> defenceInstants = new List<Tuple<Tuple<Skills.SkillCallback, int>, int>>();
+    private int medicineCount;
 
     void UpdateSprite(string cardName, Card _card)
     {
@@ -756,6 +757,7 @@ public class PlayerController : AbstractController
             return;
         }
         this.DefenceStart();
+        ResetSelectionCards();
     }
     public void SupportAcidRain_Start()
     {
@@ -784,6 +786,7 @@ public class PlayerController : AbstractController
         flanks[step].RefreshActive();
         flanks[step + 1].RefreshActive();
         AttackButton.GetComponentInChildren<Text>().text = "Атака!";
+        ResetSelectionCards();
         callback = AttackCallback;
     }
     public void SupportAmbush_Start()
@@ -808,6 +811,7 @@ public class PlayerController : AbstractController
         flanks[step].RefreshActive();
         flanks[step + 1].RefreshActive();
         AttackButton.GetComponentInChildren<Text>().text = "Атака!";
+        ResetSelectionCards();
         callback = AttackCallback;
     }
 
@@ -875,12 +879,144 @@ public class PlayerController : AbstractController
 
     public void SupportFieldMedicine_Start()
     {
-        throw new NotImplementedException();
+        int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
+        commandorsLayer.SetActive(false);
+        flanksLayer.SetActive(false);
+        HQ1Layer.SetActive(false);
+        HQ2Layer.SetActive(false);
+        if (step == 1)
+        {
+            hand1Layer.SetActive(false);
+        }
+        else
+        {
+            hand2Layer.SetActive(false);
+        }
+        temporary.gameObject.SetActive(true);
+
+        List<Card> temporaryCards = new List<Card>();
+
+        if (step == 1)
+        {
+            temporaryCards.AddRange(drop1.GetCards());
+        }
+        else
+        {
+            temporaryCards.AddRange(drop2.GetCards());
+        }
+
+        for (var i = 0; i < temporaryCards.Count; i++)
+        {
+            if (temporaryCards[i].card.rarity != Rarity.General || temporaryCards[i].card.rarity != Rarity.Rare || !(temporaryCards[i].card is SquadCard))
+            {
+                temporaryCards.RemoveAt(i);
+                i--;
+            }
+        }
+        
+        foreach (Card card in temporaryCards)
+        {
+            Card _card = Instantiate(cardUniversal);
+            _card.transform.SetParent(temporary.transform.Find("CardsContainer").transform, false);
+            _card.SetCard(card.card);
+        }
+        medicineCount = 2;
+        callback = SupportFieldMedicine_End;
+    }
+
+    private void SupportFieldMedicine_End(Card card)
+    {
+        medicineCount--;
+        int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
+        AddCardToHand(card);
+        if (medicineCount == 0)
+        {
+            temporary.gameObject.SetActive(false);
+            commandorsLayer.SetActive(true);
+            flanksLayer.SetActive(true);
+            HQ1Layer.SetActive(true);
+            HQ2Layer.SetActive(true);
+            if (step == 1)
+            {
+                hand1Layer.SetActive(true);
+            }
+            else
+            {
+                hand2Layer.SetActive(true);
+            }
+
+            ResetSelectionCards();
+            callback = AttackCallback;
+        }
     }
 
     public void SupportHeroesOfLegends_Start()
     {
-        throw new NotImplementedException();
+        int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
+        commandorsLayer.SetActive(false);
+        flanksLayer.SetActive(false);
+        HQ1Layer.SetActive(false);
+        HQ2Layer.SetActive(false);
+        if (step == 1)
+        {
+            hand1Layer.SetActive(false);
+        }
+        else
+        {
+            hand2Layer.SetActive(false);
+        }
+        temporary.gameObject.SetActive(true);
+
+        List<Card> temporaryCards = new List<Card>();
+        if (step == 1)
+        {
+            temporaryCards.AddRange(deck1.GetCards());
+        }
+        else
+        {
+            temporaryCards.AddRange(deck2.GetCards());
+        }
+
+        for (var i = 0; i < temporaryCards.Count; i++)
+        {
+            if (!(temporaryCards[i].card is SquadCard))
+            {
+                temporaryCards.RemoveAt(i);
+                i--;
+            }
+        }
+
+        foreach (Card card in temporaryCards)
+        {
+            Card _card = Instantiate(cardUniversal);
+            _card.transform.SetParent(temporary.transform.Find("CardsContainer").transform, false);
+            _card.SetCard(card.card);
+        }
+        callback = SupportHeroesOfLegends_End;
+    }
+
+    private void SupportHeroesOfLegends_End(Card card)
+    {
+        int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
+        temporary.gameObject.SetActive(false);
+
+        AddCardToHand(card);
+
+        commandorsLayer.SetActive(true);
+        flanksLayer.SetActive(true);
+        HQ1Layer.SetActive(true);
+        HQ2Layer.SetActive(true);
+        if (step == 1)
+        {
+            hand1Layer.SetActive(true);
+        }
+        else
+        {
+            hand2Layer.SetActive(true);
+        }
+
+        ResetSelectionCards();
+        callback = AttackCallback;
     }
 
     public void SupportInsurrection_Start()
@@ -946,7 +1082,61 @@ public class PlayerController : AbstractController
 
     public void SupportSmuggling_Start()
     {
-        throw new NotImplementedException();
+        int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
+        commandorsLayer.SetActive(false);
+        flanksLayer.SetActive(false);
+        HQ1Layer.SetActive(false);
+        HQ2Layer.SetActive(false);
+        if (step == 1)
+        {
+            hand1Layer.SetActive(false);
+        }
+        else
+        {
+            hand2Layer.SetActive(false);
+        }
+        temporary.gameObject.SetActive(true);
+
+        List<Card> temporaryCards = new List<Card>();
+
+        temporaryCards.Add(GetCardFromDeck(game.GetCurrentStep()));
+        temporaryCards.Add(GetCardFromDeck(game.GetCurrentStep()));
+        temporaryCards.Add(GetCardFromDeck(game.GetCurrentStep()));
+        foreach (Card card in temporaryCards)
+        {
+            Card _card = Instantiate(cardUniversal);
+            _card.transform.SetParent(temporary.transform.Find("CardsContainer").transform, false);
+            _card.SetCard(card.card);
+        }
+        callback = SupportSmuggling_End;
+    }
+
+    private void SupportSmuggling_End(Card card)
+    {
+        int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
+        temporary.gameObject.SetActive(false);
+
+        AddCardToHand(card);
+        foreach (var _card in temporary.GetComponent<AbstractContainer>().GetCards())
+        {
+            DropCardToDrop(_card, false);
+        }
+
+        commandorsLayer.SetActive(true);
+        flanksLayer.SetActive(true);
+        HQ1Layer.SetActive(true);
+        HQ2Layer.SetActive(true);
+        if (step == 1)
+        {
+            hand1Layer.SetActive(true);
+        }
+        else
+        {
+            hand2Layer.SetActive(true);
+        }
+
+        ResetSelectionCards();
+        callback = AttackCallback;
     }
 
     public void SupportTremblingEarth_Start()
@@ -989,6 +1179,7 @@ public class PlayerController : AbstractController
         flanks[step].RefreshActive();
         flanks[step + 1].RefreshActive();
         AttackButton.GetComponentInChildren<Text>().text = "Атака!";
+        ResetSelectionCards();
         callback = AttackCallback;
     }
 
