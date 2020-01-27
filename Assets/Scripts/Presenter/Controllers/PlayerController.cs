@@ -1293,4 +1293,24 @@ public class PlayerController : AbstractController
         callback = AttackCallback;
     }
 
+    public void ShowDrop(ContainerDrop drop)
+    {
+        temporary.gameObject.SetActive(true);
+        List<Card> temporaryCards = new List<Card>();
+        temporaryCards.AddRange(drop.GetCards());
+        foreach (Card card in temporaryCards)
+        {
+            Card _card = Instantiate(cardUniversal);
+            _card.transform.SetParent(temporary.transform.Find("CardsContainer").transform, false);
+            _card.SetCard(card.card);
+        }
+        callback = HideDrop;
+    }
+
+    private void HideDrop(Card card)
+    {
+        temporary.gameObject.SetActive(false);
+        callback = AttackCallback;
+    }
+
 }
