@@ -126,7 +126,6 @@ public class Attack
 
     public int getHeadquartesHurt()
     {
-        Debug.Log("attack");
         int totalHurt = 0;
         foreach (Flank flank in Enum.GetValues(typeof(Flank)))
         {
@@ -187,7 +186,6 @@ public class Attack
                 }
                 else
                 {
-                    Debug.Log(totalHurt);
                     totalHurt += attacker[flank][i].attack + attacker[flank][i].addAttack;
                 }
             }

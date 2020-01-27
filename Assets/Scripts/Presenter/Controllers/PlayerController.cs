@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -69,8 +70,12 @@ public class PlayerController : AbstractController
     private delegate void Callback(Card card);
     private Callback callback;
     private AttackState attackState = AttackState.ATTACK;
-    private Skills tempSkills = null;
     private int position = 0;
+    private bool isAttackActiveSkills = false;
+    private int tempDamage;
+    private int selected;
+    private List<Tuple<Tuple<Skills.SkillCallback, int>, int>> attackInstants = new List<Tuple<Tuple<Skills.SkillCallback, int>, int>>();
+    private List<Tuple<Tuple<Skills.SkillCallback, int>, int>> defenceInstants = new List<Tuple<Tuple<Skills.SkillCallback, int>, int>>();
 
     void UpdateSprite(string cardName, Card _card)
     {
@@ -317,7 +322,6 @@ public class PlayerController : AbstractController
     }
     public void SetCommandor(Transform transform, CommandorCard commandor)
     {
-        Debug.Log($"{commandor.name} is set");
         game.SetCommandor(game.GetCurrentStep(), commandor);
         transform.SetParent(commandorFields[(int)commandorsChosen].transform, false);
         commandorsChosen++;
@@ -431,6 +435,7 @@ public class PlayerController : AbstractController
 
     public void DropCardToDrop(Card card, bool isEnemy)
     {
+        if (card == null) return;
         CurrentPlayer player;
         if (isEnemy)
         {
@@ -450,25 +455,24 @@ public class PlayerController : AbstractController
     {
         if (attackState == AttackState.ATTACK)
         {
-            AttackStart();
             AttackButton.GetComponentInChildren<Text>().text = "В бой!";
+            AttackStart();
             attackState = AttackState.DEFENCE;
         }
         else
         {
-            ApplyActiveSkills();
             AttackButton.GetComponentInChildren<Text>().text = "Атака!";
+            FillActiveSkills();
+            ApplyActiveSkills();
             attackState = AttackState.ATTACK;
         }
     }
 
     public void AttackStart()
     {
-        Debug.Log("in AttackStart");
         // выбраны те, кто атакуют
         // запрещаем выбирать чужие карты
         int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 2 : 0;
-        Debug.Log(game.GetCurrentStep());
         flanks[step].SetEnabledDrag(false);
         flanks[step + 1].SetEnabledDrag(false);
         step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 0 : 2;
@@ -484,6 +488,7 @@ public class PlayerController : AbstractController
 
     public void DefenceStart()
     {
+        AttackButton.GetComponentInChildren<Text>().text = "Атака!";
         CurrentPlayer deffendersStep = game.GetNextStep();
         // уже выбраны защитники
         List<SquadCard> cards = new List<SquadCard>();
@@ -500,8 +505,6 @@ public class PlayerController : AbstractController
                 cards.Add(null);
                 continue;
             }
-            Debug.Log("Card Block");
-            Debug.Log(i);
             cards.Add(((CardSquad)(attackCards[i])).attackCard == null ? null : (SquadCard)((CardSquad)(attackCards[i])).attackCard.card);
         }
         game.SetDeffenders(deffendersStep, cards, Flank.Left);
@@ -573,218 +576,70 @@ public class PlayerController : AbstractController
     }
 
     // Support cards callbacks
-
-    public void SupportMobilization()
+    public void SupportShelling_Start(int power)
     {
-        Debug.Log("Support: Mobilization");
-        HashSet<SquadCard> noobsLeft = new HashSet<SquadCard>();
-        HashSet<SquadCard> noobsRight = new HashSet<SquadCard>();
-        SquadCard noobLeft = new SquadCard(Rarity.General, "Новобанец", "", 1, 2, 1, new Skills());
-        SquadCard noobRight = new SquadCard(Rarity.General, "Новобанец", "", 1, 2, 1, new Skills());
-        noobsLeft.Add(noobLeft);
-        noobsRight.Add(noobRight);
-        int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
-        if (game.GetCardsCount(game.GetCurrentStep(), Flank.Left) != 4)
+        Debug.Log(this.GetCurrentFlank().name);
+        if (this.GetOppositeFlank().GetCardsCapacity() == 0) return;
+        CurrentPlayer currentEnemy = this.isAttackActiveSkills ? game.GetNextStep() : game.GetCurrentStep();
+        int step = currentEnemy == CurrentPlayer.FIRST ? 1 : 2;
+        for (var i = 0; i < 4; i++)
         {
-            int position = -1;
-            ContainerFlank flank = GameObject.Find($"FlankLeft{step}").GetComponent<ContainerFlank>();
-            for (int i = 0; i < 4; i++)
-            {
-                if (flank.GetCardAt(i) == null) position = i;
-            }
-            Card card = Instantiate(cardUniversal);
-            card.SetCard(noobLeft);
-            game.AddCardsToFlank(game.GetCurrentStep(), noobsLeft, Flank.Left);
-            flank.PlaceCard(card, position);
-            Transform container = flank.transform.Find("Squads").Find($"CardsContainer-{position}");
-            GameObject.Destroy(container.Find("CardPlaceholder(Clone)").gameObject);
-            card.transform.SetParent(container.transform, false);
-            card.isDraggable = false;
-            card.isSelectable = false;
+            this.flanks[i]._SetActive(false);
         }
-
-        if (game.GetCardsCount(game.GetCurrentStep(), Flank.Right) != 4)
-        {
-            int position = -1;
-            ContainerFlank flank = GameObject.Find($"FlankRight{step}").GetComponent<ContainerFlank>();
-            for (int i = 4; i < 8; i++)
-            {
-                if (flank.GetCardAt(i) == null) position = i;
-            }
-            Card card = Instantiate(cardUniversal);
-            card.SetCard(noobRight);
-            game.AddCardsToFlank(game.GetCurrentStep(), noobsRight, Flank.Right);
-            flank.PlaceCard(card, position);
-            Transform container = flank.transform.Find("Squads").Find($"CardsContainer-{position}");
-            GameObject.Destroy(container.Find("CardPlaceholder(Clone)").gameObject);
-            card.transform.SetParent(container.transform, false);
-            card.isDraggable = false;
-            card.isSelectable = false;
-        }
-    }
-    public void SupportTactical()
-    {
-        Debug.Log("Support: Tactical Move");
-        int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 2 : 1;
-
-        commandorsLayer.SetActive(false);
-        flanksLayer.SetActive(false);
-        HQ1Layer.SetActive(false);
-        HQ2Layer.SetActive(false);
-        if (step == 1)
-        {
-            hand1Layer.SetActive(false);
-        }
-        else
-        {
-            hand2Layer.SetActive(false);
-        }
-
-        temporary.gameObject.SetActive(true);
-
-        List<Card> temporaryCards = new List<Card>();
-
-        temporaryCards.Add(GetCardFromDeck(game.GetCurrentStep()));
-        temporaryCards.Add(GetCardFromDeck(game.GetCurrentStep()));
-        temporaryCards.Add(GetCardFromDeck(game.GetCurrentStep()));
-
-        foreach (Card card in temporaryCards)
-        {
-            Card _card = Instantiate(cardUniversal);
-            _card.transform.SetParent(temporary.transform.Find("CardsContainer").transform, false);
-            _card.SetCard(card.card);
-        }
-
-        callback = SupportTacticalEnd;
+        this.GetOppositeFlank()._SetActive(true);
+        this.tempDamage = power;
+        AttackButton.GetComponentInChildren<Text>().text = "Обстрел!";
+        callback = SupportShelling_End;
     }
 
-    public void SupportTacticalEnd(Card card)
+    private void SupportShelling_End(Card card)
     {
-        Debug.Log("Support: Tactical Move End");
-        int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 2 : 1;
-
-        temporary.gameObject.SetActive(false);
-
-        AddCardToHand(card);
-        foreach (var _card in temporary.GetComponent<AbstractContainer>().GetCards())
-        {
-            DropCardToDrop(_card, false);
-        }
-
-        commandorsLayer.SetActive(true);
-        flanksLayer.SetActive(true);
-        HQ1Layer.SetActive(true);
-        HQ2Layer.SetActive(true);
-        if (step == 1)
-        {
-            hand1Layer.SetActive(true);
-        }
-        else
-        {
-            hand2Layer.SetActive(true);
-        }
-
-        ResetSelectionCards();
+        game.HitSquad((SquadCard)card.card, this.tempDamage);
+        CurrentPlayer currentEnemy = this.isAttackActiveSkills ? game.GetNextStep() : game.GetCurrentStep();
+        int step = currentEnemy == CurrentPlayer.FIRST ? 1 : 2;
+        this.GetOppositeFlank()._SetActive(false);
         callback = AttackCallback;
+        this.ApplyActiveSkills();
     }
 
-    public void SupportSniper(Skills skills)
+    public void SupportStun_Start(int power)
     {
-        this.tempSkills = skills;
-        CurrentPlayer currentEnemy = game.GetNextStep();
-        // flanks[currentEnemy].GetComponent<FlankHand>().SetCardHandler(true);
-
-        int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
-        commandorsLayer.SetActive(false);
-        flanksLayer.SetActive(false);
-        HQ1Layer.SetActive(false);
-        HQ2Layer.SetActive(false);
-        if (step == 1)
+        Debug.Log(this.GetCurrentFlank().name);
+        if (this.GetOppositeFlank().GetCardsCapacity() == 0) return;
+        CurrentPlayer currentEnemy = this.isAttackActiveSkills ? game.GetNextStep() : game.GetCurrentStep();
+        int step = currentEnemy == CurrentPlayer.FIRST ? 1 : 2;
+        for (var i = 0; i < 4; i++)
         {
-            hand1Layer.SetActive(false);
+            this.flanks[i]._SetActive(false);
         }
-        else
-        {
-            hand2Layer.SetActive(false);
-        }
-        callback = SupportSniperEnd;
+        this.GetOppositeFlank()._SetActive(true);
+        this.tempDamage = power;
+        this.selected = 0;
+        AttackButton.GetComponentInChildren<Text>().text = "Оглушение!";
+        callback = SupportStun_End;
     }
 
-    private void SupportSniperEnd(Card card)
+    private void SupportStun_End(Card card)
     {
-        //TODO
-        // game.HitSquad(card.card, this.tempSkills);
-        // flanks[game.GetCurrentStep() == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST].GetComponent<FlankHand>().SetCardHandler(false);
-        int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
-        commandorsLayer.SetActive(true);
-        flanksLayer.SetActive(true);
-        HQ1Layer.SetActive(true);
-        HQ2Layer.SetActive(true);
-        if (step == 1)
+        SquadCard _card = (SquadCard)card.card;
+        if (_card.rarity != Rarity.Epic)
         {
-            hand1Layer.SetActive(true);
+            _card.isDeaf = true;
         }
-        else
+        this.selected++;
+        if (this.selected < this.tempDamage && this.GetOppositeFlank().GetCardsCapacity() > this.selected)
         {
-            hand2Layer.SetActive(true);
+            return;
         }
+        CurrentPlayer currentEnemy = this.isAttackActiveSkills ? game.GetNextStep() : game.GetCurrentStep();
+        int step = currentEnemy == CurrentPlayer.FIRST ? 1 : 2;
+        this.GetOppositeFlank()._SetActive(false);
         callback = AttackCallback;
-        if (this.attackState == AttackState.DEFENCE)
-        {
-            this.ApplyActiveSkills();
-        }
+        this.ApplyActiveSkills();
     }
 
-    public void RearRaid_Start()
-    {
-        this.rearRaidCounter = 2;
-        CurrentPlayer currentEnemy = game.GetNextStep();
-        hands[currentEnemy].GetComponent<ContainerHand>().SetCardHandler(true);
-
-        int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
-        commandorsLayer.SetActive(false);
-        flanksLayer.SetActive(false);
-        HQ1Layer.SetActive(false);
-        HQ2Layer.SetActive(false);
-        if (step == 1)
-        {
-            hand1Layer.SetActive(false);
-        }
-        else
-        {
-            hand2Layer.SetActive(false);
-        }
-
-        callback = RearRaid_End;
-    }
-    public void RearRaid_End(Card card)
-    {
-        this.DropCardToDrop(card, true);
-        this.rearRaidCounter--;
-        if (this.rearRaidCounter == 0)
-        {
-            CurrentPlayer currentEnemy = game.GetNextStep();
-            hands[currentEnemy].GetComponent<ContainerHand>().SetCardHandler(false);
-            int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
-            commandorsLayer.SetActive(true);
-            flanksLayer.SetActive(true);
-            HQ1Layer.SetActive(true);
-            HQ2Layer.SetActive(true);
-            if (step == 1)
-            {
-                hand1Layer.SetActive(true);
-            }
-            else
-            {
-                hand2Layer.SetActive(true);
-            }
-            this.callback = AttackCallback;
-        }
-    }
     private void AttackCallback(Card card)
     {
-        Debug.Log("in attack callback");
-        Debug.Log(position);
         if (attackState == AttackState.ATTACK)
         {
             attackCards[position] = card;
@@ -797,8 +652,6 @@ public class PlayerController : AbstractController
     }
     public void SelectCard(GameObject card, int position)
     {
-        Debug.Log("SelectCard");
-        Debug.Log(card.GetComponent<Card>().card.active);
         if (card.GetComponent<Card>().isSelectable == false) return;
         card.GetComponent<Card>().isSelectable = false;
         this.position = position;
@@ -813,106 +666,99 @@ public class PlayerController : AbstractController
         }
         attackCards.Clear();
     }
-    public void SupportMedicine_Start(Skills skills)
+    public void SupportScouting_Start(int power)
     {
-        this.tempSkills = skills;
-        this.callback = SupportMedicine_End;
-        //TODO
+        Debug.Log(this.GetCurrentFlank().name);
+        this.GetCardsFromDeckToHand(this.isAttackActiveSkills ? this.game.GetCurrentStep() : this.game.GetNextStep(), power);
+        this.ApplyActiveSkills();
     }
-    public void SupportMedicine_End(Card card)
+    public void SupportSapper_Start(int power)
     {
-        //TODO
-        this.tempSkills = null;
-        this.callback = AttackCallback;
-        if (this.attackState == AttackState.DEFENCE)
+        Debug.Log(this.GetCurrentFlank().name);
+        this.DropCardToDrop(this.GetCurrentFlank().transform.Find("FortificationContainer").GetComponentInChildren<Card>(), !this.isAttackActiveSkills);
+        this.ApplyActiveSkills();
+    }
+    private ContainerFlank GetOppositeFlank()
+    {
+        this.isAttackActiveSkills = !this.isAttackActiveSkills;
+        ContainerFlank result = this.GetCurrentFlank();
+        this.isAttackActiveSkills = !this.isAttackActiveSkills;
+        return result;
+    }
+    private ContainerFlank GetCurrentFlank()
+    {
+        if (this.isAttackActiveSkills)
         {
-            ApplyActiveSkills();
+            if (this.position > 3)
+            {
+                return this.game.GetCurrentStep() == CurrentPlayer.FIRST ? this.flankRight1 : this.flankRight2;
+            }
+            else
+            {
+                return this.game.GetCurrentStep() == CurrentPlayer.FIRST ? this.flankLeft1 : this.flankLeft2;
+            }
+        }
+        else
+        {
+            if (this.position > 3)
+            {
+                return this.game.GetCurrentStep() == CurrentPlayer.SECOND ? this.flankRight1 : this.flankRight2;
+            }
+            else
+            {
+                return this.game.GetCurrentStep() == CurrentPlayer.SECOND ? this.flankLeft1 : this.flankLeft2;
+            }
         }
     }
-    public void SupportScouting_Start(Skills skills)
+    private void FillActiveSkills()
     {
-        this.tempSkills = skills;
-        this.callback = SupportScouting_End;
-        //TODO
-    }
-    public void SupportScouting_End(Card card)
-    {
-        //TODO
-        this.tempSkills = null;
-        this.callback = AttackCallback;
-        if (this.attackState == AttackState.DEFENCE)
+        for (var i = 0; i < 8; i++)
         {
-            ApplyActiveSkills();
+            this.position = i;
+            Card card = this.attackCards[i];
+            if (card == null) continue;
+            Skills skills = ((SquadCard)(card.card)).skills;
+            if (skills.instantSkills == null) continue;
+            foreach (var skill in skills.instantSkills)
+            {
+                this.attackInstants.Add(new Tuple<Tuple<Skills.SkillCallback, int>, int>(skill, i));
+            }
         }
-    }
-    public void SupportSapper_Start(Skills skills)
-    {
-        this.tempSkills = skills;
-        this.callback = SupportSapper_End;
-        //TODO
-    }
-    public void SupportSapper_End(Card card)
-    {
-        //TODO
-        this.tempSkills = null;
-        this.callback = AttackCallback;
-        if (this.attackState == AttackState.DEFENCE)
+        this.isAttackActiveSkills = false;
+        for (var i = 0; i < 8; i++)
         {
-            ApplyActiveSkills();
+            this.position = i;
+            Card card = this.attackCards[i];
+            if (card == null) continue;
+            Skills skills = ((SquadCard)(card.card)).skills;
+            if (skills.instantSkills == null) continue;
+            foreach (var skill in skills.instantSkills)
+            {
+                this.defenceInstants.Add(new Tuple<Tuple<Skills.SkillCallback, int>, int>(skill, i));
+            }
         }
     }
     public void ApplyActiveSkills()
     {
-        // foreach (var card in attackCards)
-        // {
-        //   if (card == null) continue;
-        //   Skills skills = ((SquadCard)(card.card)).skills;
-        //   if (skills.medicine > 0)
-        //   {
-        //     this.SupportMedic_Start(skills);
-        //     return;
-        //   }
-        //   if (skills.shelling > 0)
-        //   {
-        //     this.SupportSniper(skills);
-        //     return;
-        //   }
-        //   if (skills.sapper > 0)
-        //   {
-        //     this.SupportSniper(skills);
-        //     return;
-        //   }
-        //   if (skills.scouting > 0)
-        //   {
-        //     this.SupportScouting_Start(skills);
-        //     return;
-        //   }
-        // }
-        // foreach (var card in defenceCards)
-        // {
-        //   if (card == null) continue;
-        //   Skills skills = ((SquadCard)(card.card)).skills;
-        //   if (skills.medicine > 0)
-        //   {
-        //     this.SupportMedicine_Start(skills);
-        //     return;
-        //   }
-        //   if (skills.shelling > 0)
-        //   {
-        //     this.SupportSniper(skills);
-        //     return;
-        //   }
-        //   if (skills.sapper > 0)
-        //   {
-        //     this.SupportSniper(skills);
-        //     return;
-        //   }
-        //   if (skills.scouting > 0)
-        //   {
-        //     this.SupportScouting_Start(skills);
-        //     return;
-        //   }
-        // }
+        Tuple<Skills.SkillCallback, int> instant;
+        this.isAttackActiveSkills = true;
+        if (this.attackInstants.Count > 0)
+        {
+            instant = this.attackInstants[0].Item1;
+            this.position = this.attackInstants[0].Item2;
+            this.attackInstants.RemoveAt(0);
+            instant.Item1(instant.Item2, this);
+            return;
+        }
+        this.isAttackActiveSkills = false;
+        if (this.defenceInstants.Count > 0)
+        {
+            instant = this.defenceInstants[0].Item1;
+            this.position = this.defenceInstants[0].Item2;
+            this.defenceInstants.RemoveAt(0);
+            instant.Item1(instant.Item2, this);
+            return;
+        }
         this.DefenceStart();
     }
 }

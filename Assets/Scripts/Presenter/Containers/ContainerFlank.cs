@@ -25,15 +25,22 @@ public class ContainerFlank : AbstractContainer
         card.position = position;
         RefreshActive();
     }
-    public void RefreshActive()
+    public void _SetActive(bool isActive)
     {
-        Debug.Log("In Refresh");
-        Debug.Log(mCards.Count);
         foreach (var card in this.mCards)
         {
             if (card != null)
             {
-                Debug.Log(card.card.active);
+                card.isSelectable = isActive;
+            }
+        }
+    }
+    public void RefreshActive()
+    {
+        foreach (var card in this.mCards)
+        {
+            if (card != null)
+            {
                 card.isSelectable = card.card.active;
             }
         }
@@ -66,5 +73,17 @@ public class ContainerFlank : AbstractContainer
         {
             squad.GetComponent<CardsContainerDropHandler>().enabled = isEnabled;
         }
+    }
+    public int GetCardsCapacity ()
+    {
+        int result = 0;
+        for (var i = 0; i < 8; i++)
+        {
+            if (this.mCards[i] != null)
+            {
+                result++;
+            }
+        }
+        return result;
     }
 }

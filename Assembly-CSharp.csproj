@@ -87,7 +87,6 @@
     <Compile Include="Assets\Scripts\Presenter\Handlers\CardsContainerDropHandler.cs" />
     <Compile Include="Assets\Scripts\Presenter\Handlers\HandDropHandler.cs" />
     <Compile Include="Assets\Scripts\Presenter\Interfaces\CardContainerItem.cs" />
-    <Compile Include="Assets\Scripts\Presenter\Skills\RearRaid.cs" />
     <Compile Include="Assets\Scripts\Presenter\Skills\Skills.cs" />
     <Compile Include="Assets\Scripts\Presenter\ViewAction.cs" />
     <Compile Include="Assets\Scripts\SettingsMenu.cs" />

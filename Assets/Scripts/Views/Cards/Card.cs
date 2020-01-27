@@ -41,7 +41,6 @@ public class Card : MonoBehaviour, ICardContainerItem
     public void OnRemove() { }
     public void Highlight(bool state)
     {
-        Debug.Log("in highlight");
         ColorBlock colors = border.GetComponent<Button>().colors;
         if (state)
         {
@@ -66,7 +65,6 @@ public class Card : MonoBehaviour, ICardContainerItem
     }
     public void OnPointerClick()
     {
-        // Debug.Log(card.GetType());
         PlayerController script = player.GetComponent<PlayerController>();
         if (isSelectable) script.SelectCard(gameObject, position);
         Skills skills;

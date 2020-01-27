@@ -14,7 +14,7 @@ public class Game
 
     private void CityRuinsCallback(List<SquadCard> enemySquads, List<SquadCard> mySquads, Skills enemySkills, Skills mySkills, bool isMyAttack)
     {
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < 4; i++)
         {
             if (enemySquads[i] != null && enemySquads[i].skills.agility)
             {
@@ -39,7 +39,7 @@ public class Game
     {
         if (isMyAttack) return;
         List<int> indexes = new List<int>();
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < 4; i++)
         {
             if (enemySquads[i] != null)
             {
@@ -52,7 +52,7 @@ public class Game
 
     private void ClanBannerCallback(List<SquadCard> enemySquads, List<SquadCard> mySquads, Skills enemySkills, Skills mySkills, bool isMyAttack)
     {
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < 4; i++)
         {
             if (mySquads[i] == null) continue;
             mySquads[i].addProtection++;
@@ -456,10 +456,6 @@ public class Game
 
     public void AddCardsToFlank(CurrentPlayer player, HashSet<SquadCard> cards, Flank flank)
     {
-        // Debug.Log(player);
-        // Debug.Log(cards);
-        // Debug.Log(flank);
-        // Debug.Log(fields[player].flanks);
         fields[player].flanks[flank].UnionWith(cards);
     }
 
@@ -478,15 +474,12 @@ public class Game
 
     public void RefreshSquads()
     {
-        Debug.Log("in ref sq");
         foreach (CurrentPlayer player in Enum.GetValues(typeof(CurrentPlayer)))
         {
             foreach (Flank flank in Enum.GetValues(typeof(Flank)))
             {
-                Debug.Log("in ref sq2");
                 foreach (AbstractCard card in fields[player].flanks[flank])
                 {
-                    Debug.Log("in ref sq3");
                     card.active = true;
                 }
             }

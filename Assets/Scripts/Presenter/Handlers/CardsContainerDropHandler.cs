@@ -17,7 +17,6 @@ public class CardsContainerDropHandler : MonoBehaviour, IDropHandler
     public State state = State.ATTACK;
     public void OnDrop(PointerEventData eventData)
     {
-        Debug.Log(gameObject.name);
         if (this.state == State.ATTACK) {
             switch (player.currentDraggableCard.GetComponent<Card>().card)
             {
@@ -26,8 +25,6 @@ public class CardsContainerDropHandler : MonoBehaviour, IDropHandler
                     return;
             }
             int _position = player.currentDraggableCard.GetComponent<Card>().position;
-            Debug.Log("TADA");
-            Debug.Log(_position);
             if (_position != -1)
             {
                 CardPlaceholder _card = Instantiate(player.cardPlaceholder);
@@ -35,7 +32,6 @@ public class CardsContainerDropHandler : MonoBehaviour, IDropHandler
                 _card.transform.SetParent(container.transform, false);
             }
             int position = gameObject.name[gameObject.name.Length - 1] - '0';
-            Debug.Log(position);
             player.DropCardToFlank(player.currentDraggableCard, position, flank);
             player.currentDraggableCard = null;
         }
@@ -44,8 +40,6 @@ public class CardsContainerDropHandler : MonoBehaviour, IDropHandler
             if (player.currentDraggableCard.GetComponent<Card>().card is SquadCard &&
                 player.currentDraggableCard.GetComponent<Card>().card.active) {
                 int _position = gameObject.name[gameObject.name.Length - 1] - '0';
-                Debug.Log("drop defence");
-                Debug.Log(gameObject.name);
                 CardSquad card = (CardSquad)player.currentDraggableCard.GetComponent<Card>();
                 if (_position != -1)
                 {
