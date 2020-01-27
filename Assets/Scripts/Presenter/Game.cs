@@ -167,20 +167,20 @@ public class Game
             cards.Add(new FortificationCard(Rarity.Rare, "Баррикада", "", this.BarricadeCallback));
         }
 
-        // for (int i = 0; i < 3; i++)
-        // {
-        //   cards.Add(new SupportCard(Rarity.General, "Восстание", "", ViewAction.INSPIRATION));
-        // }
-        // for (int i = 0; i < 3; i++)
-        // {
-        //   cards.Add(new SupportCard(Rarity.General, "Контрабанда", "", ViewAction.SMUGGLING));
-        // }
-        // for (int i = 0; i < 2; i++)
-        // {
-        //   cards.Add(new SupportCard(Rarity.Rare, "Засада", "", ViewAction.AMBUSH));
-        // }
-        // cards.Add(new SupportCard(Rarity.Epic, "Налёт на скалы", "", ViewAction.RAIDONTHEROCKS));
-        // cards.Add(new SupportCard(Rarity.Epic, "Полевая медицина", "", ViewAction.FIELDMEDICINE));
+        for (int i = 0; i < 3; i++)
+        {
+            cards.Add(new SupportCard(Rarity.General, "Восстание", "", ViewAction.INSURRECTION));
+        }
+        for (int i = 0; i < 3; i++)
+        {
+            cards.Add(new SupportCard(Rarity.General, "Контрабанда", "", ViewAction.SMUGGLING));
+        }
+        for (int i = 0; i < 2; i++)
+        {
+            cards.Add(new SupportCard(Rarity.Rare, "Засада", "", ViewAction.AMBUSH));
+        }
+        cards.Add(new SupportCard(Rarity.Epic, "Налёт на скалы", "", ViewAction.RAIDONTHEROCKS));
+        cards.Add(new SupportCard(Rarity.Epic, "Полевая медицина", "", ViewAction.FIELDMEDICINE));
         return cards;
     }
 
@@ -320,20 +320,20 @@ public class Game
             cards.Add(new FortificationCard(Rarity.Rare, "Знамя клана", "", this.BarricadeCallback));
         }
 
-        // for (int i = 0; i < 3; i++)
-        // {
-        //   cards.Add(new SupportCard(Rarity.General, "Призыв кланов", "", ViewAction.CLANCALL));
-        // }
-        // for (int i = 0; i < 3; i++)
-        // {
-        //   cards.Add(new SupportCard(Rarity.General, "Кислотный ливень", "", ViewAction.ACIDRAIN));
-        // }
-        // for (int i = 0; i < 2; i++)
-        // {
-        //   cards.Add(new SupportCard(Rarity.Rare, "Боевой клич", "", ViewAction.BATTLECRY));
-        // }
-        // cards.Add(new SupportCard(Rarity.Epic, "Дрожь земли", "", ViewAction.TREMBLINGEARTH));
-        // cards.Add(new SupportCard(Rarity.Epic, "Герои легенд", "", ViewAction.HEROESOFLEGENDS));
+        for (int i = 0; i < 3; i++)
+        {
+            cards.Add(new SupportCard(Rarity.General, "Призыв кланов", "", ViewAction.CLANCALL));
+        }
+        for (int i = 0; i < 3; i++)
+        {
+            cards.Add(new SupportCard(Rarity.General, "Кислотный ливень", "", ViewAction.ACIDRAIN));
+        }
+        for (int i = 0; i < 2; i++)
+        {
+            cards.Add(new SupportCard(Rarity.Rare, "Боевой клич", "", ViewAction.BATTLECRY));
+        }
+        cards.Add(new SupportCard(Rarity.Epic, "Дрожь земли", "", ViewAction.TREMBLINGEARTH));
+        cards.Add(new SupportCard(Rarity.Epic, "Герои легенд", "", ViewAction.HEROESOFLEGENDS));
         return cards;
     }
 

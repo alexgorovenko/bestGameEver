@@ -173,13 +173,13 @@ public class Attack
                 {
                     attacker[flank][i].addStamina -= (int)deffender[flank][i].protection + deffender[flank][i].addProtection;
                     attacker[flank][i].addStamina -= (int)massDamageDefender;
-                    if ((!deffender[flank][i].skills.pierce || deffender[flank][i].isDeaf) && !attacker[flank][i].isDeaf)
+                    if ((!deffender[flank][i].skills.pierce || deffender[flank][i].isDeaf) && !attacker[flank][i].isDeaf && !attacker[flank][i].isWeak)
                     {
                         attacker[flank][i].addStamina += (int)Math.Min(attacker[flank][i].skills.armor + attackerSkills[flank].armor, attacker[flank][i].addStamina - 1);
                     }
                     deffender[flank][i].addStamina -= (int)attacker[flank][i].attack + attacker[flank][i].addAttack;
                     deffender[flank][i].stamina -= (int)massDamageAttacker;
-                    if ((!attacker[flank][i].skills.pierce || attacker[flank][i].isDeaf) && !attacker[flank][i].isDeaf)
+                    if ((!attacker[flank][i].skills.pierce || attacker[flank][i].isDeaf) && !deffender[flank][i].isDeaf && !deffender[flank][i].isWeak)
                     {
                         deffender[flank][i].addStamina += (int)Math.Min(deffender[flank][i].skills.armor + deffenderSkills[flank].armor, deffender[flank][i].addStamina - 1);
                     }
@@ -216,6 +216,7 @@ public class Attack
                 card.addAttack = 0;
                 card.addProtection = 0;
                 card.addStamina = 0;
+                card.isWeak = false;
             }
             foreach (SquadCard card in this.deffender[flank])
             {
@@ -224,6 +225,7 @@ public class Attack
                 card.addAttack = 0;
                 card.addProtection = 0;
                 card.addStamina = 0;
+                card.isWeak = false;
             }
         }
     }

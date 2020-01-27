@@ -66,7 +66,7 @@ public class Card : MonoBehaviour, ICardContainerItem
     public void OnPointerClick()
     {
         PlayerController script = player.GetComponent<PlayerController>();
-        if (isSelectable) script.SelectCard(gameObject, position);
+        if (isSelectable && !(card is SupportCard)) script.SelectCard(gameObject, position);
         Skills skills;
         switch (card)
         {
@@ -76,29 +76,58 @@ public class Card : MonoBehaviour, ICardContainerItem
                 break;
             case SupportCard s:
                 script.DropCardToDrop(this, false);
-                List<Tuple<Skills.SkillCallback, int>> activeSkills = new List<Tuple<Skills.SkillCallback, int>>();
-                List<Tuple<Skills.SkillCallback, int>> instantSkills = new List<Tuple<Skills.SkillCallback, int>>();
                 switch (s.action)
                 {
-/*                    case ViewAction.TACTICAL_MOVE:
-                        script.SupportTactical();
-                        break;
-                    case ViewAction.MOBILIZAZATION:
-                        script.SupportMobilization();
-                        break;
-                    case ViewAction.SNIPER:
-                        instantSkills.Add(new Tuple<Skills.SkillCallback, int>(Skills.Shelling, 3));
-                        skills = new Skills(null, instantSkills);
-                        script.SupportSniper(skills);
-                        break;
-                    case ViewAction.REAR_RAID:
-                        script.RearRaid_Start();
-                        break;
-                    case ViewAction.FIELD_MEDICINE:
-                        instantSkills.Add(new Tuple<Skills.SkillCallback, int>(Skills.Medicine, 2));
-                        skills = new Skills(null, instantSkills);
-                        script.SupportMedicine_Start(skills);
-                        break;*/ //TODO
+                    case ViewAction.ACIDRAIN:
+                        {
+                            script.SupportAcidRain_Start();
+                            break;
+                        }
+                    case ViewAction.AMBUSH:
+                        {
+                            script.SupportAmbush_Start();
+                            break;
+                        }
+                    case ViewAction.BATTLECRY:
+                        {
+                            script.SupportBattleCry_Start();
+                            break;
+                        }
+                    case ViewAction.CLANCALL:
+                        {
+                            script.SupportClanCall_Start();
+                            break;
+                        }
+                    case ViewAction.FIELDMEDICINE:
+                        {
+                            script.SupportFieldMedicine_Start();
+                            break;
+                        }
+                    case ViewAction.HEROESOFLEGENDS:
+                        {
+                            script.SupportHeroesOfLegends_Start();
+                            break;
+                        }
+                    case ViewAction.INSURRECTION:
+                        {
+                            script.SupportInsurrection_Start();
+                            break;
+                        }
+                    case ViewAction.RAIDONTHEROCKS:
+                        {
+                            script.SupportRaidOnTheRocks_Start();
+                            break;
+                        }
+                    case ViewAction.SMUGGLING:
+                        {
+                            script.SupportSmuggling_Start();
+                            break;
+                        }
+                    case ViewAction.TREMBLINGEARTH:
+                        {
+                            script.SupportTremblingEarth_Start();
+                            break;
+                        }
                 }
                 break;
             case CommandorCard c:

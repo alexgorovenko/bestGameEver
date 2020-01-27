@@ -49,22 +49,18 @@ public class Skills
 
     public static void Shelling(int power, PlayerController player)
     {
-        Debug.Log("shelling");
         player.SupportShelling_Start(power);
     }
     public static void Scouting(int power, PlayerController player)
     {
-        Debug.Log("scouting");
         player.SupportScouting_Start(power);
     }
     public static void Sapper(int power, PlayerController player)
     {
-        Debug.Log("sapper");
         player.SupportSapper_Start(power);
     }
     public static void Stun(int power, PlayerController player)
     {
-        Debug.Log("stun");
         player.SupportStun_Start(power);
     }
 }

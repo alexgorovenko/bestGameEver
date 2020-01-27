@@ -578,7 +578,6 @@ public class PlayerController : AbstractController
     // Support cards callbacks
     public void SupportShelling_Start(int power)
     {
-        Debug.Log(this.GetCurrentFlank().name);
         if (this.GetOppositeFlank().GetCardsCapacity() == 0) return;
         CurrentPlayer currentEnemy = this.isAttackActiveSkills ? game.GetNextStep() : game.GetCurrentStep();
         int step = currentEnemy == CurrentPlayer.FIRST ? 1 : 2;
@@ -604,7 +603,6 @@ public class PlayerController : AbstractController
 
     public void SupportStun_Start(int power)
     {
-        Debug.Log(this.GetCurrentFlank().name);
         if (this.GetOppositeFlank().GetCardsCapacity() == 0) return;
         CurrentPlayer currentEnemy = this.isAttackActiveSkills ? game.GetNextStep() : game.GetCurrentStep();
         int step = currentEnemy == CurrentPlayer.FIRST ? 1 : 2;
@@ -668,13 +666,11 @@ public class PlayerController : AbstractController
     }
     public void SupportScouting_Start(int power)
     {
-        Debug.Log(this.GetCurrentFlank().name);
         this.GetCardsFromDeckToHand(this.isAttackActiveSkills ? this.game.GetCurrentStep() : this.game.GetNextStep(), power);
         this.ApplyActiveSkills();
     }
     public void SupportSapper_Start(int power)
     {
-        Debug.Log(this.GetCurrentFlank().name);
         this.DropCardToDrop(this.GetCurrentFlank().transform.Find("FortificationContainer").GetComponentInChildren<Card>(), !this.isAttackActiveSkills);
         this.ApplyActiveSkills();
     }
@@ -761,4 +757,239 @@ public class PlayerController : AbstractController
         }
         this.DefenceStart();
     }
+    public void SupportAcidRain_Start()
+    {
+        int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 2 : 0;
+        if (flanks[step].GetCardsCapacity() == 0 && flanks[step].GetCardsCapacity() == 0) return;
+        flanks[step]._SetActive(true);
+        flanks[step + 1]._SetActive(true);
+        step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 0 : 2;
+        flanks[step]._SetActive(false);
+        flanks[step + 1]._SetActive(false);
+        AttackButton.GetComponentInChildren<Text>().text = "Кислотный дождь!";
+        callback = SupportAcidRain_End;
+    }
+    private void SupportAcidRain_End(Card card)
+    {
+        int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 2 : 0;
+        ContainerFlank flank = card.position > 3 ? flanks[step + 1] : flanks[step];
+        foreach (Card _card in flank.GetCards())
+        {
+            if (_card == null) continue;
+            ((SquadCard)_card.card).isWeak = true;
+        }
+        flanks[step]._SetActive(false);
+        flanks[step + 1]._SetActive(false);
+        step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 0 : 2;
+        flanks[step].RefreshActive();
+        flanks[step + 1].RefreshActive();
+        AttackButton.GetComponentInChildren<Text>().text = "Атака!";
+        callback = AttackCallback;
+    }
+    public void SupportAmbush_Start()
+    {
+        int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 2 : 0;
+        if (flanks[step].GetCardsCapacity() == 0 && flanks[step].GetCardsCapacity() == 0) return;
+        flanks[step]._SetActive(true);
+        flanks[step + 1]._SetActive(true);
+        step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 0 : 2;
+        flanks[step]._SetActive(false);
+        flanks[step + 1]._SetActive(false);
+        AttackButton.GetComponentInChildren<Text>().text = "Засада!";
+        callback = SupportAmbush_End;
+    }
+    private void SupportAmbush_End(Card card)
+    {
+        int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 2 : 0;
+        game.HitSquad((SquadCard)card.card, 3);
+        flanks[step]._SetActive(false);
+        flanks[step + 1]._SetActive(false);
+        step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 0 : 2;
+        flanks[step].RefreshActive();
+        flanks[step + 1].RefreshActive();
+        AttackButton.GetComponentInChildren<Text>().text = "Атака!";
+        callback = AttackCallback;
+    }
+
+    public void SupportBattleCry_Start()
+    {
+        int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 0 : 2;
+        foreach (Card _card in flanks[step].GetCards())
+        {
+            if (_card == null) continue;
+            ((SquadCard)_card.card).addAttack++;
+        }
+        foreach (Card _card in flanks[step + 1].GetCards())
+        {
+            if (_card == null) continue;
+            ((SquadCard)_card.card).addAttack++;
+        }
+    }
+
+    public void SupportClanCall_Start()
+    {
+        HashSet<SquadCard> noobsLeft = new HashSet<SquadCard>();
+        HashSet<SquadCard> noobsRight = new HashSet<SquadCard>();
+        SquadCard noobLeft = new SquadCard(Rarity.Token, "ополчение горцев", "", 1, 2, 1, new Skills());
+        SquadCard noobRight = new SquadCard(Rarity.Token, "ополчение горцев", "", 1, 2, 1, new Skills());
+        noobsLeft.Add(noobLeft);
+        noobsRight.Add(noobRight);
+        int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
+        if (game.GetCardsCount(game.GetCurrentStep(), Flank.Left) != 4)
+        {
+            int position = -1;
+            ContainerFlank flank = GameObject.Find($"FlankLeft{step}").GetComponent<ContainerFlank>();
+            for (int i = 0; i < 4; i++)
+            {
+                if (flank.GetCardAt(i) == null) position = i;
+            }
+            Card card = Instantiate(cardUniversal);
+            card.SetCard(noobLeft);
+            game.AddCardsToFlank(game.GetCurrentStep(), noobsLeft, Flank.Left);
+            flank.PlaceCard(card, position);
+            Transform container = flank.transform.Find("Squads").Find($"CardsContainer-{position}");
+            Destroy(container.Find("CardPlaceholder(Clone)").gameObject);
+            card.transform.SetParent(container.transform, false);
+            card.isDraggable = false;
+            card.isSelectable = false;
+        }
+        if (game.GetCardsCount(game.GetCurrentStep(), Flank.Right) != 4)
+        {
+            int position = -1;
+            ContainerFlank flank = GameObject.Find($"FlankRight{step}").GetComponent<ContainerFlank>();
+            for (int i = 4; i < 8; i++)
+            {
+                if (flank.GetCardAt(i) == null) position = i;
+            }
+            Card card = Instantiate(cardUniversal);
+            card.SetCard(noobRight);
+            game.AddCardsToFlank(game.GetCurrentStep(), noobsRight, Flank.Right);
+            flank.PlaceCard(card, position);
+            Transform container = flank.transform.Find("Squads").Find($"CardsContainer-{position}");
+            Destroy(container.Find("CardPlaceholder(Clone)").gameObject);
+            card.transform.SetParent(container.transform, false);
+            card.isDraggable = false;
+            card.isSelectable = false;
+        }
+    }
+
+    public void SupportFieldMedicine_Start()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void SupportHeroesOfLegends_Start()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void SupportInsurrection_Start()
+    {
+        HashSet<SquadCard> noobsLeft = new HashSet<SquadCard>();
+        HashSet<SquadCard> noobsRight = new HashSet<SquadCard>();
+        SquadCard noobLeft = new SquadCard(Rarity.Token, "волонтёры", "", 1, 1, 1, new Skills());
+        SquadCard noobRight = new SquadCard(Rarity.Token, "волонтёры", "", 1, 1, 1, new Skills());
+        noobsLeft.Add(noobLeft);
+        noobsRight.Add(noobRight);
+        int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
+        if (game.GetCardsCount(game.GetCurrentStep(), Flank.Left) != 4)
+        {
+            int position = -1;
+            ContainerFlank flank = GameObject.Find($"FlankLeft{step}").GetComponent<ContainerFlank>();
+            for (int i = 0; i < 4; i++)
+            {
+                if (flank.GetCardAt(i) == null) position = i;
+            }
+            Card card = Instantiate(cardUniversal);
+            card.SetCard(noobLeft);
+            game.AddCardsToFlank(game.GetCurrentStep(), noobsLeft, Flank.Left);
+            flank.PlaceCard(card, position);
+            Transform container = flank.transform.Find("Squads").Find($"CardsContainer-{position}");
+            Destroy(container.Find("CardPlaceholder(Clone)").gameObject);
+            card.transform.SetParent(container.transform, false);
+            card.isDraggable = false;
+            card.isSelectable = false;
+        }
+        if (game.GetCardsCount(game.GetCurrentStep(), Flank.Right) != 4)
+        {
+            int position = -1;
+            ContainerFlank flank = GameObject.Find($"FlankRight{step}").GetComponent<ContainerFlank>();
+            for (int i = 4; i < 8; i++)
+            {
+                if (flank.GetCardAt(i) == null) position = i;
+            }
+            Card card = Instantiate(cardUniversal);
+            card.SetCard(noobRight);
+            game.AddCardsToFlank(game.GetCurrentStep(), noobsRight, Flank.Right);
+            flank.PlaceCard(card, position);
+            Transform container = flank.transform.Find("Squads").Find($"CardsContainer-{position}");
+            Destroy(container.Find("CardPlaceholder(Clone)").gameObject);
+            card.transform.SetParent(container.transform, false);
+            card.isDraggable = false;
+            card.isSelectable = false;
+        }
+    }
+
+    public void SupportRaidOnTheRocks_Start()
+    {
+        ContainerHand hand = game.GetCurrentStep() == CurrentPlayer.FIRST ? hand2 : hand1;
+        List<Card> cards = hand.GetCards();
+        if (cards.Count > 0)
+        {
+            this.DropCardToDrop(cards[(int)Math.Round(UnityEngine.Random.value * (cards.Count - 1))], true);
+        }
+        if (cards.Count > 0)
+        {
+            this.DropCardToDrop(cards[(int)Math.Round(UnityEngine.Random.value * (cards.Count - 1))], true);
+        }
+    }
+
+    public void SupportSmuggling_Start()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void SupportTremblingEarth_Start()
+    {
+        int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 2 : 0;
+        if (flanks[step].GetCardsCapacity() == 0 && flanks[step].GetCardsCapacity() == 0) return;
+        flanks[step]._SetActive(true);
+        flanks[step + 1]._SetActive(true);
+        step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 0 : 2;
+        flanks[step]._SetActive(false);
+        flanks[step + 1]._SetActive(false);
+        AttackButton.GetComponentInChildren<Text>().text = "Дрожь земли!";
+        callback = SupportTremblingEarh_End;
+    }
+
+    private void SupportTremblingEarh_End(Card card)
+    {
+        int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 2 : 0;
+        ContainerFlank flank = card.position > 3 ? flanks[step + 1] : flanks[step];
+        this.DropCardToDrop(flank.transform.Find("FortificationContainer").GetComponentInChildren<Card>(), !this.isAttackActiveSkills);
+        List<Card> cards = flank.GetCards();
+        if (flank.GetCardsCapacity() > 1)
+        {
+            Card _card = null;
+            while (_card == null)
+            {
+                _card = cards[(int)Math.Round(UnityEngine.Random.value * (cards.Count - 1))];
+            }
+            game.HitSquad((SquadCard)_card.card, 1);
+            _card = null;
+            while (_card == null)
+            {
+                _card = cards[(int)Math.Round(UnityEngine.Random.value * (cards.Count - 1))];
+            }
+            game.HitSquad((SquadCard)_card.card, 1);
+        }
+        flanks[step]._SetActive(false);
+        flanks[step + 1]._SetActive(false);
+        step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 0 : 2;
+        flanks[step].RefreshActive();
+        flanks[step + 1].RefreshActive();
+        AttackButton.GetComponentInChildren<Text>().text = "Атака!";
+        callback = AttackCallback;
+    }
+
 }

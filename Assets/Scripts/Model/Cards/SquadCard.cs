@@ -7,6 +7,7 @@
     public Skills skills { get; set; }
     public bool isActive { get; set; }
     public bool isDeaf { get; set; }
+    public bool isWeak { get; set; }
     public int addAttack { get; set; }
     public int addStamina { get; set; }
     public int addProtection { get; set; }
@@ -19,6 +20,7 @@
         this.skills = skills;
         this.isActive = skills.agility;
         this.isDeaf = false;
+        this.isWeak = false;
     }
 
 }
