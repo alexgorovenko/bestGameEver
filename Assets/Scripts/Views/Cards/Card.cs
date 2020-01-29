@@ -75,6 +75,8 @@ public class Card : MonoBehaviour, ICardContainerItem
             case FortificationCard f:
                 break;
             case SupportCard s:
+                if (script.points == 0) return;
+                script.points--;
                 script.DropCardToDrop(this, false);
                 switch (s.action)
                 {

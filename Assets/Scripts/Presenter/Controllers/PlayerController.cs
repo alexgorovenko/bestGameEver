@@ -77,6 +77,7 @@ public class PlayerController : AbstractController
     private List<Tuple<Tuple<Skills.SkillCallback, int>, int>> attackInstants = new List<Tuple<Tuple<Skills.SkillCallback, int>, int>>();
     private List<Tuple<Tuple<Skills.SkillCallback, int>, int>> defenceInstants = new List<Tuple<Tuple<Skills.SkillCallback, int>, int>>();
     private int medicineCount;
+    public int points = 0;
 
     void UpdateSprite(string cardName, Card _card)
     {
@@ -248,6 +249,7 @@ public class PlayerController : AbstractController
     }
     public void Next()
     {
+        points = 4;
         playedSquadCards = 0;
         playedSupportCards = 0;
         playedFortificationCards = 0;
@@ -411,7 +413,7 @@ public class PlayerController : AbstractController
         switch (cardModel)
         {
             case SquadCard s:              
-                if (playedSquadCards < 2)
+                if (points > 0)
                 {
                     if (flank.GetComponent<ContainerFlank>().GetCardAt(position) == null)
                     {
@@ -438,15 +440,17 @@ public class PlayerController : AbstractController
                         card.isDraggable = false;
                         card.isSelectable = s.isActive;
                         playedSquadCards++;
+                        points--;
                     }
                 }
                 break;
             case FortificationCard f:
-                if (playedFortificationCards < 1)
+                if (points > 0)
                 {
                     game.ApplyAttackerFortificationCard(game.GetCurrentStep(), f, flankModel);
                     card.transform.SetParent(flank.transform.Find("FortificationContainer").transform);
                     playedFortificationCards++;
+                    points--;
                 }
                 break;
         }
@@ -901,7 +905,7 @@ public class PlayerController : AbstractController
     public void SupportBattleCry_Start()
     {
         int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 0 : 2;
-        if (flanks[step].GetCardsCapacity() == 0 && flanks[step].GetCardsCapacity() == 0) return;
+        if (flanks[step].GetCardsCapacity() == 0 && flanks[step + 1].GetCardsCapacity() == 0) return;
         flanks[step]._SetActive(true);
         flanks[step + 1]._SetActive(true);
         AttackButton.GetComponentInChildren<Text>().text = "Боевой клич!";
