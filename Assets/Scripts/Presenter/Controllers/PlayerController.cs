@@ -45,6 +45,12 @@ public class PlayerController : AbstractController
     GameObject HQ2Layer;
     [SerializeField]
     GameObject AttackButton;
+    [SerializeField]
+    GameObject menuEscLayer;
+    [SerializeField]
+    GameObject buttonExitYes;
+    [SerializeField]
+    GameObject buttonExitNo;
     private uint commandorsChosen = 0;
     private int playedSquadCards = 0;
     private int playedSupportCards = 0;
@@ -228,7 +234,32 @@ public class PlayerController : AbstractController
                     break;
             }
         }
+        this.buttonExitYes.GetComponent<Button>().onClick.AddListener(this.onExitYes);
+        this.buttonExitNo.GetComponent<Button>().onClick.AddListener(this.onExitNo);
     }
+
+    void onExitYes()
+    {
+        SceneManager.LoadScene("Start Screen");
+    }
+
+    void onExitNo()
+    {
+        menuEscLayer.SetActive(false);
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyUp(KeyCode.Escape))
+        {
+            menuEscLayer.SetActive(!menuEscLayer.activeSelf);
+        }
+        if (Input.GetKeyUp(KeyCode.R))
+        {
+            SceneManager.LoadScene("Main game Screen");
+        }
+    }
+
     public void GameStart()
     {
         CurrentPlayer currentPlayer = game.GetCurrentStep();
