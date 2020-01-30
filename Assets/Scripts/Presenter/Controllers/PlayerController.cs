@@ -295,10 +295,10 @@ public class PlayerController : AbstractController
         flanks[step + 1].GetComponent<ContainerFlank>().RefreshActive();
 
         hands[game.GetCurrentStep()].gameObject.SetActive(false);
-        game.NextStep();
-        hands[game.GetCurrentStep()].gameObject.SetActive(true);
         GetCardsFromDeckToHand(game.GetCurrentStep(), points);
         points = 4;
+        game.NextStep();
+        hands[game.GetCurrentStep()].gameObject.SetActive(true);
 
         HQ1Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.FIRST)}";
         HQ2Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.SECOND)}";
@@ -474,6 +474,7 @@ public class PlayerController : AbstractController
                         card.isDraggable = false;
                         card.isSelectable = s.isActive;
                         playedSquadCards++;
+                        Debug.Log(((SquadCard)cardModel).skills.instantSkills.Count);
                         points--;
                     }
                 }
