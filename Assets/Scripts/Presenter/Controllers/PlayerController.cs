@@ -698,8 +698,6 @@ public class PlayerController : AbstractController
     public void SupportShelling_Start(int power)
     {
         if (this.GetOppositeFlank().GetCardsCapacity() == 0) return;
-        CurrentPlayer currentEnemy = this.isAttackActiveSkills ? game.GetNextStep() : game.GetCurrentStep();
-        int step = currentEnemy == CurrentPlayer.FIRST ? 0 : 2;
         for (var i = 0; i < 4; i++)
         {
             this.flanks[i]._SetActive(false);
@@ -712,9 +710,8 @@ public class PlayerController : AbstractController
 
     private void SupportShelling_End(Card card)
     {
+        Debug.Log("shelling end");
         game.HitSquad((SquadCard)card.card, this.tempDamage);
-        CurrentPlayer currentEnemy = this.isAttackActiveSkills ? game.GetNextStep() : game.GetCurrentStep();
-        int step = currentEnemy == CurrentPlayer.FIRST ? 0 : 2;
         this.GetOppositeFlank()._SetActive(false);
         callback = AttackCallback;
         this.ApplyActiveSkills();
@@ -752,6 +749,7 @@ public class PlayerController : AbstractController
         int step = currentEnemy == CurrentPlayer.FIRST ? 1 : 2;
         this.GetOppositeFlank()._SetActive(false);
         callback = AttackCallback;
+        Debug.Log("stun end");
         this.ApplyActiveSkills();
     }
 
@@ -848,7 +846,7 @@ public class PlayerController : AbstractController
         for (var i = 0; i < 8; i++)
         {
             this.position = i;
-            Card card = this.attackCards[i];
+            Card card = this.defenceCards[i];
             if (card == null) continue;
             Skills skills = ((SquadCard)(card.card)).skills;
             if (skills.instantSkills == null) continue;
@@ -862,6 +860,7 @@ public class PlayerController : AbstractController
     {
         Tuple<Skills.SkillCallback, int> instant;
         this.isAttackActiveSkills = true;
+        Debug.Log("Attack skill");
         if (this.attackInstants.Count > 0)
         {
             instant = this.attackInstants[0].Item1;
@@ -871,6 +870,7 @@ public class PlayerController : AbstractController
             return;
         }
         this.isAttackActiveSkills = false;
+        Debug.Log("defence skill");
         if (this.defenceInstants.Count > 0)
         {
             instant = this.defenceInstants[0].Item1;
@@ -879,6 +879,7 @@ public class PlayerController : AbstractController
             instant.Item1(instant.Item2, this);
             return;
         }
+        Debug.Log("defence start");
         this.DefenceStart();
         ResetSelectionCards();
     }
