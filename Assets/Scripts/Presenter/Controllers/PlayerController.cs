@@ -1337,6 +1337,19 @@ public class PlayerController : AbstractController
     public void ShowDrop(ContainerDrop drop)
     {
         if (drop.GetCards().Count == 0) return;
+        int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
+        commandorsLayer.SetActive(false);
+        flanksLayer.SetActive(false);
+        HQ1Layer.SetActive(false);
+        HQ2Layer.SetActive(false);
+        if (step == 1)
+        {
+            hand1Layer.SetActive(false);
+        }
+        else
+        {
+            hand2Layer.SetActive(false);
+        }
         temporary.gameObject.SetActive(true);
         List<Card> temporaryCards = new List<Card>();
         temporaryCards.AddRange(drop.GetCards());
@@ -1351,6 +1364,19 @@ public class PlayerController : AbstractController
 
     private void HideDrop(Card card)
     {
+        int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
+        commandorsLayer.SetActive(true);
+        flanksLayer.SetActive(true);
+        HQ1Layer.SetActive(true);
+        HQ2Layer.SetActive(true);
+        if (step == 1)
+        {
+            hand1Layer.SetActive(true);
+        }
+        else
+        {
+            hand2Layer.SetActive(true);
+        }
         temporary.gameObject.SetActive(false);
         callback = AttackCallback;
     }
