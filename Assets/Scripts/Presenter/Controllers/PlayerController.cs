@@ -474,12 +474,6 @@ public class PlayerController : AbstractController
                         card.isDraggable = false;
                         card.isSelectable = s.isActive;
                         playedSquadCards++;
-                        if (((SquadCard)cardModel).skills.instantSkills != null)
-                        {
-                            Debug.Log(((SquadCard)cardModel).skills.instantSkills.Count);
-                            Debug.Log(game.GetCurrentStep());
-                            Debug.Log(position);
-                        }
                         points--;
                     }
                 }
@@ -710,7 +704,6 @@ public class PlayerController : AbstractController
 
     private void SupportShelling_End(Card card)
     {
-        Debug.Log("shelling end");
         game.HitSquad((SquadCard)card.card, this.tempDamage);
         this.GetOppositeFlank()._SetActive(false);
         callback = AttackCallback;
@@ -749,7 +742,6 @@ public class PlayerController : AbstractController
         int step = currentEnemy == CurrentPlayer.FIRST ? 1 : 2;
         this.GetOppositeFlank()._SetActive(false);
         callback = AttackCallback;
-        Debug.Log("stun end");
         this.ApplyActiveSkills();
     }
 
@@ -860,7 +852,6 @@ public class PlayerController : AbstractController
     {
         Tuple<Skills.SkillCallback, int> instant;
         this.isAttackActiveSkills = true;
-        Debug.Log("Attack skill");
         if (this.attackInstants.Count > 0)
         {
             instant = this.attackInstants[0].Item1;
@@ -870,7 +861,6 @@ public class PlayerController : AbstractController
             return;
         }
         this.isAttackActiveSkills = false;
-        Debug.Log("defence skill");
         if (this.defenceInstants.Count > 0)
         {
             instant = this.defenceInstants[0].Item1;
@@ -879,7 +869,6 @@ public class PlayerController : AbstractController
             instant.Item1(instant.Item2, this);
             return;
         }
-        Debug.Log("defence start");
         this.DefenceStart();
         ResetSelectionCards();
     }
