@@ -264,12 +264,9 @@ public class PlayerController : AbstractController
     {
         CurrentPlayer currentPlayer = game.GetCurrentStep();
         GetCardsFromDeckToHand(currentPlayer, 4);
-        hands[game.GetCurrentStep()].gameObject.SetActive(false);
+        GetCardsFromDeckToHand(game.GetNextStep(), 5);
+        hands[game.GetNextStep()].gameObject.SetActive(false);
         // muligan?
-        Next();
-        currentPlayer = game.GetCurrentStep();
-        GetCardsFromDeckToHand(currentPlayer, 4);
-
         // play cards
         // select cards (TODO: drag n drop)
         // place cards
@@ -280,7 +277,6 @@ public class PlayerController : AbstractController
     }
     public void Next()
     {
-        points = 4;
         playedSquadCards = 0;
         playedSupportCards = 0;
         playedFortificationCards = 0;
@@ -295,7 +291,8 @@ public class PlayerController : AbstractController
         hands[game.GetCurrentStep()].gameObject.SetActive(false);
         game.NextStep();
         hands[game.GetCurrentStep()].gameObject.SetActive(true);
-        GetCardsFromDeckToHand(game.GetCurrentStep(), 2);
+        GetCardsFromDeckToHand(game.GetCurrentStep(), points);
+        points = 4;
 
         HQ1Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.FIRST)}";
         HQ2Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.SECOND)}";
