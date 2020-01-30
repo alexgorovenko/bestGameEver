@@ -263,9 +263,15 @@ public class PlayerController : AbstractController
     public void GameStart()
     {
         CurrentPlayer currentPlayer = game.GetCurrentStep();
+        playedSquadCards = 0;
+        playedSupportCards = 0;
+        playedFortificationCards = 0;
+        points = 4;
         GetCardsFromDeckToHand(currentPlayer, 4);
         GetCardsFromDeckToHand(game.GetNextStep(), 5);
         hands[game.GetNextStep()].gameObject.SetActive(false);
+        HQ1Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.FIRST)}";
+        HQ2Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.SECOND)}";
         // muligan?
         // play cards
         // select cards (TODO: drag n drop)
