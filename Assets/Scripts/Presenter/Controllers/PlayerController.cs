@@ -474,7 +474,12 @@ public class PlayerController : AbstractController
                         card.isDraggable = false;
                         card.isSelectable = s.isActive;
                         playedSquadCards++;
-                        Debug.Log(((SquadCard)cardModel).skills.instantSkills.Count);
+                        if (((SquadCard)cardModel).skills.instantSkills != null)
+                        {
+                            Debug.Log(((SquadCard)cardModel).skills.instantSkills.Count);
+                            Debug.Log(game.GetCurrentStep());
+                            Debug.Log(position);
+                        }
                         points--;
                     }
                 }
@@ -694,7 +699,7 @@ public class PlayerController : AbstractController
     {
         if (this.GetOppositeFlank().GetCardsCapacity() == 0) return;
         CurrentPlayer currentEnemy = this.isAttackActiveSkills ? game.GetNextStep() : game.GetCurrentStep();
-        int step = currentEnemy == CurrentPlayer.FIRST ? 1 : 2;
+        int step = currentEnemy == CurrentPlayer.FIRST ? 0 : 2;
         for (var i = 0; i < 4; i++)
         {
             this.flanks[i]._SetActive(false);
@@ -709,7 +714,7 @@ public class PlayerController : AbstractController
     {
         game.HitSquad((SquadCard)card.card, this.tempDamage);
         CurrentPlayer currentEnemy = this.isAttackActiveSkills ? game.GetNextStep() : game.GetCurrentStep();
-        int step = currentEnemy == CurrentPlayer.FIRST ? 1 : 2;
+        int step = currentEnemy == CurrentPlayer.FIRST ? 0 : 2;
         this.GetOppositeFlank()._SetActive(false);
         callback = AttackCallback;
         this.ApplyActiveSkills();
