@@ -1020,19 +1020,6 @@ public class PlayerController : AbstractController
     public void SupportFieldMedicine_Start()
     {
         int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
-        commandorsLayer.SetActive(false);
-        flanksLayer.SetActive(false);
-        HQ1Layer.SetActive(false);
-        HQ2Layer.SetActive(false);
-        if (step == 1)
-        {
-            hand1Layer.SetActive(false);
-        }
-        else
-        {
-            hand2Layer.SetActive(false);
-        }
-        temporary.gameObject.SetActive(true);
 
         List<Card> temporaryCards = new List<Card>();
 
@@ -1053,6 +1040,22 @@ public class PlayerController : AbstractController
                 i--;
             }
         }
+
+        if (temporaryCards.Count == 0) return;
+
+        commandorsLayer.SetActive(false);
+        flanksLayer.SetActive(false);
+        HQ1Layer.SetActive(false);
+        HQ2Layer.SetActive(false);
+        if (step == 1)
+        {
+            hand1Layer.SetActive(false);
+        }
+        else
+        {
+            hand2Layer.SetActive(false);
+        }
+        temporary.gameObject.SetActive(true);
         
         foreach (Card card in temporaryCards)
         {
@@ -1093,19 +1096,6 @@ public class PlayerController : AbstractController
     public void SupportHeroesOfLegends_Start()
     {
         int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
-        commandorsLayer.SetActive(false);
-        flanksLayer.SetActive(false);
-        HQ1Layer.SetActive(false);
-        HQ2Layer.SetActive(false);
-        if (step == 1)
-        {
-            hand1Layer.SetActive(false);
-        }
-        else
-        {
-            hand2Layer.SetActive(false);
-        }
-        temporary.gameObject.SetActive(true);
 
         List<Card> temporaryCards = new List<Card>();
         if (step == 1)
@@ -1125,6 +1115,22 @@ public class PlayerController : AbstractController
                 i--;
             }
         }
+
+        if (temporaryCards.Count == 0) return;
+
+        commandorsLayer.SetActive(false);
+        flanksLayer.SetActive(false);
+        HQ1Layer.SetActive(false);
+        HQ2Layer.SetActive(false);
+        if (step == 1)
+        {
+            hand1Layer.SetActive(false);
+        }
+        else
+        {
+            hand2Layer.SetActive(false);
+        }
+        temporary.gameObject.SetActive(true);
 
         foreach (Card card in temporaryCards)
         {
@@ -1222,6 +1228,12 @@ public class PlayerController : AbstractController
 
     public void SupportSmuggling_Start()
     {
+        List<Card> temporaryCards = new List<Card>();
+        temporaryCards.Add(GetCardFromDeck(game.GetCurrentStep()));
+        temporaryCards.Add(GetCardFromDeck(game.GetCurrentStep()));
+        temporaryCards.Add(GetCardFromDeck(game.GetCurrentStep()));
+        if (temporaryCards.Count == 0) return;
+
         int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
         commandorsLayer.SetActive(false);
         flanksLayer.SetActive(false);
@@ -1237,11 +1249,6 @@ public class PlayerController : AbstractController
         }
         temporary.gameObject.SetActive(true);
 
-        List<Card> temporaryCards = new List<Card>();
-
-        temporaryCards.Add(GetCardFromDeck(game.GetCurrentStep()));
-        temporaryCards.Add(GetCardFromDeck(game.GetCurrentStep()));
-        temporaryCards.Add(GetCardFromDeck(game.GetCurrentStep()));
         foreach (Card card in temporaryCards)
         {
             Card _card = Instantiate(cardUniversal);
@@ -1329,6 +1336,7 @@ public class PlayerController : AbstractController
 
     public void ShowDrop(ContainerDrop drop)
     {
+        if (drop.GetCards().Count == 0) return;
         temporary.gameObject.SetActive(true);
         List<Card> temporaryCards = new List<Card>();
         temporaryCards.AddRange(drop.GetCards());
