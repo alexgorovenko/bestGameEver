@@ -24,6 +24,13 @@ public class ContainerFlank : AbstractContainer
     {
         mCards[position] = card;
         card.position = position;
+        if (((SquadCard)card.card).skills.instantSkills != null)
+        {
+            foreach (var skill in ((SquadCard)card.card).skills.instantSkills)
+            {
+                skill.Item1(skill.Item2, player);
+            }
+        }
         RefreshActive();
     }
     public void _SetActive(bool isActive)

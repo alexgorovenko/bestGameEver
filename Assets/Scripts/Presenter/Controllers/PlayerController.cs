@@ -77,7 +77,7 @@ public class PlayerController : AbstractController
     private Callback callback;
     private AttackState attackState = AttackState.ATTACK;
     private int position = 0;
-    private bool isAttackActiveSkills = false;
+    private bool isAttackActiveSkills = true;
     private int tempDamage;
     private int selected;
     private List<Tuple<Tuple<Skills.SkillCallback, int>, int>> attackInstants = new List<Tuple<Tuple<Skills.SkillCallback, int>, int>>();
@@ -520,7 +520,6 @@ public class PlayerController : AbstractController
         else
         {
             AttackButton.GetComponentInChildren<Text>().text = "Атака!";
-            FillActiveSkills();
             bool needActive = true;
             if (game.GetCurrentStep() == CurrentPlayer.FIRST)
             {
@@ -556,10 +555,7 @@ public class PlayerController : AbstractController
                     needActive = false;
                 }
             }
-            if (needActive)
-            {
-                ApplyActiveSkills();
-            }
+            this.DefenceStart();
             attackState = AttackState.ATTACK;
         }
     }
@@ -706,8 +702,8 @@ public class PlayerController : AbstractController
     {
         game.HitSquad((SquadCard)card.card, this.tempDamage);
         this.GetOppositeFlank()._SetActive(false);
+        AttackButton.GetComponentInChildren<Text>().text = "Атака!";
         callback = AttackCallback;
-        this.ApplyActiveSkills();
     }
 
     public void SupportStun_Start(int power)
@@ -741,8 +737,8 @@ public class PlayerController : AbstractController
         CurrentPlayer currentEnemy = this.isAttackActiveSkills ? game.GetNextStep() : game.GetCurrentStep();
         int step = currentEnemy == CurrentPlayer.FIRST ? 1 : 2;
         this.GetOppositeFlank()._SetActive(false);
+        AttackButton.GetComponentInChildren<Text>().text = "Атака!";
         callback = AttackCallback;
-        this.ApplyActiveSkills();
     }
 
     private void AttackCallback(Card card)
@@ -781,12 +777,10 @@ public class PlayerController : AbstractController
     public void SupportScouting_Start(int power)
     {
         this.GetCardsFromDeckToHand(this.isAttackActiveSkills ? this.game.GetCurrentStep() : this.game.GetNextStep(), power);
-        this.ApplyActiveSkills();
     }
     public void SupportSapper_Start(int power)
     {
         this.DropCardToDrop(this.GetCurrentFlank().transform.Find("FortificationContainer").GetComponentInChildren<Card>(), !this.isAttackActiveSkills);
-        this.ApplyActiveSkills();
     }
     private ContainerFlank GetOppositeFlank()
     {
@@ -819,58 +813,6 @@ public class PlayerController : AbstractController
                 return this.game.GetCurrentStep() == CurrentPlayer.SECOND ? this.flankLeft1 : this.flankLeft2;
             }
         }
-    }
-    private void FillActiveSkills()
-    {
-        for (var i = 0; i < 8; i++)
-        {
-            this.position = i;
-            Card card = this.attackCards[i];
-            if (card == null) continue;
-            Skills skills = ((SquadCard)(card.card)).skills;
-            if (skills.instantSkills == null) continue;
-            foreach (var skill in skills.instantSkills)
-            {
-                this.attackInstants.Add(new Tuple<Tuple<Skills.SkillCallback, int>, int>(skill, i));
-            }
-        }
-        this.isAttackActiveSkills = false;
-        for (var i = 0; i < 8; i++)
-        {
-            this.position = i;
-            Card card = this.defenceCards[i];
-            if (card == null) continue;
-            Skills skills = ((SquadCard)(card.card)).skills;
-            if (skills.instantSkills == null) continue;
-            foreach (var skill in skills.instantSkills)
-            {
-                this.defenceInstants.Add(new Tuple<Tuple<Skills.SkillCallback, int>, int>(skill, i));
-            }
-        }
-    }
-    public void ApplyActiveSkills()
-    {
-        Tuple<Skills.SkillCallback, int> instant;
-        this.isAttackActiveSkills = true;
-        if (this.attackInstants.Count > 0)
-        {
-            instant = this.attackInstants[0].Item1;
-            this.position = this.attackInstants[0].Item2;
-            this.attackInstants.RemoveAt(0);
-            instant.Item1(instant.Item2, this);
-            return;
-        }
-        this.isAttackActiveSkills = false;
-        if (this.defenceInstants.Count > 0)
-        {
-            instant = this.defenceInstants[0].Item1;
-            this.position = this.defenceInstants[0].Item2;
-            this.defenceInstants.RemoveAt(0);
-            instant.Item1(instant.Item2, this);
-            return;
-        }
-        this.DefenceStart();
-        ResetSelectionCards();
     }
     public void SupportAcidRain_Start()
     {
