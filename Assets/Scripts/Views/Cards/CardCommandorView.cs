@@ -7,22 +7,10 @@ public class CardCommandorView : Card
     GameObject selectButton;
     [SerializeField]
     GameObject activeButton;
-    uint abilityCounter = 0;
     public void Select()
     {
         selectButton.SetActive(false);
         activeButton.SetActive(true);
         player.GetComponent<PlayerController>().SetCommandor(transform, (CommandorCard)card);
-    }
-    public void Activate()
-    {
-        if (abilityCounter % ((CommandorCard)card).period == 0)
-        {
-            player.GetComponent<PlayerController>().ActivateCommandor(gameObject.GetComponent<CardCommandorView>());
-        }
-    }
-    public void UpdateCommandor()
-    {
-        abilityCounter++;
     }
 }

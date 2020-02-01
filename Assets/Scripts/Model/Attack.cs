@@ -23,6 +23,8 @@ public class Attack
         {
             attacker[flank] = new List<SquadCard>();
             deffender[flank] = new List<SquadCard>();
+            attackerFortification[flank] = null;
+            deffenderFortification[flank] = null;
         }
     }
 
@@ -131,11 +133,11 @@ public class Attack
         {
             applyInspiration(this.attackerSkills[flank], true, flank);
             applyInspiration(this.deffenderSkills[flank], false, flank);
-            if (this.attackerFortification.ContainsKey(flank))
+            if (this.attackerFortification[flank] != null)
             {
                 this.attackerFortification[flank].skill(this.deffender[flank], this.attacker[flank], this.deffenderSkills[flank], this.attackerSkills[flank], true);
             }
-            if (this.deffenderFortification.ContainsKey(flank))
+            if (this.deffenderFortification[flank] != null)
             {
                 this.deffenderFortification[flank].skill(this.attacker[flank], this.deffender[flank], this.attackerSkills[flank], this.deffenderSkills[flank], false);
             }

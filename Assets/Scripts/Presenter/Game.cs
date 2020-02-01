@@ -69,12 +69,14 @@ public class Game
             skills = new Skills();
             skills.brotherhood = true;
             cards.Add(new SquadCard(Rarity.General, "Добровольческая бригада", "", 1, 1, 1, skills));
+            cards[cards.Count - 1].priority = 6;
         }
         for (int i = 0; i < 3; i++)
         {
             skills = new Skills();
             skills.armor = 1;
             cards.Add(new SquadCard(Rarity.General, "Рабочий автоматон", "", 2, 2, 1, skills));
+            cards[cards.Count - 1].priority = 7;
         }
         for (int i = 0; i < 3; i++)
         {
@@ -82,18 +84,21 @@ public class Game
             instantSkills.Add(new Tuple<Skills.SkillCallback, int>(Skills.Scouting, 1));
             skills = new Skills(instantSkills);
             cards.Add(new SquadCard(Rarity.General, "Контрабандист-подпольщик", "", 1, 1, 1, skills));
+            cards[cards.Count - 1].priority = 8;
         }
         for (int i = 0; i < 3; i++)
         {
             skills = new Skills();
             skills.brotherhood = true;
             cards.Add(new SquadCard(Rarity.Rare, "5-я нортумберлендская бригада", "", 0, 3, 1, skills));
+            cards[cards.Count - 1].priority = 9;
         }
         for (int i = 0; i < 2; i++)
         {
             skills = new Skills();
             skills.inspiration = 1;
             cards.Add(new SquadCard(Rarity.Rare, "Агитатор", "", 1, 3, 1, skills));
+            cards[cards.Count - 1].priority = 10;
         }
         for (int i = 0; i < 2; i++)
         {
@@ -101,43 +106,51 @@ public class Game
             instantSkills.Add(new Tuple<Skills.SkillCallback, int>(Skills.Shelling, 2));
             skills = new Skills(instantSkills);
             cards.Add(new SquadCard(Rarity.Rare, "Бомбисты", "", 3, 2, 1, skills));
+            cards[cards.Count - 1].priority = 11;
         }
         skills = new Skills();
         skills.massDamage = 1;
         cards.Add(new SquadCard(Rarity.Epic, "Огнемётчики", "", 2, 3, 0, skills));
+        cards[cards.Count - 1].priority = 19;
 
         instantSkills = new List<Tuple<Skills.SkillCallback, int>>();
         instantSkills.Add(new Tuple<Skills.SkillCallback, int>(Skills.Shelling, 2));
         skills = new Skills(instantSkills);
         skills.armor = 1;
         cards.Add(new SquadCard(Rarity.Epic, "Боевой автоматон", "", 3, 2, 2, skills));
+        cards[cards.Count - 1].priority = 18;
 
         skills = new Skills();
         skills.agility = true;
         skills.inspiration = 1;
         skills.brotherhood = true;
         cards.Add(new SquadCard(Rarity.Epic, "Герой сопротивления", "", 1, 1, 1, skills));
+        cards[cards.Count - 1].priority = 17;
 
         instantSkills = new List<Tuple<Skills.SkillCallback, int>>();
         instantSkills.Add(new Tuple<Skills.SkillCallback, int>(Skills.Sapper, 1));
         skills = new Skills();
         skills.pierce = true;
         cards.Add(new SquadCard(Rarity.Epic, "Инженеры-подрывники", "", 2, 3, 2, skills));
+        cards[cards.Count - 1].priority = 15;
 
         skills = new Skills();
         skills.agility = true;
         skills.armor = 2;
         cards.Add(new SquadCard(Rarity.Epic, "\"непреклонные\"", "", 0, 3, 2, skills));
+        cards[cards.Count - 1].priority = 16;
 
         skills = new Skills();
         skills.agility = true;
         skills.armor = 1;
         cards.Add(new SquadCard(Rarity.Epic, "\"железнобокие\"", "", 4, 2, 0, skills));
+        cards[cards.Count - 1].priority = 20;
 
         skills = new Skills();
         skills.pierce = true;
         skills.brotherhood = true;
         cards.Add(new SquadCard(Rarity.Legendary, "33й нотингемский гвардейский полк", "", 0, 3, 2, skills));
+        cards[cards.Count - 1].priority = 21;
 
         instantSkills = new List<Tuple<Skills.SkillCallback, int>>();
         instantSkills.Add(new Tuple<Skills.SkillCallback, int>(Skills.Shelling, 3));
@@ -145,31 +158,37 @@ public class Game
         skills.massDamage = 1;
         skills.pierce = true;
         cards.Add(new SquadCard(Rarity.Legendary, "Техномаг", "", 2, 2, 2, skills));
+        cards[cards.Count - 1].priority = 23;
 
         skills = new Skills();
         skills.inspiration = 2;
         skills.brotherhood = true;
         cards.Add(new SquadCard(Rarity.Legendary, "\"Бедняк\" Таллер", "", 1, 2, 1, skills));
+        cards[cards.Count - 1].priority = 24;
 
         instantSkills = new List<Tuple<Skills.SkillCallback, int>>();
         instantSkills.Add(new Tuple<Skills.SkillCallback, int>(Skills.Shelling, 1));
         skills = new Skills(instantSkills);
         skills.armor = 2;
         cards.Add(new SquadCard(Rarity.Legendary, "Паровой танк", "", 3, 4, 0, skills));
+        cards[cards.Count - 1].priority = 22;
 
         for (int i = 0; i < 2; i++)
         {
             cards.Add(new FortificationCard(Rarity.General, "Городские руины", "", this.CityRuinsCallback));
+            cards[cards.Count - 1].priority = 2;
         }
 
         for (int i = 0; i < 2; i++)
         {
             cards.Add(new FortificationCard(Rarity.Rare, "Баррикада", "", this.BarricadeCallback));
+            cards[cards.Count - 1].priority = 5;
         }
 
         for (int i = 0; i < 3; i++)
         {
             cards.Add(new SupportCard(Rarity.General, "Восстание", "", ViewAction.INSURRECTION));
+            cards[cards.Count - 1].priority = 3;
         }
         for (int i = 0; i < 3; i++)
         {
@@ -361,8 +380,8 @@ public class Game
         this.cards = new Dictionary<CurrentPlayer, List<AbstractCard>>();
         this.attacks = new Dictionary<CurrentPlayer, Attack>();
         this.fields = new Dictionary<CurrentPlayer, Field>();
-        this.freeCommandors1 = this.CreateFirstSetOfCommandors();
-        this.freeCommandors2 = this.CreateSecondSetOfCommandors();
+        this.freeCommandors2 = this.CreateFirstSetOfCommandors();
+        this.freeCommandors1 = this.CreateSecondSetOfCommandors();
         Skills skills;
         List<Tuple<Skills.SkillCallback, int>> activeSkills;
         List<Tuple<Skills.SkillCallback, int>> instantSkills;
@@ -371,8 +390,8 @@ public class Game
             attacks[player] = new Attack();
             fields[player] = new Field();
         }
-        cards[CurrentPlayer.FIRST] = this.CreateFirstSetOfCards();
-        cards[CurrentPlayer.SECOND] = this.CreateSecondSetOfCards();
+        cards[CurrentPlayer.SECOND] = this.CreateFirstSetOfCards();
+        cards[CurrentPlayer.FIRST] = this.CreateSecondSetOfCards();
         currentStep = UnityEngine.Random.value > 0.5f ? CurrentPlayer.FIRST : CurrentPlayer.SECOND;
     }
 
@@ -411,6 +430,11 @@ public class Game
     public void AddCardsToHand(CurrentPlayer player, List<AbstractCard> cards)
     {
         fields[player].AddToHand(cards);
+    }
+
+    public FortificationCard GetFortificationCard(CurrentPlayer player, Flank flank)
+    {
+        return attacks[player].GetAttackerFortificationCard(flank);
     }
 
     public void ApplyAttackerFortificationCard(CurrentPlayer player, FortificationCard card, Flank flank)

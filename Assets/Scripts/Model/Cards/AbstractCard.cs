@@ -4,11 +4,13 @@
     public string name { get; set; }
     public string tag { get; set; }
     public bool active { get; set; }
+    public int priority { get; set; }
     public AbstractCard(Rarity rarity, string name, string tag)
     {
         this.rarity = rarity;
         this.name = name;
         this.tag = tag;
         this.active = false;
+        this.priority = 0;
     }
 }

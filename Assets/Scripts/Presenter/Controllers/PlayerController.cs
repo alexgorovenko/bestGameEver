@@ -84,6 +84,9 @@ public class PlayerController : AbstractController
     private List<Tuple<Tuple<Skills.SkillCallback, int>, int>> defenceInstants = new List<Tuple<Tuple<Skills.SkillCallback, int>, int>>();
     private int medicineCount;
     public int points = 0;
+    private List<CardCommandorView> commandorsAI = new List<CardCommandorView>();
+    private int round = 0;
+    private bool isAIFirst = false;
 
     void UpdateSprite(string cardName, Card _card)
     {
@@ -262,6 +265,7 @@ public class PlayerController : AbstractController
 
     public void GameStart()
     {
+        round = 1;
         CurrentPlayer currentPlayer = game.GetCurrentStep();
         playedSquadCards = 0;
         playedSupportCards = 0;
@@ -270,24 +274,378 @@ public class PlayerController : AbstractController
         GetCardsFromDeckToHand(currentPlayer, 4);
         GetCardsFromDeckToHand(game.GetNextStep(), 5);
         hands[game.GetNextStep()].gameObject.SetActive(false);
+        hands[CurrentPlayer.SECOND].gameObject.SetActive(false);
         HQ1Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.FIRST)}";
         HQ2Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.SECOND)}";
-        // muligan?
-        // play cards
-        // select cards (TODO: drag n drop)
-        // place cards
-        // attack
-        // defend
-        // refresh
-        // next step
+        if (currentPlayer == CurrentPlayer.SECOND)
+        {
+            Next();
+        }
+    }
+    private Card ChooseCardForPlay()
+    {
+        List<Card> cards = this.hand2.GetCards();
+        List<int> priors = new List<int>();
+        for (int i = 0; i < cards.Count; i++)
+        {
+            priors.Add(cards[i].card.priority);
+        }
+        if (isAIFirst)
+        {
+            for (var i = 0; i < cards.Count; i++)
+            {
+                if (cards[i].card is SquadCard && ((SquadCard)cards[i].card).skills.agility)
+                {
+                    priors[i] *= 100;
+                }
+            }
+        }
+        bool hasBrotherhood = false;
+        foreach (var card in flankLeft2.GetCards())
+        {
+            if (card == null) continue;
+            if (((SquadCard)(card.card)).skills.brotherhood)
+            {
+                hasBrotherhood = true;
+                break;
+            }
+        }
+        if (!hasBrotherhood)
+        {
+            foreach (var card in flankRight2.GetCards())
+            {
+                if (card == null) continue;
+                if (((SquadCard)(card.card)).skills.brotherhood)
+                {
+                    hasBrotherhood = true;
+                    break;
+                }
+            }
+        }
+        if (hasBrotherhood)
+        {
+            for (var i = 0; i < cards.Count; i++)
+            {
+                if (cards[i].card is SquadCard && ((SquadCard)cards[i].card).skills.brotherhood)
+                {
+                    priors[i] *= 100;
+                }
+            }
+        }
+        if (flankLeft2.GetCardsCapacity() == 4 && flankRight2.GetCardsCapacity() == 4)
+        {
+            for (var i = 0; i < cards.Count; i++)
+            {
+                if (cards[i].card is SquadCard || cards[i].card is SupportCard)
+                {
+                    priors[i] = 0;
+                }
+            }
+        }
+        if (game.GetFortificationCard(CurrentPlayer.SECOND, Flank.Left) != null && game.GetFortificationCard(CurrentPlayer.SECOND, Flank.Right) != null)
+        {
+            for (var i = 0; i < cards.Count; i++)
+            {
+                if (cards[i].card is FortificationCard)
+                {
+                    priors[i] = 0;
+                }
+            }
+        }
+        if (game.GetFortificationCard(CurrentPlayer.FIRST, Flank.Left) != null || game.GetFortificationCard(CurrentPlayer.FIRST, Flank.Right) != null)
+        {
+            for (var i = 0; i < cards.Count; i++)
+            {
+                if (cards[i].card.name == "Инженеры-подрывники")
+                {
+                    priors[i] *= 100;
+                }
+            }
+        }
+        else
+        {
+            for (var i = 0; i < cards.Count; i++)
+            {
+                if (cards[i].card.name == "Инженеры-подрывники")
+                {
+                    priors[i] *= 0;
+                }
+            }
+        }
+        Card res = null;
+        int maxPr = 0;
+        for (var i = 0; i < cards.Count; i++)
+        {
+            if (priors[i] > maxPr)
+            {
+                maxPr = priors[i];
+                res = cards[i];
+            }
+        }
+        return res;
+    }
+    private void SelectDefenceAI()
+    {
+        for (var i = 0; i < 4; i++)
+        {
+            if (attackCards[i] == null) continue;
+            Card attackCard = attackCards[i];
+            Card defenceCard = null;
+            for (var j = 0; j < 4; j++)
+            {
+                if (flankLeft2.GetCardAt(j) == null || ((CardSquad)flankLeft2.GetCardAt(j)).attackCard != null) continue;
+                Card card = flankLeft2.GetCardAt(j);
+                if (defenceCard == null)
+                {
+                    defenceCard = card;
+                    continue;
+                }
+                SquadCard _attackCard = (SquadCard)attackCard.card;
+                SquadCard _defenceCard = (SquadCard)defenceCard.card;
+                SquadCard _card = (SquadCard)card.card;
+                if (_attackCard.stamina < _card.protection && _card.protection < _attackCard.attack)
+                {
+                    if (_attackCard.stamina < _defenceCard.protection && _defenceCard.protection < _attackCard.attack && _defenceCard.attack < _card.attack) continue;
+                    defenceCard = card;
+                }
+                if (_attackCard.stamina < _defenceCard.protection && _defenceCard.protection < _attackCard.attack) continue;
+                if (_attackCard.stamina < _card.protection && _card.protection == _attackCard.attack)
+                {
+                    if (_attackCard.stamina < _defenceCard.protection && _defenceCard.protection == _attackCard.attack && _defenceCard.attack < _card.attack) continue;
+                    defenceCard = card;
+                }
+                if (_attackCard.stamina < _defenceCard.protection && _defenceCard.protection == _attackCard.attack) continue;
+                if (_card.attack < _defenceCard.attack)
+                {
+                    defenceCard = card;
+                }
+            }
+            if (defenceCard != null)
+            {
+                ((CardSquad)defenceCard).attackCard = (CardSquad)attackCard;
+                ((CardSquad)attackCard).attackCard = (CardSquad)defenceCard;
+                defenceCards[i] = defenceCard;
+                defenceCard.Highlight(true);
+            }
+        }
+        for (var i = 4; i < 8; i++)
+        {
+            if (attackCards[i] == null) continue;
+            Card attackCard = attackCards[i];
+            Card defenceCard = null;
+            for (var j = 4; j < 8; j++)
+            {
+                if (flankRight2.GetCardAt(j) == null || ((CardSquad)flankRight2.GetCardAt(j)).attackCard != null) continue;
+                Card card = flankRight2.GetCardAt(j);
+                if (defenceCard == null)
+                {
+                    defenceCard = card;
+                    continue;
+                }
+                SquadCard _attackCard = (SquadCard)attackCard.card;
+                SquadCard _defenceCard = (SquadCard)defenceCard.card;
+                SquadCard _card = (SquadCard)card.card;
+                if (_attackCard.stamina < _card.protection && _card.protection < _attackCard.attack)
+                {
+                    if (_attackCard.stamina < _defenceCard.protection && _defenceCard.protection < _attackCard.attack && _defenceCard.attack < _card.attack) continue;
+                    defenceCard = card;
+                }
+                if (_attackCard.stamina < _defenceCard.protection && _defenceCard.protection < _attackCard.attack) continue;
+                if (_attackCard.stamina < _card.protection && _card.protection == _attackCard.attack)
+                {
+                    if (_attackCard.stamina < _defenceCard.protection && _defenceCard.protection == _attackCard.attack && _defenceCard.attack < _card.attack) continue;
+                    defenceCard = card;
+                }
+                if (_attackCard.stamina < _defenceCard.protection && _defenceCard.protection == _attackCard.attack) continue;
+                if (_card.attack < _defenceCard.attack)
+                {
+                    defenceCard = card;
+                }
+            }
+            if (defenceCard != null)
+            {
+                ((CardSquad)defenceCard).attackCard = (CardSquad)attackCard;
+                ((CardSquad)attackCard).attackCard = (CardSquad)defenceCard;
+                defenceCards[i] = defenceCard;
+                defenceCard.Highlight(true);
+            }
+        }
+    }
+    private void SelectAttackAI()
+    {
+        for (var i = 0; i < 4; i++)
+        {
+            Card card = flankLeft2.GetCardAt(i);
+            if (card == null || ((SquadCard)card.card).attack < 2) continue;
+            this.AttackCallback(card);
+        }
+        for(var i = 4; i < 8; i++)
+        {
+            Card card = flankRight2.GetCardAt(i);
+            if (card == null || ((SquadCard)card.card).attack < 2) continue;
+            this.AttackCallback(card);
+        }
+    }
+    private bool CheckSapper (SquadCard card)
+    {
+        if (card.skills.instantSkills == null) return false;
+        foreach (var skill in card.skills.instantSkills)
+        {
+            if (skill.Item1 == Skills.Sapper) return true;
+        }
+        return false;
+    }
+    private void ApplyShellingAI(Card card, Flank flank)
+    {
+        if (((SquadCard)(card.card)).skills.instantSkills == null ||
+                        ((SquadCard)(card.card)).skills.instantSkills[0].Item1 != Skills.Shelling) return;
+        Tuple<Skills.SkillCallback, int> skill = ((SquadCard)(card.card)).skills.instantSkills[0];
+        Card aim = null;
+        if (flank == Flank.Left)
+        {
+            for (var i = 0; i < 4; i++)
+            {
+                Card _card = flankLeft1.GetCardAt(i);
+                if (_card == null) continue;
+                if (((SquadCard)(_card.card)).stamina == skill.Item2)
+                {
+                    aim = _card;
+                    break;
+                }
+                if (aim == null)
+                {
+                    aim = _card;
+                    continue;
+                }
+                if (((SquadCard)(_card.card)).stamina < ((SquadCard)(aim.card)).stamina)
+                {
+                    aim = _card;
+                }
+            }
+        }
+        if (flank == Flank.Right)
+        {
+            for (var i = 4; i < 8; i++)
+            {
+                Card _card = flankRight1.GetCardAt(i);
+                if (_card == null) continue;
+                if (((SquadCard)(_card.card)).stamina == skill.Item2)
+                {
+                    aim = _card;
+                    break;
+                }
+                if (aim == null)
+                {
+                    aim = _card;
+                    continue;
+                }
+                if (((SquadCard)(_card.card)).stamina < ((SquadCard)(aim.card)).stamina)
+                {
+                    aim = _card;
+                }
+            }
+        }
+        if (aim != null) this.SupportShelling_End(aim);
+        ((SquadCard)(card.card)).skills.instantSkills = null;
+    }
+    private bool TryToPutCardAI(Card card, Flank flank)
+    {
+        if (flank == Flank.Left)
+        {
+            for (var i = 0; i < 4; i++)
+            {
+                if (flankLeft2.GetCardAt(i) == null)
+                {
+                    this.ApplyShellingAI(card, flank);           
+                    this.DropCardToFlank(card, i, flankLeft2);
+                    return true;
+                }
+            }
+        }
+        if (flank == Flank.Right)
+        {
+            for (var i = 4; i < 8; i++)
+            {
+                if (flankRight2.GetCardAt(i) == null)
+                {
+                    this.ApplyShellingAI(card, flank);
+                    this.DropCardToFlank(card, i, flankRight2);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    private void PlayCardAI()
+    {
+        Card card = this.ChooseCardForPlay();
+        if (card == null) return;
+        if (card.card is SquadCard)
+        {
+            SquadCard _card = (SquadCard)card.card;
+            if (_card.skills.agility)
+            {
+                if (flankLeft1.GetCardsCapacity() < flankRight1.GetCardsCapacity() && this.TryToPutCardAI(card, Flank.Left)) return;
+                if (flankRight1.GetCardsCapacity() < flankLeft1.GetCardsCapacity() && this.TryToPutCardAI(card, Flank.Right)) return;
+            }
+            if (_card.skills.brotherhood)
+            {
+                int brotherhoodLeft = 0;
+                int brotherhoodRight = 0;
+                for (int i = 0; i < 4; i++)
+                {
+                    if (flankLeft2.GetCardAt(i) != null && ((SquadCard)flankLeft2.GetCardAt(i).card).skills.brotherhood) brotherhoodLeft++;
+                }
+                for (int i = 4; i < 8; i++)
+                {
+                    if (flankRight2.GetCardAt(i) != null && ((SquadCard)flankRight2.GetCardAt(i).card).skills.brotherhood) brotherhoodRight++;
+                }
+                if (brotherhoodLeft > brotherhoodRight && this.TryToPutCardAI(card, Flank.Left)) return;
+                if (brotherhoodRight > brotherhoodLeft && this.TryToPutCardAI(card, Flank.Right)) return;
+            }
+            if (this.CheckSapper(_card))
+            {
+                bool hasLeftFort = game.GetFortificationCard(CurrentPlayer.FIRST, Flank.Left) != null;
+                bool hasRightFort = game.GetFortificationCard(CurrentPlayer.FIRST, Flank.Right) != null;
+                if (hasLeftFort && !hasRightFort && this.TryToPutCardAI(card, Flank.Left)) return;
+                if (!hasLeftFort && hasRightFort && this.TryToPutCardAI(card, Flank.Right)) return;
+            }
+            if (flankLeft2.GetCardsCapacity() < flankRight2.GetCardsCapacity() && this.TryToPutCardAI(card, Flank.Left)) return;
+            if (flankRight2.GetCardsCapacity() < flankLeft2.GetCardsCapacity() && this.TryToPutCardAI(card, Flank.Right)) return;
+            int r = (int)Math.Round(UnityEngine.Random.value);
+            if (r == 0 && this.TryToPutCardAI(card, Flank.Left)) return;
+            if (r == 1 && this.TryToPutCardAI(card, Flank.Right)) return;
+            if (this.TryToPutCardAI(card, Flank.Left)) return;
+            if (this.TryToPutCardAI(card, Flank.Right)) return;
+        }
+        if (card.card is FortificationCard)
+        {
+            if (game.GetFortificationCard(CurrentPlayer.SECOND, Flank.Left) == null) {
+                this.DropCardToFlank(card, -1, flankLeft2);
+            }
+            else
+            {
+                this.DropCardToFlank(card, -1, flankRight2);
+            }
+        }
+        if (card.card is SupportCard)
+        {
+            this.DropCardToDrop(card, false);
+            this.SupportInsurrection_Start();
+        }
+    }
+    private void PlayCardsAI(int quantity)
+    {
+        for (var i = 0; i < quantity; i++)
+        {
+            this.PlayCardAI();
+        }
     }
     public void Next()
     {
         playedSquadCards = 0;
         playedSupportCards = 0;
         playedFortificationCards = 0;
-
-        UpdateCommandors();
 
         int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 2 : 0;
 
@@ -298,6 +656,56 @@ public class PlayerController : AbstractController
         GetCardsFromDeckToHand(game.GetCurrentStep(), points);
         points = 4;
         game.NextStep();
+        if (game.GetCurrentStep() == CurrentPlayer.SECOND)
+        {
+            round++;
+            if (round == 1)
+            {
+                if (isAIFirst)
+                {
+                    this.PlayCardsAI(2);
+                }
+                else
+                {
+                    this.PlayCardsAI(3);
+                }
+            }
+            else
+            {
+                switch (round % 4)
+                {
+                    case 0:
+                        {
+                            this.PlayCardsAI(1);
+                            break;
+                        }
+                    case 1:
+                        {
+                            this.PlayCardsAI(2);
+                            break;
+                        }
+                    case 2:
+                        {
+                            this.PlayCardsAI(2);
+                            break;
+                        }
+                    case 3:
+                        {
+                            this.PlayCardsAI(3);
+                            break;
+                        }
+                    default:
+                        {
+                            this.PlayCardsAI(2);
+                            break;
+                        }
+                }
+            }
+            this.SelectAttackAI();
+            attackState = AttackState.ATTACK;
+            this.Attack();
+            return;
+        }
         hands[game.GetCurrentStep()].gameObject.SetActive(true);
 
         HQ1Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.FIRST)}";
@@ -349,54 +757,70 @@ public class PlayerController : AbstractController
             }
             _cardCommandor.transform.SetParent(chooseCommandors2.transform, false);
             _cardCommandor.GetComponent<CardCommandorView>().SetCard(commandor);
+            this.commandorsAI.Add(_cardCommandor);
         }
         chooseCommandors2.SetActive(false);
-
     }
     public void HideCommandorsChooseMenu()
     {
         Destroy(commandorsOV);
     }
+    private void SetCommandorAI (CardCommandorView card)
+    {
+        game.SetCommandor(CurrentPlayer.SECOND, (CommandorCard)card.card);
+        card.transform.SetParent(commandorFields[(int)commandorsChosen].transform, false);
+        commandorsChosen++;
+    }
     public void SetCommandor(Transform transform, CommandorCard commandor)
     {
-        game.SetCommandor(game.GetCurrentStep(), commandor);
+        CurrentPlayer currentPlayer = game.GetCurrentStep();
+        game.SetCommandor(CurrentPlayer.FIRST, commandor);
         transform.SetParent(commandorFields[(int)commandorsChosen].transform, false);
         commandorsChosen++;
         if (commandorsChosen == 1)
         {
+            if (currentPlayer == CurrentPlayer.SECOND)
+            {
+                this.SetCommandorAI(commandorsAI[3]);
+                flankLeft2.commandor = (CommandorCard)commandorsAI[3].card;
+                isAIFirst = true;
+            }
             flankLeft1.commandor = commandor;
-            chooseCommandors1.SetActive(false);
-            chooseCommandors2.SetActive(true);
+            if (currentPlayer == CurrentPlayer.FIRST)
+            {
+                if (commandor.rarity == Rarity.Rare)
+                {
+                    this.SetCommandorAI(commandorsAI[1]);
+                    flankLeft2.commandor = (CommandorCard)commandorsAI[1].card;
+                }
+                else
+                {
+                    this.SetCommandorAI(commandorsAI[0]);
+                    flankLeft2.commandor = (CommandorCard)commandorsAI[0].card;
+                }
+                this.SetCommandorAI(commandorsAI[3]);
+                flankRight2.commandor = (CommandorCard)commandorsAI[3].card;
+            }
         }
-        if (commandorsChosen == 2)
-        {
-            flankLeft2.commandor = commandor;
-        }
-        if (commandorsChosen == 3)
-        {
-            flankRight2.commandor = commandor;
-            chooseCommandors1.SetActive(true);
-            chooseCommandors2.SetActive(false);
-        }
-        if (commandorsChosen != 2)
-        {
-            game.NextStep();
-        }
-        if (commandorsChosen == 4)
+        else
         {
             flankRight1.commandor = commandor;
+            if (currentPlayer == CurrentPlayer.SECOND)
+            {
+                if (commandor.rarity == Rarity.Rare)
+                {
+                    this.SetCommandorAI(commandorsAI[1]);
+                    flankRight2.commandor = (CommandorCard)commandorsAI[1].card;
+                }
+                else
+                {
+                    this.SetCommandorAI(commandorsAI[0]);
+                    flankRight2.commandor = (CommandorCard)commandorsAI[0].card;
+                }
+            }
             GameStart();
             HideCommandorsChooseMenu();
         }
-    }
-    public void ActivateCommandor(CardCommandorView cardCommandorView)
-    {
-
-    }
-
-    public void UpdateCommandors()
-    {
-
     }
     private Card GetCardFromDeck(CurrentPlayer currentPlayer)
     {
@@ -410,6 +834,7 @@ public class PlayerController : AbstractController
         List<AbstractCard> _cards = new List<AbstractCard>();
         _cards.Add(card.card);
         card.transform.SetParent(hands[currentPlayer].transform, false);
+        hands[currentPlayer].AddCard(card);
         game.AddCardsToHand(currentPlayer, _cards);
     }
     public void GetCardsFromDeckToHand(CurrentPlayer currentPlayer, int amount)
@@ -427,6 +852,7 @@ public class PlayerController : AbstractController
         addedCards.Add(cardModel);
         game.AddCardsToHand(currentPlayer, addedCards);
         card.transform.SetParent(hands[currentPlayer].transform, false);
+        hands[currentPlayer].AddCard(card);
     }
     public CardSquad GetOppositeCard(Card card, int position)
     {
@@ -488,6 +914,7 @@ public class PlayerController : AbstractController
                 }
                 break;
         }
+        hands[game.GetCurrentStep()].RemoveCard(card);
     }
 
     public void DropCardToDrop(Card card, bool isEnemy)
@@ -504,6 +931,7 @@ public class PlayerController : AbstractController
         }
         game.DropCardFromHand(player, card.card);
         card.transform.SetParent(drops[player].transform, false);
+        hands[game.GetCurrentStep()].RemoveCard(card);
     }
 
     // Attack
@@ -513,6 +941,13 @@ public class PlayerController : AbstractController
         if (callback != AttackCallback) return;
         if (attackState == AttackState.ATTACK)
         {
+            if (game.GetCurrentStep() == CurrentPlayer.FIRST)
+            {
+                this.SelectDefenceAI();
+                attackState = AttackState.DEFENCE;
+                Attack();
+                return;
+            }
             AttackButton.GetComponentInChildren<Text>().text = "В бой!";
             AttackStart();
             attackState = AttackState.DEFENCE;
@@ -555,8 +990,8 @@ public class PlayerController : AbstractController
                     needActive = false;
                 }
             }
-            this.DefenceStart();
             attackState = AttackState.ATTACK;
+            this.DefenceStart();
         }
     }
 
