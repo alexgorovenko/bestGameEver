@@ -1538,6 +1538,7 @@ public class PlayerController : AbstractController
             CardSquad _card = Instantiate(cardSquad);
             _card.transform.SetParent(temporary.transform.Find("CardsContainer").transform, false);
             _card.SetCard(card.card);
+            _card.isSelectable = true;
         }
         callback = SupportHeroesOfLegends_End;
     }
