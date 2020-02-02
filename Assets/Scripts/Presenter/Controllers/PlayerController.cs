@@ -1136,7 +1136,13 @@ public class PlayerController : AbstractController
     private void SupportShelling_End(Card card)
     {
         game.HitSquad((SquadCard)card.card, this.tempDamage);
+        if (game.GetCurrentStep() == CurrentPlayer.FIRST)
+        {
+            flankLeft1.RefreshActive();
+            flankRight1.RefreshActive();
+        }
         this.GetOppositeFlank()._SetActive(false);
+        this.GetOppositeFlank().DestroyDead();
         AttackButton.GetComponentInChildren<Text>().text = "Атака!";
         callback = AttackCallback;
     }
@@ -1159,6 +1165,11 @@ public class PlayerController : AbstractController
 
     private void SupportStun_End(Card card)
     {
+        if (game.GetCurrentStep() == CurrentPlayer.FIRST)
+        {
+            flankLeft1.RefreshActive();
+            flankRight1.RefreshActive();
+        }
         SquadCard _card = (SquadCard)card.card;
         if (_card.rarity != Rarity.Epic)
         {
@@ -1301,6 +1312,8 @@ public class PlayerController : AbstractController
         game.HitSquad((SquadCard)card.card, 3);
         flanks[step]._SetActive(false);
         flanks[step + 1]._SetActive(false);
+        flanks[step].DestroyDead();
+        flanks[step + 1].DestroyDead();
         step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 0 : 2;
         flanks[step].RefreshActive();
         flanks[step + 1].RefreshActive();
@@ -1436,7 +1449,7 @@ public class PlayerController : AbstractController
         
         foreach (Card card in temporaryCards)
         {
-            Card _card = Instantiate(cardUniversal);
+            CardSquad _card = Instantiate(cardSquad);
             _card.transform.SetParent(temporary.transform.Find("CardsContainer").transform, false);
             _card.SetCard(card.card);
         }
@@ -1448,6 +1461,7 @@ public class PlayerController : AbstractController
     {
         medicineCount--;
         int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
+        drops[game.GetCurrentStep()].RemoveCard(card);
         AddCardToHand(card);
         if (medicineCount == 0)
         {
@@ -1511,7 +1525,7 @@ public class PlayerController : AbstractController
 
         foreach (Card card in temporaryCards)
         {
-            Card _card = Instantiate(cardUniversal);
+            CardSquad _card = Instantiate(cardSquad);
             _card.transform.SetParent(temporary.transform.Find("CardsContainer").transform, false);
             _card.SetCard(card.card);
         }
@@ -1523,6 +1537,7 @@ public class PlayerController : AbstractController
         int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
         temporary.gameObject.SetActive(false);
 
+        decks[game.GetCurrentStep()].RemoveCard(card);
         AddCardToHand(card);
 
         commandorsLayer.SetActive(true);
@@ -1628,6 +1643,13 @@ public class PlayerController : AbstractController
 
         foreach (Card card in temporaryCards)
         {
+            if (card is CardSquad)
+            {
+                CardSquad __card = Instantiate(cardSquad);
+                __card.transform.SetParent(temporary.transform.Find("CardsContainer").transform, false);
+                __card.SetCard(card.card);
+                continue;
+            }
             Card _card = Instantiate(cardUniversal);
             _card.transform.SetParent(temporary.transform.Find("CardsContainer").transform, false);
             _card.SetCard(card.card);
@@ -1640,6 +1662,7 @@ public class PlayerController : AbstractController
         int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
         temporary.gameObject.SetActive(false);
 
+        decks[game.GetCurrentStep()].RemoveCard(card);
         AddCardToHand(card);
         foreach (var _card in temporary.GetComponent<AbstractContainer>().GetCards())
         {
@@ -1703,6 +1726,7 @@ public class PlayerController : AbstractController
         }
         flanks[step]._SetActive(false);
         flanks[step + 1]._SetActive(false);
+        flank.DestroyDead();
         step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 0 : 2;
         flanks[step].RefreshActive();
         flanks[step + 1].RefreshActive();

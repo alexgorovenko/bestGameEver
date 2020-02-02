@@ -31,6 +31,7 @@ public class Card : MonoBehaviour, ICardContainerItem
     public int position = -1;
     public Card() : base()
     {
+        rarityColors[Rarity.Token] = new Color(1f, 1f, 1f);
         rarityColors[Rarity.General] = new Color(0.8f, 0.8f, 0.8f);
         rarityColors[Rarity.Rare] = new Color(24.0f / 255.0f, 97.0f / 255.0f, 242.0f / 255.0f);
         rarityColors[Rarity.Epic] = new Color(97.0f / 255.0f, 24.0f / 255.0f, 242.0f / 255.0f);
