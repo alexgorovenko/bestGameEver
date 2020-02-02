@@ -7714,6 +7714,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 370303715}
     m_Modifications:
+    - target: {fileID: 2491232180209198902, guid: c26f26a5ce3c02342a1719f041d02ee2,
+        type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 5302535af1044152a457ed104f1f4b91,
+        type: 2}
+    - target: {fileID: 2491232180209198902, guid: c26f26a5ce3c02342a1719f041d02ee2,
+        type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2164040, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
     - target: {fileID: 2491232181867106579, guid: c26f26a5ce3c02342a1719f041d02ee2,
         type: 3}
       propertyPath: m_Name
@@ -7978,6 +7989,17 @@ PrefabInstance:
       propertyPath: canvas
       value: 
       objectReference: {fileID: 1122482481}
+    - target: {fileID: 6485748281019071614, guid: a0c992f8cb0d7df45a809cf422ca5a2d,
+        type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 5302535af1044152a457ed104f1f4b91,
+        type: 2}
+    - target: {fileID: 6485748281019071614, guid: a0c992f8cb0d7df45a809cf422ca5a2d,
+        type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2164040, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
     - target: {fileID: 6485748281047036257, guid: a0c992f8cb0d7df45a809cf422ca5a2d,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -8007,6 +8029,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 370303715}
     m_Modifications:
+    - target: {fileID: 9133473279832482394, guid: e5fbbc4f7adb57f4db26b4652cb0eaa5,
+        type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 5302535af1044152a457ed104f1f4b91,
+        type: 2}
+    - target: {fileID: 9133473279832482394, guid: e5fbbc4f7adb57f4db26b4652cb0eaa5,
+        type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2164040, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
     - target: {fileID: 9133473280044087621, guid: e5fbbc4f7adb57f4db26b4652cb0eaa5,
         type: 3}
       propertyPath: m_SizeDelta.y
