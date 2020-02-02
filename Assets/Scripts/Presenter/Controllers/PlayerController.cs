@@ -887,6 +887,8 @@ public class PlayerController : AbstractController
                         if (flank.GetComponent<ContainerFlank>().commandor.skills.forceRevenge)
                         {
                             game.HitHeadsquater(game.GetNextStep(), 1);
+                            HQ1Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.FIRST)}";
+                            HQ2Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.SECOND)}";
                         }
                         // add card to model
                         HashSet<SquadCard> placedCards = new HashSet<SquadCard>();
@@ -1279,6 +1281,8 @@ public class PlayerController : AbstractController
         if (flank.GetComponent<ContainerFlank>().commandor.skills.supportRevenge)
         {
             game.HitHeadsquater(game.GetNextStep(), 2);
+            HQ1Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.FIRST)}";
+            HQ2Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.SECOND)}";
         }
         foreach (Card _card in flank.GetCards())
         {
@@ -1339,6 +1343,8 @@ public class PlayerController : AbstractController
         if (flank.GetComponent<ContainerFlank>().commandor.skills.supportRevenge)
         {
             game.HitHeadsquater(game.GetNextStep(), 2);
+            HQ1Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.FIRST)}";
+            HQ2Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.SECOND)}";
         }
         foreach (Card _card in flank.GetCards())
         {
@@ -1368,6 +1374,8 @@ public class PlayerController : AbstractController
             if (flank.GetComponent<ContainerFlank>().commandor.skills.supportRevenge)
             {
                 game.HitHeadsquater(game.GetNextStep(), 2);
+                HQ1Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.FIRST)}";
+                HQ2Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.SECOND)}";
             }
             for (int i = 0; i < 4; i++)
             {
@@ -1390,6 +1398,8 @@ public class PlayerController : AbstractController
             if (flank.GetComponent<ContainerFlank>().commandor.skills.supportRevenge)
             {
                 game.HitHeadsquater(game.GetNextStep(), 2);
+                HQ1Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.FIRST)}";
+                HQ2Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.SECOND)}";
             }
             for (int i = 4; i < 8; i++)
             {
@@ -1706,6 +1716,8 @@ public class PlayerController : AbstractController
         if (flank.GetComponent<ContainerFlank>().commandor.skills.supportRevenge)
         {
             game.HitHeadsquater(game.GetNextStep(), 2);
+            HQ1Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.FIRST)}";
+            HQ2Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.SECOND)}";
         }
         this.DropCardToDrop(flank.transform.Find("FortificationContainer").GetComponentInChildren<Card>(), !this.isAttackActiveSkills);
         List<Card> cards = flank.GetCards();
