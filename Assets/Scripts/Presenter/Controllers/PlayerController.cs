@@ -1360,7 +1360,7 @@ public class PlayerController : AbstractController
             {
                 if (flank.GetCardAt(i) == null) position = i;
             }
-            Card card = Instantiate(cardUniversal);
+            CardSquad card = Instantiate(cardSquad);
             card.SetCard(noobLeft);
             game.AddCardsToFlank(game.GetCurrentStep(), noobsLeft, Flank.Left);
             flank.PlaceCard(card, position);
@@ -1382,7 +1382,7 @@ public class PlayerController : AbstractController
             {
                 if (flank.GetCardAt(i) == null) position = i;
             }
-            Card card = Instantiate(cardUniversal);
+            CardSquad card = Instantiate(cardSquad);
             card.SetCard(noobRight);
             game.AddCardsToFlank(game.GetCurrentStep(), noobsRight, Flank.Right);
             flank.PlaceCard(card, position);
@@ -1559,7 +1559,7 @@ public class PlayerController : AbstractController
             {
                 if (flank.GetCardAt(i) == null) position = i;
             }
-            Card card = Instantiate(cardUniversal);
+            CardSquad card = Instantiate(cardSquad);
             card.SetCard(noobLeft);
             game.AddCardsToFlank(game.GetCurrentStep(), noobsLeft, Flank.Left);
             flank.PlaceCard(card, position);
@@ -1577,7 +1577,7 @@ public class PlayerController : AbstractController
             {
                 if (flank.GetCardAt(i) == null) position = i;
             }
-            Card card = Instantiate(cardUniversal);
+            CardSquad card = Instantiate(cardSquad);
             card.SetCard(noobRight);
             game.AddCardsToFlank(game.GetCurrentStep(), noobsRight, Flank.Right);
             flank.PlaceCard(card, position);
