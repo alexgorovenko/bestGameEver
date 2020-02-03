@@ -1450,25 +1450,12 @@ public class PlayerController : AbstractController
         }
 
         if (temporaryCards.Count == 0) return;
-
-        commandorsLayer.SetActive(false);
-        flanksLayer.SetActive(false);
-        HQ1Layer.SetActive(false);
-        HQ2Layer.SetActive(false);
-        if (step == 1)
-        {
-            hand1Layer.SetActive(false);
-        }
-        else
-        {
-            hand2Layer.SetActive(false);
-        }
         temporary.gameObject.SetActive(true);
         
         foreach (Card card in temporaryCards)
         {
             CardSquad _card = Instantiate(cardSquad);
-            _card.transform.SetParent(temporary.transform.Find("CardsContainer").transform, false);
+            _card.transform.SetParent(temporary.transform.Find("Temporary").Find("CardsContainer").transform, false);
             _card.SetCard(card.card);
         }
         medicineCount = 2;
@@ -1484,19 +1471,6 @@ public class PlayerController : AbstractController
         if (medicineCount == 0)
         {
             temporary.gameObject.SetActive(false);
-            commandorsLayer.SetActive(true);
-            flanksLayer.SetActive(true);
-            HQ1Layer.SetActive(true);
-            HQ2Layer.SetActive(true);
-            if (step == 1)
-            {
-                hand1Layer.SetActive(true);
-            }
-            else
-            {
-                hand2Layer.SetActive(true);
-            }
-
             ResetSelectionCards();
             callback = AttackCallback;
         }
@@ -1526,25 +1500,12 @@ public class PlayerController : AbstractController
         }
 
         if (temporaryCards.Count == 0) return;
-
-        commandorsLayer.SetActive(false);
-        flanksLayer.SetActive(false);
-        HQ1Layer.SetActive(false);
-        HQ2Layer.SetActive(false);
-        if (step == 1)
-        {
-            hand1Layer.SetActive(false);
-        }
-        else
-        {
-            hand2Layer.SetActive(false);
-        }
         temporary.gameObject.SetActive(true);
 
         foreach (Card card in temporaryCards)
         {
             CardSquad _card = Instantiate(cardSquad);
-            _card.transform.SetParent(temporary.transform.Find("CardsContainer").transform, false);
+            _card.transform.SetParent(temporary.transform.Find("Temporary").Find("CardsContainer").transform, false);
             _card.SetCard(card.card);
             _card.isSelectable = true;
         }
@@ -1553,25 +1514,9 @@ public class PlayerController : AbstractController
 
     private void SupportHeroesOfLegends_End(Card card)
     {
-        int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
         temporary.gameObject.SetActive(false);
-
         decks[game.GetCurrentStep()].RemoveCard(card);
         AddCardToHand(card);
-
-        commandorsLayer.SetActive(true);
-        flanksLayer.SetActive(true);
-        HQ1Layer.SetActive(true);
-        HQ2Layer.SetActive(true);
-        if (step == 1)
-        {
-            hand1Layer.SetActive(true);
-        }
-        else
-        {
-            hand2Layer.SetActive(true);
-        }
-
         ResetSelectionCards();
         callback = AttackCallback;
     }
@@ -1644,20 +1589,6 @@ public class PlayerController : AbstractController
         temporaryCards.Add(GetCardFromDeck(game.GetCurrentStep()));
         temporaryCards.Add(GetCardFromDeck(game.GetCurrentStep()));
         if (temporaryCards.Count == 0) return;
-
-        int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
-        commandorsLayer.SetActive(false);
-        flanksLayer.SetActive(false);
-        HQ1Layer.SetActive(false);
-        HQ2Layer.SetActive(false);
-        if (step == 1)
-        {
-            hand1Layer.SetActive(false);
-        }
-        else
-        {
-            hand2Layer.SetActive(false);
-        }
         temporary.gameObject.SetActive(true);
 
         foreach (Card card in temporaryCards)
@@ -1665,12 +1596,12 @@ public class PlayerController : AbstractController
             if (card is CardSquad)
             {
                 CardSquad __card = Instantiate(cardSquad);
-                __card.transform.SetParent(temporary.transform.Find("CardsContainer").transform, false);
+                __card.transform.SetParent(temporary.transform.Find("Temporary").Find("CardsContainer").transform, false);
                 __card.SetCard(card.card);
                 continue;
             }
             Card _card = Instantiate(cardUniversal);
-            _card.transform.SetParent(temporary.transform.Find("CardsContainer").transform, false);
+            _card.transform.SetParent(temporary.transform.Find("Temporary").Find("CardsContainer").transform, false);
             _card.SetCard(card.card);
         }
         callback = SupportSmuggling_End;
@@ -1687,20 +1618,6 @@ public class PlayerController : AbstractController
         {
             DropCardToDrop(_card, false);
         }
-
-        commandorsLayer.SetActive(true);
-        flanksLayer.SetActive(true);
-        HQ1Layer.SetActive(true);
-        HQ2Layer.SetActive(true);
-        if (step == 1)
-        {
-            hand1Layer.SetActive(true);
-        }
-        else
-        {
-            hand2Layer.SetActive(true);
-        }
-
         ResetSelectionCards();
         callback = AttackCallback;
     }
@@ -1758,19 +1675,6 @@ public class PlayerController : AbstractController
 
     public void ShowDrop(ContainerDrop drop)
     {
-        int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
-        commandorsLayer.SetActive(false);
-        flanksLayer.SetActive(false);
-        HQ1Layer.SetActive(false);
-        HQ2Layer.SetActive(false);
-        if (step == 1)
-        {
-            hand1Layer.SetActive(false);
-        }
-        else
-        {
-            hand2Layer.SetActive(false);
-        }
         temporary.gameObject.SetActive(true);
         buttonCloseTemp.gameObject.SetActive(true);
         List<Card> temporaryCards = new List<Card>();
@@ -1794,19 +1698,6 @@ public class PlayerController : AbstractController
 
     private void HideDrop()
     {
-        int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
-        commandorsLayer.SetActive(true);
-        flanksLayer.SetActive(true);
-        HQ1Layer.SetActive(true);
-        HQ2Layer.SetActive(true);
-        if (step == 1)
-        {
-            hand1Layer.SetActive(true);
-        }
-        else
-        {
-            hand2Layer.SetActive(true);
-        }
         temporary.gameObject.SetActive(false);
         buttonCloseTemp.gameObject.SetActive(false);
     }
