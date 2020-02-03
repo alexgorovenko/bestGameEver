@@ -282,6 +282,8 @@ public class PlayerController : AbstractController
         HQ2Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.SECOND)}";
         if (currentPlayer == CurrentPlayer.SECOND)
         {
+            points = 0; //HACK!!!
+            game.NextStep(); //HACK!!!
             Next();
         }
     }
