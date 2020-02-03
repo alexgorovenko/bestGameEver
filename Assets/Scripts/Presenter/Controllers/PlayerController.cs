@@ -768,56 +768,57 @@ public class PlayerController : AbstractController
     {
         Destroy(commandorsOV);
     }
-    private void SetCommandorAI (CardCommandorView card)
+    private void SetCommandorAI (CardCommandorView card, int number)
     {
         game.SetCommandor(CurrentPlayer.SECOND, (CommandorCard)card.card);
-        card.transform.SetParent(commandorFields[(int)commandorsChosen].transform, false);
+        card.transform.SetParent(commandorFields[number].transform, false);
         commandorsChosen++;
     }
     public void SetCommandor(Transform transform, CommandorCard commandor)
     {
         CurrentPlayer currentPlayer = game.GetCurrentStep();
         game.SetCommandor(CurrentPlayer.FIRST, commandor);
-        transform.SetParent(commandorFields[(int)commandorsChosen].transform, false);
         commandorsChosen++;
         if (commandorsChosen == 1)
         {
             if (currentPlayer == CurrentPlayer.SECOND)
             {
-                this.SetCommandorAI(commandorsAI[3]);
+                this.SetCommandorAI(commandorsAI[3], 1);
                 flankLeft2.commandor = (CommandorCard)commandorsAI[3].card;
                 isAIFirst = true;
             }
+            transform.SetParent(commandorFields[0].transform, false);
             flankLeft1.commandor = commandor;
             if (currentPlayer == CurrentPlayer.FIRST)
             {
                 if (commandor.rarity == Rarity.Rare)
                 {
-                    this.SetCommandorAI(commandorsAI[1]);
+                    this.SetCommandorAI(commandorsAI[1], 1);
                     flankLeft2.commandor = (CommandorCard)commandorsAI[1].card;
                 }
                 else
                 {
-                    this.SetCommandorAI(commandorsAI[0]);
+                    this.SetCommandorAI(commandorsAI[0], 1);
                     flankLeft2.commandor = (CommandorCard)commandorsAI[0].card;
                 }
-                this.SetCommandorAI(commandorsAI[3]);
+                this.SetCommandorAI(commandorsAI[3], 2);
                 flankRight2.commandor = (CommandorCard)commandorsAI[3].card;
             }
         }
         else
         {
+            transform.SetParent(commandorFields[3].transform, false);
             flankRight1.commandor = commandor;
             if (currentPlayer == CurrentPlayer.SECOND)
             {
                 if (commandor.rarity == Rarity.Rare)
                 {
-                    this.SetCommandorAI(commandorsAI[1]);
+                    this.SetCommandorAI(commandorsAI[1], 2);
                     flankRight2.commandor = (CommandorCard)commandorsAI[1].card;
                 }
                 else
                 {
-                    this.SetCommandorAI(commandorsAI[0]);
+                    this.SetCommandorAI(commandorsAI[0], 2);
                     flankRight2.commandor = (CommandorCard)commandorsAI[0].card;
                 }
             }
