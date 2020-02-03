@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class CardDragHandler : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
@@ -14,6 +15,11 @@ public class CardDragHandler : MonoBehaviour, IDragHandler, IBeginDragHandler, I
     public void OnBeginDrag(PointerEventData eventData)
     {
         initialPosition = transform.position;
+        Image[] images = GetComponentsInChildren<Image>();
+        foreach (var image in images)
+        {
+            image.raycastTarget = false;
+        }
     }
     public void OnDrag(PointerEventData eventData)
     {
@@ -32,5 +38,10 @@ public class CardDragHandler : MonoBehaviour, IDragHandler, IBeginDragHandler, I
     public void OnEndDrag(PointerEventData eventData)
     {
         transform.position = initialPosition;
+        Image[] images = GetComponentsInChildren<Image>();
+        foreach (var image in images)
+        {
+            image.raycastTarget = true;
+        }
     }
 }
