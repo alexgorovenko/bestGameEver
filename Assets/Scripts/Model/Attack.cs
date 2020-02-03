@@ -103,9 +103,12 @@ public class Attack
                 {
                     card.addAttack += card.skills.inspiration;
                     card.addProtection += card.skills.inspiration;
-                    card.addAttack += card.skills.brotherhood ? 1 : 0;
-                    card.addProtection += card.skills.brotherhood ? 1 : 0;
-                    card.addStamina += card.skills.brotherhood ? 1 : 0;
+                    if (skills.brotherhood)
+                    {
+                        card.addAttack += card.skills.brotherhood ? 1 : 0;
+                        card.addProtection += card.skills.brotherhood ? 1 : 0;
+                        card.addStamina += card.skills.brotherhood ? 1 : 0;
+                    }
                 }
             }
         }
@@ -118,9 +121,12 @@ public class Attack
                 {
                     card.addAttack += card.skills.inspiration;
                     card.addProtection += card.skills.inspiration;
-                    card.addAttack += card.skills.brotherhood ? 1 : 0;
-                    card.addProtection += card.skills.brotherhood ? 1 : 0;
-                    card.addStamina += card.skills.brotherhood ? 1 : 0;
+                    if (skills.brotherhood)
+                    {
+                        card.addAttack += card.skills.brotherhood ? 1 : 0;
+                        card.addProtection += card.skills.brotherhood ? 1 : 0;
+                        card.addStamina += card.skills.brotherhood ? 1 : 0;
+                    }
                 }
             }
         }
