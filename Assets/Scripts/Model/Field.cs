@@ -51,6 +51,11 @@ public class Field
         drop.Add(card);
     }
 
+    public void DropCardHard(AbstractCard card)
+    {
+        onHand.Remove(card);
+    }
+
     public void AddCommandor(CommandorCard commandor)
     {
         if (commandorLeft == null)

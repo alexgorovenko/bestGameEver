@@ -68,7 +68,7 @@ public class Card : MonoBehaviour, ICardContainerItem
     public void OnPointerClick()
     {
         PlayerController script = player.GetComponent<PlayerController>();
-        if (isSelectable && !(card is SupportCard)) script.SelectCard(gameObject, position);
+        if (isSelectable) script.SelectCard(gameObject, position);
         Skills skills;
         switch (card)
         {
@@ -77,7 +77,7 @@ public class Card : MonoBehaviour, ICardContainerItem
             case FortificationCard f:
                 break;
             case SupportCard s:
-                if (script.points == 0 || !isSelectable) return;
+                if (script.points == 0 || isSelectable) return;
                 script.points--;
                 script.DropCardToDrop(this, false);
                 switch (s.action)

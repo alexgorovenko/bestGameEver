@@ -473,6 +473,11 @@ public class Game
     {
         fields[player].DropCard(card);
     }
+    
+    public void DropCard(CurrentPlayer player, AbstractCard card)
+    {
+        fields[player].DropCardHard(card);
+    }
 
     public void AddCardsToFlank(CurrentPlayer player, HashSet<SquadCard> cards, Flank flank)
     {

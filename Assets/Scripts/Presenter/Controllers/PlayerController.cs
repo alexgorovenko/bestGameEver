@@ -91,6 +91,7 @@ public class PlayerController : AbstractController
     private List<CardCommandorView> commandorsAI = new List<CardCommandorView>();
     private int round = 0;
     private bool isAIFirst = false;
+    private bool isMuligan = true;
 
     void UpdateSprite(string cardName, Card _card)
     {
@@ -278,17 +279,46 @@ public class PlayerController : AbstractController
         points = 4;
         GetCardsFromDeckToHand(currentPlayer, 4);
         GetCardsFromDeckToHand(game.GetNextStep(), 5);
-        hands[game.GetNextStep()].gameObject.SetActive(false);
         hands[CurrentPlayer.SECOND].gameObject.SetActive(false);
         HQ1Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.FIRST)}";
         HQ2Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.SECOND)}";
-        if (currentPlayer == CurrentPlayer.SECOND)
+        AttackButton.GetComponentInChildren<Text>().text = "Закончить мулиган!";
+        if (isAIFirst)
+        {
+            game.NextStep(); //HACK!!!
+        }
+        this.Muligan_Start();
+    }
+
+    private void Muligan_Start ()
+    {
+        this.callback = Muligan_Callback;
+        this.hand1._SetActive(true);
+    }
+
+    private void Muligan_Callback (Card card)
+    {
+        Debug.Log(card.card.name);
+        this.DropCardToDeck(card);
+        Card newCard = this.deck1.GetCard();
+        newCard.isSelectable = true;
+        this.AddCardToHand(newCard);
+    }
+
+    private void Muligan_End ()
+    {
+        this.callback = AttackCallback;
+        this.hand1._SetActive(false);
+        AttackButton.GetComponentInChildren<Text>().text = "Атака!";
+        isMuligan = false;
+        hands[game.GetNextStep()].gameObject.SetActive(false);
+        if (isAIFirst)
         {
             points = 0; //HACK!!!
-            game.NextStep(); //HACK!!!
             Next();
         }
     }
+
     private Card ChooseCardForPlay()
     {
         List<Card> cards = this.hand2.GetCards();
@@ -864,6 +894,13 @@ public class PlayerController : AbstractController
         card.transform.SetParent(hands[currentPlayer].transform, false);
         hands[currentPlayer].AddCard(card);
     }
+    private void DropCardToDeck(Card card)
+    {
+        hand1.RemoveCard(card);
+        deck1.AddCard(card);
+        game.DropCard(CurrentPlayer.FIRST, card.card);
+        card.transform.SetParent(deck1.transform, false);
+    }
     public CardSquad GetOppositeCard(Card card, int position)
     {
         if (position != -1 && this.attackCards[position] != null && this.attackCards[position] != card)
@@ -955,6 +992,11 @@ public class PlayerController : AbstractController
 
     public void Attack()
     {
+        if (isMuligan)
+        {
+            this.Muligan_End();
+            return;
+        }
         if (callback != AttackCallback) return;
         if (attackState == AttackState.ATTACK)
         {
@@ -1209,18 +1251,26 @@ public class PlayerController : AbstractController
         if (position == -1) return;
         if (attackState == AttackState.ATTACK)
         {
-            attackCards[position] = card;
+            if (attackCards[position] == card)
+            {
+                attackCards[position] = null;
+                card.Highlight(false);
+            }
+            else
+            {
+                attackCards[position] = card;
+                card.Highlight(true);
+            }
         }
         else
         {
             defenceCards[position] = card;
+            card.Highlight(true);
         }
-        card.Highlight(true);
     }
     public void SelectCard(GameObject card, int position)
     {
         if (card.GetComponent<Card>().isSelectable == false) return;
-        card.GetComponent<Card>().isSelectable = false;
         this.position = position;
         this.callback(card.GetComponent<Card>());
     }
@@ -1465,6 +1515,7 @@ public class PlayerController : AbstractController
             _card.transform.SetParent(temporary.transform, false);
             _card.SetCard(card.card);
         }
+        temporary.GetComponentInParent<AbstractContainer>()._SetActive(true);
         medicineCount = 2;
         callback = SupportFieldMedicine_End;
     }
@@ -1475,6 +1526,7 @@ public class PlayerController : AbstractController
         int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
         drops[game.GetCurrentStep()].RemoveCard(card);
         AddCardToHand(card);
+        card.isSelectable = false;
         if (medicineCount == 0)
         {
             temporaryPanel.gameObject.SetActive(false);
@@ -1516,6 +1568,7 @@ public class PlayerController : AbstractController
             _card.SetCard(card.card);
             _card.isSelectable = true;
         }
+        temporary.GetComponentInParent<AbstractContainer>()._SetActive(true);
         callback = SupportHeroesOfLegends_End;
     }
 
@@ -1524,6 +1577,7 @@ public class PlayerController : AbstractController
         temporaryPanel.gameObject.SetActive(false);
         decks[game.GetCurrentStep()].RemoveCard(card);
         AddCardToHand(card);
+        card.isSelectable = false;
         ResetSelectionCards();
         callback = AttackCallback;
     }
@@ -1611,6 +1665,7 @@ public class PlayerController : AbstractController
             _card.transform.SetParent(temporary.transform, false);
             _card.SetCard(card.card);
         }
+        temporary.GetComponentInParent<AbstractContainer>()._SetActive(true);
         callback = SupportSmuggling_End;
     }
 
@@ -1621,6 +1676,7 @@ public class PlayerController : AbstractController
 
         decks[game.GetCurrentStep()].RemoveCard(card);
         AddCardToHand(card);
+        card.isSelectable = false;
         foreach (var _card in temporary.GetComponent<AbstractContainer>().GetCards())
         {
             DropCardToDrop(_card, false);
@@ -1701,6 +1757,7 @@ public class PlayerController : AbstractController
             _card.SetCard(card.card);
             _card.isSelectable = false;
         }
+        temporary.GetComponentInParent<AbstractContainer>()._SetActive(false);
     }
 
     private void HideDrop()

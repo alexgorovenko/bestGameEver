@@ -33,16 +33,6 @@ public class ContainerFlank : AbstractContainer
         }
         RefreshActive();
     }
-    public void _SetActive(bool isActive)
-    {
-        foreach (var card in this.mCards)
-        {
-            if (card != null)
-            {
-                card.isSelectable = isActive;
-            }
-        }
-    }
     public void RefreshActive()
     {
         foreach (var card in this.mCards)
