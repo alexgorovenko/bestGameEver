@@ -919,7 +919,7 @@ public class PlayerController : AbstractController
                     {
                         this.DropCardToDrop(flank.transform.Find("FortificationContainer").GetComponentInChildren<Card>(), false);
                     }
-                    game.ApplyAttackerFortificationCard(game.GetCurrentStep(), f, flankModel);
+                    game.ApplyFortificationCard(game.GetCurrentStep(), f, flankModel);
                     card.transform.SetParent(flank.transform.Find("FortificationContainer").transform);
                     playedFortificationCards++;
                     points--;

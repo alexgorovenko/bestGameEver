@@ -437,13 +437,9 @@ public class Game
         return attacks[player].GetAttackerFortificationCard(flank);
     }
 
-    public void ApplyAttackerFortificationCard(CurrentPlayer player, FortificationCard card, Flank flank)
+    public void ApplyFortificationCard(CurrentPlayer player, FortificationCard card, Flank flank)
     {
         attacks[player].SetAttackerFortificationCard(card, flank);
-    }
-
-    public void ApplyDeffenderFortificationCard(CurrentPlayer player, FortificationCard card, Flank flank)
-    {
         attacks[player == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST].SetDeffenderFortificationCard(card, flank);
     }
 
