@@ -10,6 +10,7 @@ public class ContainerDeck : AbstractContainer
     {
         if (this.mCards.Count == 0) return null;
         Card card = this.mCards[0];
+        card.isSelectable = false;
         this.mCards.RemoveAt(0);
         return card;
     }

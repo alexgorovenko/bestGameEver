@@ -298,7 +298,6 @@ public class PlayerController : AbstractController
 
     private void Muligan_Callback (Card card)
     {
-        Debug.Log(card.card.name);
         this.DropCardToDeck(card);
         Card newCard = this.deck1.GetCard();
         newCard.isSelectable = true;
