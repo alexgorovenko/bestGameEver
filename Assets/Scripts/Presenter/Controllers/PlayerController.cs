@@ -1228,7 +1228,7 @@ public class PlayerController : AbstractController
     }
     public void SupportSapper_Start(int power)
     {
-        this.DropCardToDrop(this.GetCurrentFlank().transform.Find("FortificationContainer").GetComponentInChildren<Card>(), !this.isAttackActiveSkills);
+        this.DropCardToDrop(this.GetOppositeFlank().transform.Find("FortificationContainer").GetComponentInChildren<Card>(), !this.isAttackActiveSkills);
     }
     private ContainerFlank GetOppositeFlank()
     {
