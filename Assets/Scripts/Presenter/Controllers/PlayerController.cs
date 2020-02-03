@@ -484,12 +484,14 @@ public class PlayerController : AbstractController
         {
             Card card = flankLeft2.GetCardAt(i);
             if (card == null || ((SquadCard)card.card).attack < 2) continue;
+            position = i;
             this.AttackCallback(card);
         }
         for(var i = 4; i < 8; i++)
         {
             Card card = flankRight2.GetCardAt(i);
             if (card == null || ((SquadCard)card.card).attack < 2) continue;
+            position = i;
             this.AttackCallback(card);
         }
     }
