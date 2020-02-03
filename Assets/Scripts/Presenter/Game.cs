@@ -331,12 +331,12 @@ public class Game
 
         for (int i = 0; i < 2; i++)
         {
-            cards.Add(new FortificationCard(Rarity.General, "Живой терновник", "", this.CityRuinsCallback));
+            cards.Add(new FortificationCard(Rarity.General, "Живой терновник", "", this.LivingBlackThornCallback));
         }
 
         for (int i = 0; i < 2; i++)
         {
-            cards.Add(new FortificationCard(Rarity.Rare, "Знамя клана", "", this.BarricadeCallback));
+            cards.Add(new FortificationCard(Rarity.Rare, "Знамя клана", "", this.ClanBannerCallback));
         }
 
         for (int i = 0; i < 3; i++)
