@@ -51,6 +51,8 @@ public class PlayerController : AbstractController
     GameObject buttonExitYes;
     [SerializeField]
     GameObject buttonExitNo;
+    [SerializeField]
+    GameObject buttonCloseTemp;
     private uint commandorsChosen = 0;
     private int playedSquadCards = 0;
     private int playedSupportCards = 0;
@@ -239,6 +241,7 @@ public class PlayerController : AbstractController
         }
         this.buttonExitYes.GetComponent<Button>().onClick.AddListener(this.onExitYes);
         this.buttonExitNo.GetComponent<Button>().onClick.AddListener(this.onExitNo);
+        this.buttonCloseTemp.GetComponent<Button>().onClick.AddListener(this.HideDrop);
     }
 
     void onExitYes()
@@ -937,6 +940,7 @@ public class PlayerController : AbstractController
         }
         game.DropCardFromHand(player, card.card);
         card.transform.SetParent(drops[player].transform, false);
+        drops[player].AddCard(card);
         hands[game.GetCurrentStep()].RemoveCard(card);
     }
 
@@ -1754,7 +1758,6 @@ public class PlayerController : AbstractController
 
     public void ShowDrop(ContainerDrop drop)
     {
-        if (drop.GetCards().Count == 0) return;
         int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
         commandorsLayer.SetActive(false);
         flanksLayer.SetActive(false);
@@ -1769,18 +1772,27 @@ public class PlayerController : AbstractController
             hand2Layer.SetActive(false);
         }
         temporary.gameObject.SetActive(true);
+        buttonCloseTemp.gameObject.SetActive(true);
         List<Card> temporaryCards = new List<Card>();
         temporaryCards.AddRange(drop.GetCards());
         foreach (Card card in temporaryCards)
         {
+            if (card is CardSquad)
+            {
+                CardSquad __card = Instantiate(cardSquad);
+                __card.transform.SetParent(temporary.transform.Find("CardsContainer").transform, false);
+                __card.SetCard(card.card);
+                __card.isSelectable = false;
+                continue;
+            }
             Card _card = Instantiate(cardUniversal);
             _card.transform.SetParent(temporary.transform.Find("CardsContainer").transform, false);
             _card.SetCard(card.card);
+            _card.isSelectable = false;
         }
-        callback = HideDrop;
     }
 
-    private void HideDrop(Card card)
+    private void HideDrop()
     {
         int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
         commandorsLayer.SetActive(true);
@@ -1796,7 +1808,7 @@ public class PlayerController : AbstractController
             hand2Layer.SetActive(true);
         }
         temporary.gameObject.SetActive(false);
-        callback = AttackCallback;
+        buttonCloseTemp.gameObject.SetActive(false);
     }
 
 }
