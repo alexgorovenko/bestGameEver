@@ -909,6 +909,10 @@ public class PlayerController : AbstractController
             case FortificationCard f:
                 if (points > 0)
                 {
+                    if (game.GetFortificationCard(game.GetCurrentStep(), flankModel) != null)
+                    {
+                        this.DropCardToDrop(flank.transform.Find("FortificationContainer").GetComponentInChildren<Card>(), false);
+                    }
                     game.ApplyAttackerFortificationCard(game.GetCurrentStep(), f, flankModel);
                     card.transform.SetParent(flank.transform.Find("FortificationContainer").transform);
                     playedFortificationCards++;
