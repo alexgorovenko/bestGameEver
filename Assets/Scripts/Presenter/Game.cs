@@ -47,7 +47,7 @@ public class Game
             }
         }
         if (indexes.Count == 0) return;
-        enemySquads[indexes[(int)Math.Round(UnityEngine.Random.value * indexes.Count)]].addStamina--;
+        enemySquads[indexes[(int)Math.Round(UnityEngine.Random.value * (indexes.Count - 1))]].addStamina--;
     }
 
     private void ClanBannerCallback(List<SquadCard> enemySquads, List<SquadCard> mySquads, Skills enemySkills, Skills mySkills, bool isMyAttack)

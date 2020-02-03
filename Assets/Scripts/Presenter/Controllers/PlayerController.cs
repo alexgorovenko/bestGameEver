@@ -10,6 +10,8 @@ public class PlayerController : AbstractController
     [SerializeField]
     GameObject gameUI;
     [SerializeField]
+    GameObject temporaryPanel;
+    [SerializeField]
     GameObject temporary;
     [SerializeField]
     CardCommandorView cardCommandor;
@@ -1453,12 +1455,12 @@ public class PlayerController : AbstractController
         }
 
         if (temporaryCards.Count == 0) return;
-        temporary.gameObject.SetActive(true);
+        temporaryPanel.gameObject.SetActive(true);
         
         foreach (Card card in temporaryCards)
         {
             CardSquad _card = Instantiate(cardSquad);
-            _card.transform.SetParent(temporary.transform.Find("Temporary").Find("CardsContainer").transform, false);
+            _card.transform.SetParent(temporary.transform, false);
             _card.SetCard(card.card);
         }
         medicineCount = 2;
@@ -1473,7 +1475,7 @@ public class PlayerController : AbstractController
         AddCardToHand(card);
         if (medicineCount == 0)
         {
-            temporary.gameObject.SetActive(false);
+            temporaryPanel.gameObject.SetActive(false);
             ResetSelectionCards();
             callback = AttackCallback;
         }
@@ -1503,12 +1505,12 @@ public class PlayerController : AbstractController
         }
 
         if (temporaryCards.Count == 0) return;
-        temporary.gameObject.SetActive(true);
+        temporaryPanel.gameObject.SetActive(true);
 
         foreach (Card card in temporaryCards)
         {
             CardSquad _card = Instantiate(cardSquad);
-            _card.transform.SetParent(temporary.transform.Find("Temporary").Find("CardsContainer").transform, false);
+            _card.transform.SetParent(temporary.transform, false);
             _card.SetCard(card.card);
             _card.isSelectable = true;
         }
@@ -1517,7 +1519,7 @@ public class PlayerController : AbstractController
 
     private void SupportHeroesOfLegends_End(Card card)
     {
-        temporary.gameObject.SetActive(false);
+        temporaryPanel.gameObject.SetActive(false);
         decks[game.GetCurrentStep()].RemoveCard(card);
         AddCardToHand(card);
         ResetSelectionCards();
@@ -1592,19 +1594,19 @@ public class PlayerController : AbstractController
         temporaryCards.Add(GetCardFromDeck(game.GetCurrentStep()));
         temporaryCards.Add(GetCardFromDeck(game.GetCurrentStep()));
         if (temporaryCards.Count == 0) return;
-        temporary.gameObject.SetActive(true);
+        temporaryPanel.gameObject.SetActive(true);
 
         foreach (Card card in temporaryCards)
         {
             if (card is CardSquad)
             {
                 CardSquad __card = Instantiate(cardSquad);
-                __card.transform.SetParent(temporary.transform.Find("Temporary").Find("CardsContainer").transform, false);
+                __card.transform.SetParent(temporary.transform, false);
                 __card.SetCard(card.card);
                 continue;
             }
             Card _card = Instantiate(cardUniversal);
-            _card.transform.SetParent(temporary.transform.Find("Temporary").Find("CardsContainer").transform, false);
+            _card.transform.SetParent(temporary.transform, false);
             _card.SetCard(card.card);
         }
         callback = SupportSmuggling_End;
@@ -1613,7 +1615,7 @@ public class PlayerController : AbstractController
     private void SupportSmuggling_End(Card card)
     {
         int step = game.GetCurrentStep() == CurrentPlayer.FIRST ? 1 : 2;
-        temporary.gameObject.SetActive(false);
+        temporaryPanel.gameObject.SetActive(false);
 
         decks[game.GetCurrentStep()].RemoveCard(card);
         AddCardToHand(card);
@@ -1678,7 +1680,7 @@ public class PlayerController : AbstractController
 
     public void ShowDrop(ContainerDrop drop)
     {
-        temporary.gameObject.SetActive(true);
+        temporaryPanel.gameObject.SetActive(true);
         buttonCloseTemp.gameObject.SetActive(true);
         List<Card> temporaryCards = new List<Card>();
         temporaryCards.AddRange(drop.GetCards());
@@ -1687,13 +1689,13 @@ public class PlayerController : AbstractController
             if (card is CardSquad)
             {
                 CardSquad __card = Instantiate(cardSquad);
-                __card.transform.SetParent(temporary.transform.Find("CardsContainer").transform, false);
+                __card.transform.SetParent(temporary.transform, false);
                 __card.SetCard(card.card);
                 __card.isSelectable = false;
                 continue;
             }
             Card _card = Instantiate(cardUniversal);
-            _card.transform.SetParent(temporary.transform.Find("CardsContainer").transform, false);
+            _card.transform.SetParent(temporary.transform, false);
             _card.SetCard(card.card);
             _card.isSelectable = false;
         }
@@ -1701,7 +1703,7 @@ public class PlayerController : AbstractController
 
     private void HideDrop()
     {
-        temporary.gameObject.SetActive(false);
+        temporaryPanel.gameObject.SetActive(false);
         buttonCloseTemp.gameObject.SetActive(false);
     }
 
