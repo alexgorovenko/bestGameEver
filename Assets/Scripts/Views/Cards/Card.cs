@@ -51,6 +51,7 @@ public class Card : MonoBehaviour, ICardContainerItem
         else
         {
             colors.normalColor = rarityColors[card.rarity];
+            colors.selectedColor = new Color(1f, 1f, 1f);
         }
         border.GetComponent<Button>().colors = colors;
     }
