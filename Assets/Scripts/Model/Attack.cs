@@ -155,13 +155,6 @@ public class Attack
                 applyInspiration(card.skills, true, flank);
             }
 
-            int massDamageDefender = 0;
-            foreach (SquadCard card in deffender[flank])
-            {
-                if (card == null || card.isDeaf) continue;
-                massDamageDefender += card.skills.massDamage;
-            }
-
             foreach (SquadCard card in deffender[flank])
             {
                 if (card == null || card.isDeaf) continue;
@@ -174,7 +167,6 @@ public class Attack
                 if (deffender[flank][i] != null)
                 {
                     attacker[flank][i].addStamina -= (int)deffender[flank][i].protection + deffender[flank][i].addProtection;
-                    attacker[flank][i].addStamina -= (int)massDamageDefender;
                     if ((!deffender[flank][i].skills.pierce || deffender[flank][i].isDeaf) && !attacker[flank][i].isDeaf && !attacker[flank][i].isWeak)
                     {
                         attacker[flank][i].addStamina += (int)Math.Min(attacker[flank][i].skills.armor + attackerSkills[flank].armor, attacker[flank][i].addStamina - 1);
