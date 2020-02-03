@@ -65,7 +65,7 @@ public class ContainerFlank : AbstractContainer
                 player.DropCardToDrop(mCards[i], player.game.GetCurrentStep() == currentPlayer);
                 mCards[i] = null;
                 CardPlaceholder _card = Instantiate(player.cardPlaceholder);
-                _card.transform.SetParent(squads[i % 4].transform);
+                _card.transform.SetParent(squads[i % 4].transform, false);
             }
         }
         return count;
