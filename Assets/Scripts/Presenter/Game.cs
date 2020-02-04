@@ -498,15 +498,12 @@ public class Game
     }
 
     public void RefreshSquads()
-    {
-        foreach (CurrentPlayer player in Enum.GetValues(typeof(CurrentPlayer)))
+    {       
+        foreach (Flank flank in Enum.GetValues(typeof(Flank)))
         {
-            foreach (Flank flank in Enum.GetValues(typeof(Flank)))
+            foreach (AbstractCard card in fields[this.GetNextStep()].flanks[flank])
             {
-                foreach (AbstractCard card in fields[player].flanks[flank])
-                {
-                    card.active = true;
-                }
+                card.active = true;
             }
         }
     }
@@ -523,20 +520,19 @@ public class Game
 
     public void Attack(CurrentPlayer player)
     {
+        RefreshSquads();
         foreach (Flank flank in Enum.GetValues(typeof(Flank)))
         {
             attacks[player].ApplySkillsAttacker(flank, fields[player].GetCommandor(flank).skills);
             attacks[player].ApplySkillsDeffender(flank, fields[player == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST].GetCommandor(flank).skills);
         }
         fields[player == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST].Attack(attacks[player].getHeadquartesHurt());
-        RefreshSquads();
     }
 
     public void ApplyAttack(CurrentPlayer player)
     {
         attacks[player].ApplyAttack();
         fields[player == CurrentPlayer.FIRST ? CurrentPlayer.SECOND : CurrentPlayer.FIRST].ApplyAttack();
-        RefreshSquads();
     }
 
     public int GetCardsCount(CurrentPlayer player, Flank flank)

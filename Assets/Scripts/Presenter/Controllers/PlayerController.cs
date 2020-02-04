@@ -295,6 +295,10 @@ public class PlayerController : AbstractController
     {
         this.callback = Muligan_Callback;
         this.hand1._SetActive(true);
+        this.flankLeft1.SetEnabledDrag(false);
+        this.flankRight1.SetEnabledDrag(false);
+        this.flankLeft2.SetEnabledDrag(false);
+        this.flankRight2.SetEnabledDrag(false);
     }
 
     private void Muligan_Callback (Card card)
@@ -312,6 +316,10 @@ public class PlayerController : AbstractController
 
     private void Muligan_End ()
     {
+        this.flankLeft1.SetEnabledDrag(true);
+        this.flankRight1.SetEnabledDrag(true);
+        this.flankLeft2.SetEnabledDrag(true);
+        this.flankRight2.SetEnabledDrag(true);
         foreach (Card card in this.muliganCards)
         {
             card.Highlight(false);
@@ -446,6 +454,7 @@ public class PlayerController : AbstractController
             {
                 if (flankLeft2.GetCardAt(j) == null || ((CardSquad)flankLeft2.GetCardAt(j)).attackCard != null) continue;
                 Card card = flankLeft2.GetCardAt(j);
+                if (!((SquadCard)(card.card)).active) continue;
                 if (defenceCard == null)
                 {
                     defenceCard = card;
@@ -488,6 +497,7 @@ public class PlayerController : AbstractController
             {
                 if (flankRight2.GetCardAt(j) == null || ((CardSquad)flankRight2.GetCardAt(j)).attackCard != null) continue;
                 Card card = flankRight2.GetCardAt(j);
+                if (!((SquadCard)(card.card)).active) continue;
                 if (defenceCard == null)
                 {
                     defenceCard = card;
@@ -527,14 +537,14 @@ public class PlayerController : AbstractController
         for (var i = 0; i < 4; i++)
         {
             Card card = flankLeft2.GetCardAt(i);
-            if (card == null || ((SquadCard)card.card).attack < 2) continue;
+            if (card == null || ((SquadCard)card.card).attack < 2 || !((SquadCard)card.card).active) continue;
             position = i;
             this.AttackCallback(card);
         }
         for(var i = 4; i < 8; i++)
         {
             Card card = flankRight2.GetCardAt(i);
-            if (card == null || ((SquadCard)card.card).attack < 2) continue;
+            if (card == null || ((SquadCard)card.card).attack < 2 || !((SquadCard)card.card).active) continue;
             position = i;
             this.AttackCallback(card);
         }
@@ -961,7 +971,7 @@ public class PlayerController : AbstractController
                         GameObject.Destroy(container.Find("CardPlaceholder(Clone)").gameObject);
                         card.transform.SetParent(container.transform, false);
                         card.isDraggable = false;
-                        card.isSelectable = s.isActive;
+                        card.isSelectable = s.active;
                         playedSquadCards++;
                         points--;
                     }

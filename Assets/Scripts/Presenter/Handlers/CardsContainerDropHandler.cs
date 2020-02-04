@@ -46,6 +46,10 @@ public class CardsContainerDropHandler : MonoBehaviour, IDropHandler
                     card.attackCard = player.GetOppositeCard(card, _position);
                     if (card.attackCard)
                     {
+                        if (card.attackCard.attackCard != null)
+                        {
+                            card.attackCard.attackCard.Highlight(false);
+                        }
                         card.attackCard.attackCard = card;
                     }
                 }
@@ -55,6 +59,7 @@ public class CardsContainerDropHandler : MonoBehaviour, IDropHandler
                     {
                         card.attackCard.attackCard = null;
                     }
+                    card.Highlight(false);
                     card.attackCard = null;
                 }
                 card.Highlight(card.attackCard != null);

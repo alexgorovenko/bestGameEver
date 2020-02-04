@@ -5,7 +5,6 @@
     public int stamina { get; set; }
     public int protection { get; set; }
     public Skills skills { get; set; }
-    public bool isActive { get; set; }
     public bool isDeaf { get; set; }
     public bool isWeak { get; set; }
     public int addAttack { get; set; }
@@ -18,7 +17,7 @@
         this.stamina = stamina;
         this.protection = protection;
         this.skills = skills;
-        this.isActive = skills.agility;
+        this.active = skills.agility;
         this.isDeaf = false;
         this.isWeak = false;
     }
