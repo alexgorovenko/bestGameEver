@@ -92,6 +92,7 @@ public class PlayerController : AbstractController
     private int round = 0;
     private bool isAIFirst = false;
     private bool isMuligan = true;
+    private List<Card> muliganCards = new List<Card>();
 
     void UpdateSprite(string cardName, Card _card)
     {
@@ -282,7 +283,7 @@ public class PlayerController : AbstractController
         hands[CurrentPlayer.SECOND].gameObject.SetActive(false);
         HQ1Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.FIRST)}";
         HQ2Layer.transform.Find("Text").GetComponent<Text>().text = $"{game.GetHeadsquaterHealth(CurrentPlayer.SECOND)}";
-        AttackButton.GetComponentInChildren<Text>().text = "Закончить мулиган!";
+        AttackButton.GetComponentInChildren<Text>().text = "Обменять";
         if (isAIFirst)
         {
             game.NextStep(); //HACK!!!
@@ -298,14 +299,28 @@ public class PlayerController : AbstractController
 
     private void Muligan_Callback (Card card)
     {
-        this.DropCardToDeck(card);
-        Card newCard = this.deck1.GetCard();
-        newCard.isSelectable = true;
-        this.AddCardToHand(newCard);
+        if (this.muliganCards.Contains(card))
+        {
+            card.Highlight(false);
+            this.muliganCards.Remove(card);
+        } else
+        {
+            card.Highlight(true);
+            this.muliganCards.Add(card);
+        }
     }
 
     private void Muligan_End ()
     {
+        foreach (Card card in this.muliganCards)
+        {
+            card.Highlight(false);
+            this.DropCardToDeck(card);
+            Card newCard = this.deck1.GetCard();
+            newCard.isSelectable = false;
+            this.AddCardToHand(newCard);
+        }
+        this.muliganCards.Clear();
         this.callback = AttackCallback;
         this.hand1._SetActive(false);
         AttackButton.GetComponentInChildren<Text>().text = "Атака!";
